@@ -1,0 +1,30 @@
+.sidenav {
+	width: 80%;
+	height: 100%;
+	z-index: $z-index-sidenav;
+	position: fixed;
+	background-color: $sidenav-bg;
+
+	&.mb-visible-add,
+	&.mb-visible-remove {
+		display: block;
+		transition: 200ms all ease-in-out;
+	}
+
+	&.mb-visible {
+		transform: translate3d(0,0,0);
+		&.mb-visible-add {
+			transform: translate3d(-100%,0,0);
+			&.mb-visible-add-active {
+				transform: translate3d(0,0,0);
+			}
+		}
+	}
+
+	&.mb-visible-remove {
+		transform: translate3d(0,0,0);
+		&.mb-visible-remove-active {
+			transform: translate3d(-100%,0,0);
+		}
+	}
+}

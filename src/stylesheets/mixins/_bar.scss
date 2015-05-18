@@ -1,0 +1,12 @@
+@mixin bar ($bar-height: $bar-height, $bar-bg: $bar-default-bg) {
+	height: $bar-height;
+	background-color: $bar-bg;
+  width: 100%;
+  display: block;
+  text-align: center;
+
+	.title {
+		line-height: $bar-height;
+		user-select: none;
+	}
+}

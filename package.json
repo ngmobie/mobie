@@ -1,0 +1,26 @@
+{
+  "name": "mobie",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-jade": "^1.0.0",
+    "gulp-ng-templates": "0.0.6",
+    "gulp-ruby-sass": "^1.0.5",
+    "karma": "^0.12.31",
+    "karma-assert": "^1.0.0",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-mocha": "^0.1.10",
+    "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "karma-phantomjs-launcher": "^0.1.4"
+  }
+}
