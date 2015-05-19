@@ -14,6 +14,30 @@ describe('mobie.core.helpers', function () {
 			})
 		})
 
+		it('should be a eventemitter', function () {
+			var initialized = false;
+			var MyClass = Helpers.createClass({
+				initialize: function () {
+					this.on('initialized', this.onInitialized);
+				},
+				onInitialized: function () {
+					initialized = true;
+				}
+			});
+
+			assert.throws(function () {
+				assert.ok(initialized)
+			})
+
+			var myClass = new MyClass();
+
+			myClass.emit('initialized');
+
+			assert.doesNotThrow(function () {
+				assert.ok(initialized)
+			})
+		})
+
 		it('should trigger initialize function', function () {
 			var MyClass = Helpers.createClass({
 				initialize: function () {

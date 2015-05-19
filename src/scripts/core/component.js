@@ -25,6 +25,12 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 
 			var promise = $animate[visibleState ? 'addClass' : 'removeClass'](this.componentEl, 'mb-visible').then(function () {
 				self.isVisible = visibleState;
+				self.emit('visibleStateChanged');
+				if(self.isVisible) {
+					self.emit('visible');
+				} else {
+					self.emit('notVisible');
+				}
 			});
 		},
 		setId: function (id) {
@@ -35,6 +41,9 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		},
 		setElement: function (componentEl) {
 			this.componentEl = componentEl;
+		},
+		getElement: function () {
+			return this.componentEl;
 		}
 	});
 

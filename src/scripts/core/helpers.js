@@ -31,24 +31,37 @@ function extend (protoProps, staticProps) {
   return child;
 }
 
+function inherits (ctor, superCtor) {
+  ctor.super_ = superCtor;
+  ctor.prototype = Object.create(superCtor.prototype, {
+    constructor: {
+      value: ctor,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+}
+
 function DefaultClass () {
 	if(angular.isFunction(this.initialize)) {
     this.initialize.apply(this, arguments);
   }
 }
 
-DefaultClass.extend = extend;
-
 function createClass (protoProps, staticProps) {
 	return DefaultClass.extend(protoProps, staticProps);
 }
 
-function HelpersFactory ($rootScope, $q) {
+function HelpersFactory ($rootScope, $q, EventEmitter) {
 	var Helpers = {};
 
 	function notImplemented (methodName) {
 	  return $q.reject(new Error('The method ' + methodName + ' is not implemented'));
 	}
+
+  DefaultClass.extend = extend;
+  inherits(DefaultClass, EventEmitter);
 
 	Helpers.createClass = createClass;
 	Helpers.notImplemented = notImplemented;
@@ -66,4 +79,16 @@ function HelpersFactory ($rootScope, $q) {
 	return Helpers;
 }
 
-angular.module('mobie.core.helpers', []).factory('Helpers', HelpersFactory);
+function UtilFactory () {
+  var Util = {};
+
+  Util.inherits = inherits;
+
+  return Util;
+}
+
+angular.module('mobie.core.helpers', [
+  'mobie.core.eventemitter'
+])
+.factory('Helpers', HelpersFactory)
+.factory('Util', UtilFactory);

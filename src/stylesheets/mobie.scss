@@ -1,14 +1,19 @@
 @charset "UTF-8";
 
 @import
+	// Reset
+	"reset",
+
+	// Animations
+	"animate",
+
   // Variables
   "variables",
 
   // Mixins
   "mixins/mixins",
-
-	// Bar
+	
+	// Components
   "bar",
-
-  // Sidenav
+  "backdrop",
   "sidenav";

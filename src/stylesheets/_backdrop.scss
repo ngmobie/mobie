@@ -1,0 +1,30 @@
+.backdrop {
+	position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background-color: $backdrop-bg;
+  z-index: $z-index-backdrop;
+  display: none;
+
+  &.mb-visible-add,
+	&.mb-visible-remove {
+		animation-duration: 150ms;
+		animation-timing-function: ease-in-out;
+	}
+
+	&.mb-visible-add {
+		animation-name: fadeIn;
+	}
+
+	&.mb-visible-remove {
+		animation-name: fadeOut;
+	}
+
+	&.mb-visible-add,
+	&.mb-visible-remove,
+	&.mb-visible {
+		display: block !important;
+	}
+}

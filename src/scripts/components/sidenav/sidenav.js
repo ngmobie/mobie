@@ -7,12 +7,9 @@ function $MbSidenavFactory ($mbComponentRegistry) {
 function SidenavDirective () {
 	return {
 		restrict: 'EA',
-		require: '?^mbSidenav',
 		scope: {},
 		controller: '$mbSidenavController',
-		controllerAs: 'mbSidenavCtrl',
-		link: function (scope, element, attrs, mbSidenav) {
-		}
+		controllerAs: 'mbSidenavCtrl'
 	};
 }
 
@@ -21,10 +18,27 @@ angular.module('mobie.components.sidenav', [
 	'mobie.core.registry',
 	'mobie.core.component'
 ])
-.controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, MbComponent, $mbComponentRegistry) {
-	this.component = new MbComponent($element, $attrs.componentId);
+.controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, MbComponent, $mbComponentRegistry, $mbBackdrop) {
+	var component = this.component = new MbComponent($element, $attrs.componentId);
 
 	$mbComponentRegistry.register(this.component);
+
+	function onClickListener(evt) {
+		component.hide();
+		$scope.$apply();
+	}
+
+	component.on('visibleStateChanged', function () {
+		var isVisible = this.getVisibleState();
+		$mbBackdrop[isVisible ? 'show' : 'hide']();
+		var el = $mbBackdrop.getElement();
+		if(isVisible) {
+			el.on('click', onClickListener);
+		} else {
+			el.off('click', onClickListener);
+		}
+		$scope.$apply();
+	});
 })
 .factory('$mbSidenav', $MbSidenavFactory)
 .directive('mbSidenav', SidenavDirective)

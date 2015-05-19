@@ -4,27 +4,46 @@
 	z-index: $z-index-sidenav;
 	position: fixed;
 	background-color: $sidenav-bg;
-
-	&.mb-visible-add,
-	&.mb-visible-remove {
-		display: block;
-		transition: 200ms all ease-in-out;
-	}
+	transform: translate3d(-100%,0,0);
 
 	&.mb-visible {
 		transform: translate3d(0,0,0);
-		&.mb-visible-add {
-			transform: translate3d(-100%,0,0);
-			&.mb-visible-add-active {
-				transform: translate3d(0,0,0);
-			}
-		}
 	}
 
+	&.mb-visible-add,
 	&.mb-visible-remove {
-		transform: translate3d(0,0,0);
-		&.mb-visible-remove-active {
-			transform: translate3d(-100%,0,0);
-		}
+		animation-duration: 300ms;
+		animation-timing-function: ease-in-out;
+	}
+
+	&.mb-visible-add,
+	&.mb-visible-add-active {
+		animation-name: slideInLeft;
+	}
+
+	&.mb-visible-remove,
+	&.mb-visible-remove-active {
+		animation-name: slideOutLeft;
+	}
+}
+
+.mb-visible-add,
+.mb-visible-remove {
+	animation-fill-mode: backwards;
+}
+
+.mb-visible-add {
+	animation-play-state: paused;
+
+	&.mb-visible-add-active {
+		animation-play-state: running;
+	}
+}
+
+.mb-visible-remove {
+	animation-play-state: paused;
+
+	&.mb-visible-remove-active {
+		animation-play-state: running;
 	}
 }

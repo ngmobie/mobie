@@ -102,5 +102,20 @@ describe('mobie.components.sidenav', function (){
 			assert.ok(sidenav1.hasClass('mb-visible'))
 			assert.ok(!sidenav2.hasClass('mb-visible'))
 		})
+
+		it('should show backdrop', function () {
+			var scope = $rootScope.$new()
+			var sidenav = angular.element('<div mb-sidenav data-component-id="sidenav3"></div>')
+			sidenav = $compile(sidenav)(scope);
+
+			$rootScope.$digest()
+
+			$mbSidenav('sidenav3').toggle()
+
+			$rootScope.$digest()
+			$timeout.flush()
+
+			assert.ok(angular.element(document.querySelector('.backdrop')).hasClass('mb-visible'))
+		})
 	})
 });

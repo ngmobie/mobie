@@ -1,35 +1,18 @@
-function BackdropFactory ($animate, $document) {
-	var bodyEl = angular.element($document.body);
+function BackdropFactory ($animate, MbComponent) {
+	var bodyEl = angular.element(document.body);
 
-	var $mbBackdrop = {
-		isVisible: false
-	};
-
-	var el = $mbBackdrop.el = angular.element('<div>');
+	var el = angular.element('<div>');
 	el.addClass('backdrop mb-backdrop');
 
 	// Insert the backdrop in the body element
 	$animate.enter(el, bodyEl);
 
-	$mbBackdrop.show = function () {
-		setVisibleState(true);
-	};
-
-	$mbBackdrop.hide = function () {
-		setVisibleState(false);
-	};
-
-	$mbBackdrop.toggle = function () {
-		var newVisibleState = !$mbBackdrop.isVisible;
-		setVisibleState(newVisibleState);
-	};
-
-	function setVisibleState (visibleState) {
-		$animate[visibleState ? 'addClass' : 'removeClass'](el, 'mb-visible');
-	}
+	var $mbBackdrop = new MbComponent(el, 'default-backdrop');
 
 	return $mbBackdrop;
 }
 
-angular.module('mobie.components.backdrop', [])
+angular.module('mobie.components.backdrop', [
+	'mobie.core.component'
+])
 .factory('$mbBackdrop', BackdropFactory);

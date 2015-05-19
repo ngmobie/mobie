@@ -3,6 +3,7 @@ var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
 var concat = require('gulp-concat');
 var ngTemplates = require('gulp-ng-templates');
+var pleeease = require('gulp-pleeease');
 
 var paths = {
 	templates: [
@@ -27,6 +28,7 @@ gulp.task('templates', function () {
 
 gulp.task('stylesheets', function () {
 	sass('src/stylesheets/mobie.scss')
+		.pipe(pleeease())
 		.pipe(gulp.dest('build'));
 });
 
