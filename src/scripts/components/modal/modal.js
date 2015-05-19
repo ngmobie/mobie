@@ -33,7 +33,7 @@ function $MbModalProvider () {
 
 			var modalLink = $mbModal.modalLink = $compile(el.contents());
 
-			component.on('visibleChangeStart', function () {
+			component.once('visibleChangeStart', function () {
 				modalLink(scope);
 			});
 
