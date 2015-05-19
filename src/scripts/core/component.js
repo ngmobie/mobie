@@ -1,8 +1,11 @@
 function MbComponentFactory (MbComponentInterface, $animate) {
 	var MbComponent = MbComponentInterface.extend({
 		initialize: function (componentEl, id) {
-			this.setElement(componentEl);
 			this.isVisible = false;
+
+			if(angular.isDefined(componentEl)) {
+				this.setElement(componentEl);
+			}
 
 			if(angular.isDefined(id)) {
 				this.setId(id);
@@ -41,7 +44,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 
 			self.emit('visibleStateChangeStart', visibleState);
 
-			var promise = $animate[visibleState ? 'addClass' : 'removeClass'](this.componentEl, 'mb-visible').then(function () {
+			return $animate[visibleState ? 'addClass' : 'removeClass'](this.componentEl, 'mb-visible').then(function () {
 				self.isVisible = visibleState;
 				self.emit('visibleStateChangeSuccess');
 			}, function (err) {
@@ -49,13 +52,24 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			});
 		},
 		setId: function (id) {
-			this.id = id;
+			if(angular.isDefined(this.getId())) {
+				throw new Error('You cannot change a component.id more than once');
+			}
+
+			Object.defineProperty(this, 'id', {
+				value: id,
+				writable: false
+			});
+
+			return this;
 		},
 		getId: function () {
 			return this.id;
 		},
 		setElement: function (componentEl) {
 			this.componentEl = componentEl;
+
+			return this;
 		},
 		getElement: function () {
 			return this.componentEl;
@@ -69,6 +83,7 @@ function MbComponentInterface (Helpers) {
 	var MbComponentInterface = Helpers.createClass({
 		show: Helpers.notImplemented('show'),
 		hide: Helpers.notImplemented('hide'),
+		toggle: Helpers.notImplemented('toggle'),
 		setElement: Helpers.notImplemented('setElement'),
 		getElement: Helpers.notImplemented('getElement'),
 		setId: Helpers.notImplemented('setId'),
