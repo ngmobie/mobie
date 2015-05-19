@@ -21,5 +21,9 @@ describe('mobie.components.backdrop', function () {
 			assert.equal($mbBackdrop.getElement()[0], backdropEl)
 			assert.ok($mbBackdrop.getVisibleState());
 		})
+
+		it('should have a default id', function () {
+			assert.equal('default-backdrop', $mbBackdrop.getId())
+		})
 	})
 })
