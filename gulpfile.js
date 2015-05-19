@@ -2,8 +2,11 @@ var gulp = require('gulp');
 var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
 var concat = require('gulp-concat');
-var ngTemplates = require('gulp-ng-templates');
+var uglify = require('gulp-uglify');
+var wrapper = require('gulp-wrapper');
 var pleeease = require('gulp-pleeease');
+var ngAnnotate = require('gulp-ng-annotate');
+var ngTemplates = require('gulp-ng-templates');
 
 var paths = {
 	templates: [
@@ -34,6 +37,12 @@ gulp.task('stylesheets', function () {
 
 gulp.task('scripts', function () {
 	gulp.src(paths.scripts)
+		.pipe(ngAnnotate())
+		.pipe(uglify())
 		.pipe(concat('mobie.js'))
+		.pipe(wrapper({
+			header: `(function (document, window, angular, undefined) { 'use strict';`,
+			footer: `}(document, window, angular, undefined))`
+		}))
 		.pipe(gulp.dest('build'));
 });
