@@ -72,5 +72,9 @@ describe('mobie.core.helpers', function () {
 
 			assert.equal(myClass.protoProp, 1)
 		})
+
+		it('should generate an id', function () {
+			assert.equal('number', typeof Helpers.nextId())
+		})
 	});
 });

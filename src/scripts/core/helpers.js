@@ -76,6 +76,13 @@ function HelpersFactory ($rootScope, $q, EventEmitter) {
 		scope.$apply(fn);
 	};
 
+  var id = 0;
+  Helpers.nextId = nextId;
+  function nextId () {
+    id++;
+    return id;
+  }
+
 	return Helpers;
 }
 
