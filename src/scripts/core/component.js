@@ -75,6 +75,8 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			return this.componentEl;
 		},
 		enterElement: function (parent, after) {
+			var self = this;
+
 			if(angular.isUndefined(parent)) {
 				parent = angular.element(document.body);
 			}
@@ -82,23 +84,25 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			this.emit('enterElementStart');
 
 			return $animate.enter(this.getElement(), parent, after).then(function () {
-				this.emit('enterElementSuccess');
+				self.emit('enterElementSuccess');
 			});
 		},
 		removeElement: function () {
 			this.getElement().remove();
+			this.componentEl = undefined;
 			return this;
 		},
 		leaveElement: function () {
+			var self = this;
+
 			this.emit('leaveElementStart');
 
 			return $animate.leave(this.getElement()).then(function () {
-				this.emit('leaveElementSuccess');
+				self.emit('leaveElementSuccess');
 			});
 		},
 		destroy: function () {
 			this.removeElement();
-			this.componentEl = undefined;
 		}
 	});
 

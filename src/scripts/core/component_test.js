@@ -1,9 +1,13 @@
 describe('mobie.core.component', function () {
-	var $rootScope, $timeout;
+	var $rootScope, $timeout, $animate;
+
+	beforeEach(module('ngAnimateMock'));
 	beforeEach(module('mobie.core.component'))
-	beforeEach(inject(function (_$rootScope_, _$timeout_) {
+
+	beforeEach(inject(function (_$rootScope_, _$timeout_, _$animate_) {
 		$rootScope = _$rootScope_
 		$timeout = _$timeout_
+		$animate = _$animate_
 	}))
 
 	describe('MbComponent', function () {
@@ -32,7 +36,7 @@ describe('mobie.core.component', function () {
 			component.show()
 
 			$rootScope.$digest()
-			$timeout.flush();
+			$animate.triggerCallbacks();
 
 			assert.ok(component.fnCalled)
 		})
@@ -45,7 +49,7 @@ describe('mobie.core.component', function () {
 			component.hide()
 
 			$rootScope.$digest()
-			$timeout.flush();
+			$animate.triggerCallbacks();
 
 			assert.ok(component.fnCalled)
 		})
@@ -69,7 +73,7 @@ describe('mobie.core.component', function () {
 			});
 
 			$rootScope.$digest()
-			$timeout.flush()
+			$animate.triggerCallbacks()
 		});
 
 		it('should not have an id key by default', function () {
@@ -107,7 +111,7 @@ describe('mobie.core.component', function () {
 			assert.ok(myel.length)
 		})
 
-		it('should emit an enter element events', function () {
+		it('should emit enter element events', function () {
 			var myel = angular.element('<div class="my-el2"></div>')
 			var component = new MbComponent()
 
@@ -129,7 +133,7 @@ describe('mobie.core.component', function () {
 
 			component.enterElement();
 
-			$rootScope.$digest()
+			$animate.triggerCallbacks()
 
 			myel = angular.element(document.querySelector('.my-el2'));
 
@@ -164,5 +168,45 @@ describe('mobie.core.component', function () {
 
 			assert.equal(null, myel[0]);
 		})
+
+		it('should emit leave element events', inject(function ($animate) {
+			var myel = angular.element('<div class="my-el3"></div>')
+			var component = new MbComponent()
+
+			component.setElement(myel);
+
+			var _myel_ = angular.element(document.querySelector('.my-el3'));
+			assert.throws(function () {
+				assert.ok(_myel_.length)
+			})
+
+			component.enterElement();
+
+			$rootScope.$digest()
+
+			myel = angular.element(document.querySelector('.my-el3'));
+
+			assert.ok(myel.length)
+
+			var leaveStartEvtCalled = false,
+					leaveSuccessEvtCalled = false;
+			component.on('leaveElementStart', function () {
+				leaveStartEvtCalled = true;
+			})
+			component.on('leaveElementSuccess', function () {
+				leaveSuccessEvtCalled = true
+			})
+
+			component.leaveElement();
+			
+			$animate.triggerCallbacks();
+
+			myel = angular.element(document.querySelector('.my-el3'));
+
+			assert.equal(null, myel[0]);
+
+			assert.ok(leaveStartEvtCalled)
+			assert.ok(leaveSuccessEvtCalled, '\'leaveElementSuccess\' event not called')
+		}))
 	})
 })

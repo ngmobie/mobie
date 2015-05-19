@@ -1,5 +1,7 @@
 function $MbModalProvider () {
-	var defaults = this.defaults = {};
+	var defaults = this.defaults = {
+		templateUrl: 'components/modal/modal.html'
+	};
 
 	function $MbModalFactory (MbComponent, $compile, $templateCache, $animate, $rootScope) {
 		var bodyEl = angular.element(document.body);
@@ -31,7 +33,7 @@ function $MbModalProvider () {
 			// Create the element
 			// using provided
 			// template/templateUrl
-			if(angular.isDefined(options.templateUrl)) {
+			if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
 				options.template = $templateCache.get(options.templateUrl);
 			}
 
