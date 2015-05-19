@@ -5,7 +5,8 @@ function $MbModalProvider () {
 		var bodyEl = angular.element(document.body);
 
 		return function (options) {
-			var $mbModal = {};
+			var $mbModal = {},
+					el;
 
 			$mbModal.options = options = angular.extend({}, defaults, options);
 
@@ -15,6 +16,11 @@ function $MbModalProvider () {
 
 			var scope = options.scope = options.scope.$new();
 			var component = options.component = $mbModal.component = new MbComponent();
+
+			scope.$on('$destroy', function () {
+				component.destroy();
+				el = undefined;
+			});
 
 			angular.forEach(['show', 'hide', 'toggle'], function (key) {
 				$mbModal[key] = function () {
@@ -29,7 +35,7 @@ function $MbModalProvider () {
 				options.template = $templateCache.get(options.templateUrl);
 			}
 
-			var el = options.el = angular.element(options.template);
+			el = options.el = angular.element(options.template);
 
 			var modalLink = $mbModal.modalLink = $compile(el.contents());
 

@@ -73,6 +73,32 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		},
 		getElement: function () {
 			return this.componentEl;
+		},
+		enterElement: function (parent, after) {
+			if(angular.isUndefined(parent)) {
+				parent = angular.element(document.body);
+			}
+
+			this.emit('enterElementStart');
+
+			return $animate.enter(this.getElement(), parent, after).then(function () {
+				this.emit('enterElementSuccess');
+			});
+		},
+		removeElement: function () {
+			this.getElement().remove();
+			return this;
+		},
+		leaveElement: function () {
+			this.emit('leaveElementStart');
+
+			return $animate.leave(this.getElement()).then(function () {
+				this.emit('leaveElementSuccess');
+			});
+		},
+		destroy: function () {
+			this.removeElement();
+			this.componentEl = undefined;
 		}
 	});
 
@@ -88,6 +114,7 @@ function MbComponentInterface (Helpers) {
 		getElement: Helpers.notImplemented('getElement'),
 		setId: Helpers.notImplemented('setId'),
 		getId: Helpers.notImplemented('getId'),
+		destroy: Helpers.notImplemented('destroy'),
 		getVisibleState: Helpers.notImplemented('getVisibleState'),
 		setVisibleState: Helpers.notImplemented('setVisibleState')
 	});

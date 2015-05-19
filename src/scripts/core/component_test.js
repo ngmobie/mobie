@@ -86,5 +86,83 @@ describe('mobie.core.component', function () {
 				component.setId('my-comp02')
 			})
 		})
+
+		it('should enter the element', function () {
+			var myel = angular.element('<div class="my-el"></div>')
+			var component = new MbComponent()
+
+			component.setElement(myel);
+
+			var _myel_ = angular.element(document.querySelector('.my-el'));
+			assert.throws(function () {
+				assert.ok(_myel_.length)
+			})
+
+			component.enterElement();
+
+			$rootScope.$digest()
+
+			myel = angular.element(document.querySelector('.my-el'));
+
+			assert.ok(myel.length)
+		})
+
+		it('should emit an enter element events', function () {
+			var myel = angular.element('<div class="my-el2"></div>')
+			var component = new MbComponent()
+
+			component.setElement(myel);
+
+			var _myel_ = angular.element(document.querySelector('.my-el2'));
+			assert.throws(function () {
+				assert.ok(_myel_.length)
+			})
+
+			var enterElEvt = false,
+					hasEntered = false;
+			component.on('enterElementSuccess', function () {
+				hasEntered = true;
+			})
+			component.on('enterElementStart', function () {
+				enterElEvt = true;
+			})
+
+			component.enterElement();
+
+			$rootScope.$digest()
+
+			myel = angular.element(document.querySelector('.my-el2'));
+
+			assert.ok(myel.length)
+			assert.ok(enterElEvt)
+		})
+
+		it('should leave the element', function () {
+			var myel = angular.element('<div class="my-el3"></div>')
+			var component = new MbComponent()
+
+			component.setElement(myel);
+
+			var _myel_ = angular.element(document.querySelector('.my-el3'));
+			assert.throws(function () {
+				assert.ok(_myel_.length)
+			})
+
+			component.enterElement();
+
+			$rootScope.$digest()
+
+			myel = angular.element(document.querySelector('.my-el3'));
+
+			assert.ok(myel.length)
+
+			component.leaveElement()
+
+			$rootScope.$digest()
+
+			myel = angular.element(document.querySelector('.my-el3'));
+
+			assert.equal(null, myel[0]);
+		})
 	})
 })
