@@ -24,6 +24,22 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			if(angular.isDefined(id)) {
 				this.setId(id);
 			}
+
+			this.on('visibleStateChangeSuccess', function () {
+				if(this.getVisibleState()) {
+					this.emit('visible');
+				} else {
+					this.emit('notVisible');
+				}
+			});
+
+			this.on('visibleStateChangeStart', function (visibleState) {
+				if(visibleState) {
+					this.emit('visibleChangeStart');
+				} else {
+					this.emit('notVisibleChangeStart');
+				}
+			});
 		},
 		show: function () {
 			return this.setVisibleState(true);
@@ -40,14 +56,13 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		setVisibleState: function (visibleState) {
 			var self = this;
 
+			self.emit('visibleStateChangeStart', visibleState);
+
 			var promise = $animate[visibleState ? 'addClass' : 'removeClass'](this.componentEl, 'mb-visible').then(function () {
 				self.isVisible = visibleState;
-				self.emit('visibleStateChanged');
-				if(self.isVisible) {
-					self.emit('visible');
-				} else {
-					self.emit('notVisible');
-				}
+				self.emit('visibleStateChangeSuccess');
+			}, function (err) {
+				self.emit('visibleStateChangeError', err);
 			});
 		},
 		setId: function (id) {
@@ -586,6 +601,7 @@ angular.module('mobie.components.sidenav', [
 ])
 .controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, MbComponent, $mbComponentRegistry, $mbBackdrop) {
 	var component = this.component = new MbComponent($element, $attrs.componentId);
+	var backdropEl = $mbBackdrop.getElement();
 
 	$mbComponentRegistry.register(this.component);
 
@@ -594,16 +610,27 @@ angular.module('mobie.components.sidenav', [
 		$scope.$apply();
 	}
 
-	component.on('visibleStateChanged', function () {
-		var isVisible = this.getVisibleState();
-		$mbBackdrop[isVisible ? 'show' : 'hide']();
-		var el = $mbBackdrop.getElement();
-		if(isVisible) {
-			el.on('click', onClickListener);
-		} else {
-			el.off('click', onClickListener);
-		}
-		$scope.$apply();
+	component.on('visibleChangeStart', function () {
+		$mbBackdrop.show();
+	});
+
+	component.on('visibleStateChangeError', function hideBackdropListener () {
+		$scope.$apply(function () {
+			$mbBackdrop.hide();
+		});
+	});
+
+	component.on('visible', function () {
+		$scope.$apply(function () {
+			backdropEl.on('click', onClickListener);
+		});
+	});
+
+	component.on('notVisible', function () {
+		$scope.$apply(function () {
+			backdropEl.off('click', onClickListener);
+			$mbBackdrop.hide();
+		});
 	});
 })
 .factory('$mbSidenav', $MbSidenavFactory)

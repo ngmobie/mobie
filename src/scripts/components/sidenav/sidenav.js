@@ -20,6 +20,7 @@ angular.module('mobie.components.sidenav', [
 ])
 .controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, MbComponent, $mbComponentRegistry, $mbBackdrop) {
 	var component = this.component = new MbComponent($element, $attrs.componentId);
+	var backdropEl = $mbBackdrop.getElement();
 
 	$mbComponentRegistry.register(this.component);
 
@@ -28,16 +29,27 @@ angular.module('mobie.components.sidenav', [
 		$scope.$apply();
 	}
 
-	component.on('visibleStateChanged', function () {
-		var isVisible = this.getVisibleState();
-		$mbBackdrop[isVisible ? 'show' : 'hide']();
-		var el = $mbBackdrop.getElement();
-		if(isVisible) {
-			el.on('click', onClickListener);
-		} else {
-			el.off('click', onClickListener);
-		}
-		$scope.$apply();
+	component.on('visibleChangeStart', function () {
+		$mbBackdrop.show();
+	});
+
+	component.on('visibleStateChangeError', function hideBackdropListener () {
+		$scope.$apply(function () {
+			$mbBackdrop.hide();
+		});
+	});
+
+	component.on('visible', function () {
+		$scope.$apply(function () {
+			backdropEl.on('click', onClickListener);
+		});
+	});
+
+	component.on('notVisible', function () {
+		$scope.$apply(function () {
+			backdropEl.off('click', onClickListener);
+			$mbBackdrop.hide();
+		});
 	});
 })
 .factory('$mbSidenav', $MbSidenavFactory)

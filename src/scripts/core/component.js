@@ -7,6 +7,22 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			if(angular.isDefined(id)) {
 				this.setId(id);
 			}
+
+			this.on('visibleStateChangeSuccess', function () {
+				if(this.getVisibleState()) {
+					this.emit('visible');
+				} else {
+					this.emit('notVisible');
+				}
+			});
+
+			this.on('visibleStateChangeStart', function (visibleState) {
+				if(visibleState) {
+					this.emit('visibleChangeStart');
+				} else {
+					this.emit('notVisibleChangeStart');
+				}
+			});
 		},
 		show: function () {
 			return this.setVisibleState(true);
@@ -23,14 +39,13 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		setVisibleState: function (visibleState) {
 			var self = this;
 
+			self.emit('visibleStateChangeStart', visibleState);
+
 			var promise = $animate[visibleState ? 'addClass' : 'removeClass'](this.componentEl, 'mb-visible').then(function () {
 				self.isVisible = visibleState;
-				self.emit('visibleStateChanged');
-				if(self.isVisible) {
-					self.emit('visible');
-				} else {
-					self.emit('notVisible');
-				}
+				self.emit('visibleStateChangeSuccess');
+			}, function (err) {
+				self.emit('visibleStateChangeError', err);
 			});
 		},
 		setId: function (id) {

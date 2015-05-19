@@ -1,30 +1,51 @@
+@keyframes backdropFadeIn {
+	from {
+		background-color: rgba(0,0,0,0);
+	}
+	to {
+		background-color: $backdrop-bg;
+	}
+}
+
+@keyframes backdropFadeOut {
+	from {
+		background-color: $backdrop-bg;
+	}
+	to {
+		background-color: rgba(0,0,0,0);
+	}
+}
+
 .backdrop {
 	position: fixed;
   width: 100%;
   height: 100%;
   top: 0px;
   left: 0px;
-  background-color: $backdrop-bg;
   z-index: $z-index-backdrop;
   display: none;
 
   &.mb-visible-add,
 	&.mb-visible-remove {
-		animation-duration: 150ms;
+		animation-duration: 200ms;
 		animation-timing-function: ease-in-out;
 	}
 
 	&.mb-visible-add {
-		animation-name: fadeIn;
+		animation-name: backdropFadeIn;
 	}
 
 	&.mb-visible-remove {
-		animation-name: fadeOut;
+		animation-name: backdropFadeOut;
 	}
 
 	&.mb-visible-add,
 	&.mb-visible-remove,
 	&.mb-visible {
-		display: block !important;
+		display: block;
+	}
+
+	&.mb-visible {
+		background-color: $backdrop-bg;
 	}
 }

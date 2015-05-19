@@ -117,5 +117,82 @@ describe('mobie.components.sidenav', function (){
 
 			assert.ok(angular.element(document.querySelector('.backdrop')).hasClass('mb-visible'))
 		})
+
+		it('should emit a not visible change start event before', function () {
+			var scope = $rootScope.$new()
+			var sidenav = angular.element('<div mb-sidenav data-component-id="sidenav4"></div>')
+			sidenav = $compile(sidenav)(scope);
+
+			$rootScope.$digest()
+
+			var notVisibleChangeStartEvt = false;
+			var notVisible = false;
+			$mbSidenav('sidenav4').show()
+
+			$rootScope.$digest()
+			$timeout.flush()
+
+			$mbSidenav('sidenav4').on('notVisible', function () {
+				notVisible = true
+			})
+			$mbSidenav('sidenav4').on('notVisibleChangeStart', function () {
+				notVisibleChangeStartEvt = true;
+			})
+			$mbSidenav('sidenav4').toggle()
+
+			$rootScope.$digest()
+			$timeout.flush()
+
+			assert.ok(notVisibleChangeStartEvt);
+			assert.equal(true, notVisible);
+		})
+
+		it('should emit a visible change start event before', function () {
+			var scope = $rootScope.$new()
+			var sidenav = angular.element('<div mb-sidenav data-component-id="sidenav4"></div>')
+			sidenav = $compile(sidenav)(scope);
+
+			$rootScope.$digest()
+
+			var visibleChangeStartEvt = false;
+			var visible = false;
+			$mbSidenav('sidenav4').hide()
+
+			// all of these events must be before the $animate promise
+			// $rootScope.$digest()
+
+			$mbSidenav('sidenav4').on('visible', function () {
+				visible = true
+			})
+			$mbSidenav('sidenav4').on('visibleChangeStart', function () {
+				visibleChangeStartEvt = true;
+			})
+			$mbSidenav('sidenav4').toggle()
+
+			$rootScope.$digest()
+			$timeout.flush()
+
+			assert.ok(visibleChangeStartEvt);
+			assert.equal(true, visible);
+		})
+
+		it('should show backdrop before show the sidenav', function () {
+			var scope = $rootScope.$new()
+			var sidenav = angular.element('<div mb-sidenav data-component-id="sidenav5"></div>')
+			sidenav = $compile(sidenav)(scope);
+
+			$rootScope.$digest()
+
+			$mbSidenav('sidenav5').on('visibleChangeStart', function () {
+				assert.equal(false, angular.element(document.querySelector('.backdrop')).hasClass('mb-visible'))
+			})
+			$mbSidenav('sidenav5').on('visible', function () {
+				assert.ok(angular.element(document.querySelector('.backdrop')).hasClass('mb-visible'))
+			})
+			$mbSidenav('sidenav5').show()
+
+			$rootScope.$digest()
+			$timeout.flush()
+		})
 	})
 });
