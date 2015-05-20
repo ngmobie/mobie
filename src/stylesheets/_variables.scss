@@ -83,6 +83,25 @@ $sidenav-bg:											#fff;
 $backdrop-bg:											rgba(0,0,0,0.5);
 
 
+// Modal
+// -------------------------------
+
+$modal-bg:												#fff;
+$modal-color:											#000;
+
+
+// Button
+// -------------------------------
+
+$button-padding:									12px;
+$button-bg:												#387ef5;
+$button-active-bg:								darken($button-bg, 8%);
+$button-color:										#fff;
+$button-border:										darken($button-bg, 7%);
+
+$button-bar-button-font-size:			13px;
+
+
 // Bar
 // -------------------------------
 
@@ -106,3 +125,4 @@ $z-index-bar:               0 !default;
 $z-index-item:              0 !default;
 $z-index-backdrop:          9 !default;
 $z-index-sidenav:           10 !default;
+$z-index-modal:           	10 !default;

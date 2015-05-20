@@ -32,24 +32,3 @@
 		}
 	}
 }
-
-.mb-visible-add,
-.mb-visible-remove {
-	animation-fill-mode: backwards;
-}
-
-.mb-visible-add {
-	animation-play-state: paused;
-
-	&.mb-visible-add-active {
-		animation-play-state: running;
-	}
-}
-
-.mb-visible-remove {
-	animation-play-state: paused;
-
-	&.mb-visible-remove-active {
-		animation-play-state: running;
-	}
-}

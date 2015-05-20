@@ -4,6 +4,7 @@
   width: 100%;
   display: block;
   text-align: center;
+  position: relative;
 
 	.title {
 		line-height: $bar-height;
@@ -11,23 +12,4 @@
 		margin: 0px;
 		color: $bar-color;
 	}
-
-	.bar-left,
-	.bar-right {
-	  padding: 3.8px;
-	  top: 0px;
-	  position: absolute;
-
-	  .fa {
-			font-size: 20px;
-		}
-	}
-
-	.bar-left {
-  	left: 0px;
-  }
-
-  .bar-right {
-  	right: 0px;
-  }
 }
