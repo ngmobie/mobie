@@ -23,29 +23,33 @@
   top: 0px;
   left: 0px;
   z-index: $z-index-backdrop;
-  display: none;
+  display: block;
+  background-color: $backdrop-bg;
 
-  &.mb-visible-add,
-	&.mb-visible-remove {
+  &.mb-hidden {
+  	display: none;
+  }
+
+  &.mb-hidden-add,
+	&.mb-hidden-remove {
 		animation-duration: 200ms;
 		animation-timing-function: ease-in-out;
 	}
 
-	&.mb-visible-add {
-		animation-name: backdropFadeIn;
-	}
-
-	&.mb-visible-remove {
+	&.mb-hidden-add {
 		animation-name: backdropFadeOut;
 	}
 
-	&.mb-visible-add,
-	&.mb-visible-remove,
-	&.mb-visible {
+	&.mb-hidden-remove {
+		animation-name: backdropFadeIn;
+	}
+
+	&.mb-hidden-add,
+	&.mb-hidden-remove {
 		display: block;
 	}
 
-	&.mb-visible {
+	&.mb-hidden {
 		background-color: $backdrop-bg;
 	}
 }

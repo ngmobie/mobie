@@ -1,0 +1,101 @@
+.mb-hidden {
+	.mb-hidden-add,
+	.mb-hidden-remove {
+		animation-fill-mode: backwards;
+	}
+
+	#{&}-add {
+		animation-play-state: paused;
+
+		&#{&}-add-active {
+			animation-play-state: running;
+		}
+	}
+
+	#{&}-remove {
+		animation-play-state: paused;
+
+		&#{&}-remove-active {
+			animation-play-state: running;
+		}
+	}
+}
+
+@mixin mb-animation-play-state () {
+	#{&}-add,
+	#{&}-remove {
+		animation-fill-mode: backwards;
+	}
+
+	#{&}-add,
+	&.ng-enter {
+		animation-play-state: paused;
+
+		&#{&}-add-active,
+		&.ng-enter-active {
+			animation-play-state: running;
+		}
+	}
+
+	#{&}-remove,
+	&.ng-leave {
+		animation-play-state: paused;
+
+		&#{&}-remove-active,
+		&.ng-leave-active {
+			animation-play-state: running;
+		}
+	}
+
+	&.ng-enter {
+		visibility: hidden;
+		&.ng-enter-active {
+			visibility: visible;
+		}
+	}
+}
+
+.mb-slide-left {
+	transform: translate3d(0,0,0);
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&.mb-slide-left-add,
+	&.ng-hide-remove,
+	&.ng-move,
+	&.ng-enter {
+		animation-name: slideInLeft;
+	}
+
+	&.mb-slide-left-remove,
+	&.ng-hide,
+	&.ng-leave {
+		animation-name: slideOutLeft;
+	}
+}
+
+.mb-slide-in-right {	
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&#{&}-add,
+	&.ng-show-add,
+	&.ng-move,
+	&.ng-enter {
+		animation-name: slideInRight;
+	}
+}
+
+.mb-slide-out-left {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&#{&}-remove,
+	&.ng-hide,
+	&.ng-leave {
+		animation-name: slideOutLeft;
+	}
+}

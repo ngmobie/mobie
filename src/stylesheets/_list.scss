@@ -4,3 +4,9 @@
 	padding-top: $item-border-width;
 	padding-bottom: $item-border-width;
 }
+
+ul.list {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}

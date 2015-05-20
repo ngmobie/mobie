@@ -4,52 +4,38 @@
 	z-index: $z-index-sidenav;
 	position: fixed;
 	background-color: $sidenav-bg;
-	transform: translate3d(-100%,0,0);
+	transform: translate3d(0,0,0);
 
-	&.mb-visible {
-		transform: translate3d(0,0,0);
+	&.mb-hidden {
+		transform: translate3d(-100%,0,0);
 	}
 
-	&.mb-visible-add,
-	&.mb-visible-remove {
-		animation-duration: 300ms;
-		animation-timing-function: ease-in-out;
-	}
+	// &.mb-hidden-add,
+	// &.mb-hidden-remove {
+	// 	animation-duration: 300ms;
+	// 	animation-timing-function: ease-in-out;
+	// }
 
-	&.mb-visible-add,
-	&.mb-visible-add-active {
-		animation-name: slideInLeft;
-	}
+	// &.mb-hidden-add,
+	// &.mb-hidden-add-active {
+	// 	animation-name: slideOutLeft;
+	// }
 
-	&.mb-visible-remove,
-	&.mb-visible-remove-active {
-		animation-name: slideOutLeft;
-	}
+	// &.mb-hidden-remove,
+	// &.mb-hidden-remove-active {
+	// 	animation-name: slideInLeft;
+	// }
 
 	.list{
 		.item {
 			border-top-width: 0px;
+			border-left-width: 0px;
+			border-right-width: 0px;
+
+			a {
+				color: #387ef5;
+				text-decoration: none;
+			}
 		}
-	}
-}
-
-.mb-visible-add,
-.mb-visible-remove {
-	animation-fill-mode: backwards;
-}
-
-.mb-visible-add {
-	animation-play-state: paused;
-
-	&.mb-visible-add-active {
-		animation-play-state: running;
-	}
-}
-
-.mb-visible-remove {
-	animation-play-state: paused;
-
-	&.mb-visible-remove-active {
-		animation-play-state: running;
 	}
 }

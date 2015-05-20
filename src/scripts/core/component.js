@@ -1,7 +1,14 @@
-function MbComponentFactory (MbComponentInterface, $animate) {
+function MbComponentFactory (MbComponentInterface, $animate, $q) {
 	var MbComponent = MbComponentInterface.extend({
-		initialize: function (componentEl, id) {
+		initialize: function (componentEl, id, options) {
+			// defaults
 			this.isVisible = false;
+
+			if(angular.isObject(id)) {
+				options = id;
+				id = undefined;
+				angular.extend(this, options);
+			}
 
 			if(angular.isDefined(componentEl)) {
 				this.setElement(componentEl);
@@ -36,20 +43,50 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		toggle: function () {
 			return this.setVisibleState(!this.getVisibleState());
 		},
+		getHiddenClass: function () {
+			return 'mb-hidden';
+		},
 		getVisibleState: function () {
 			return !!this.isVisible;
 		},
 		setVisibleState: function (visibleState) {
-			var self = this;
+			var self = this,
+					el = this.getElement(),
+					promises = [],
+					hiddenClass = this.getHiddenClass(),
+					animationClass = this.getAnimationClass(),
+					hasAnimationClass = angular.isDefined(animationClass),
+					hiddenClassMethod = visibleState ? 'removeClass' : 'addClass',
+					animationClassMethod = visibleState ? 'addClass' : 'removeClass';
 
-			self.emit('visibleStateChangeStart', visibleState);
+			this.emit('visibleStateChangeStart', visibleState);
 
-			return $animate[visibleState ? 'addClass' : 'removeClass'](this.componentEl, 'mb-visible').then(function () {
+			if(hasAnimationClass) {
+				console.log('animating rs')
+				promises.unshift($animate[animationClassMethod](el, animationClass));
+			}
+
+			// for if we are removing the hidden class
+			// it must be before the animation starts
+			// in case that we have one, or the user
+			// decide to add a class manually
+			promises[hasAnimationClass &&
+			visibleState === true ?
+			'unshift' :
+			'push']($animate[hiddenClassMethod](el, hiddenClass));
+
+			return $q.all(promises).then(function () {
 				self.isVisible = visibleState;
 				self.emit('visibleStateChangeSuccess');
 			}, function (err) {
 				self.emit('visibleStateChangeError', err);
 			});
+		},
+		getAnimationClass: function () {
+			return this.animationClass;
+		},
+		setAnimationClass: function (animationClass) {
+			this.animationClass = animationClass;
 		},
 		setId: function (id) {
 			if(angular.isDefined(this.getId())) {
@@ -67,7 +104,13 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			return this.id;
 		},
 		setElement: function (componentEl) {
-			this.componentEl = componentEl;
+			var el = this.componentEl = componentEl,
+					isVisible = this.getVisibleState(),
+					hiddenClass = this.getHiddenClass();
+
+			if(!el.hasClass(hiddenClass) && !isVisible) {
+				el.addClass(hiddenClass);
+			}
 
 			return this;
 		},
