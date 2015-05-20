@@ -126,8 +126,69 @@ function MbComponentInterface (Helpers) {
 	return MbComponentInterface;
 }
 
+// This service will be used to build
+// components which will be reused just
+// like this one, which will need to be
+// recompiled before any action of showing
+function $MbComponentProvider () {
+	var defaults = this.defaults = {};
+
+	function $MbComponentFactory (MbComponent, $compile, $templateCache, $animate, $rootScope) {
+		var bodyEl = angular.element(document.body);
+
+		return function (options) {
+			var $mbComponent = {},
+					el;
+
+			$mbComponent.options = options = angular.extend({}, defaults, options);
+
+			if(angular.isUndefined(options.scope)) {
+				options.scope = $rootScope.$new();
+			}
+
+			var scope = options.scope = options.scope.$new();
+			var component = options.component = $mbComponent.component = new MbComponent();
+
+			scope.$on('$destroy', function () {
+				component.destroy();
+				el = undefined;
+			});
+
+			angular.forEach(['show', 'hide', 'toggle'], function (key) {
+				$mbComponent[key] = function () {
+					return component[key]();
+				};
+			});
+
+			// Create the element
+			// using provided
+			// template/templateUrl
+			if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
+				options.template = $templateCache.get(options.templateUrl);
+			}
+
+			el = options.el = angular.element(options.template);
+
+			var componentLink = $mbComponent.componentLink = $compile(el.contents());
+
+			component.once('visibleChangeStart', function () {
+				componentLink(scope);
+			});
+
+			$animate.enter(el, bodyEl);
+
+			component.setElement(el);
+
+			return $mbComponent;
+		};
+	}
+
+	this.$get = $MbComponentFactory;
+}
+
 angular.module('mobie.core.component', [
 	'mobie.core.helpers'
 ])
 .factory('MbComponentInterface', MbComponentInterface)
 .factory('MbComponent', MbComponentFactory)
+.provider('$mbComponent', $MbComponentProvider)
