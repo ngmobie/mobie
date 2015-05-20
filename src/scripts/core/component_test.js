@@ -90,6 +90,46 @@ describe('mobie.core.component', function () {
 
 			assert.equal(compiledTpl.replace('1000', '1001'), mbComponentEl.text())
 		});
+
+		it('should emit an event when the element has entered in the dom', function () {
+			var scope = $rootScope.$new();
+
+			scope.obj = {
+				value: 1000
+			};
+			scope.$apply()
+
+			var template = '<mb-my-component>' +
+				'<div>' +
+					'that it, this is my modal template. ' +
+					'and that is my value ' +
+					'{{ obj.value }}' +
+				'<div>'+
+			'</mb-my-component>';
+
+			var modal = $mbComponent({
+				template: template,
+				scope: scope
+			});
+
+			$rootScope.$digest()
+
+			assert.equal(template, modal.options.template);
+
+			modal.show();
+
+			var called = false;
+			modal.component.on('enter', function () {
+				called = true;
+			});
+
+			assert.equal(false, called);
+
+			$rootScope.$digest();
+			$animate.triggerCallbacks();
+
+			assert.ok(called);
+		});
 	});
 
 	describe('MbComponent', function () {

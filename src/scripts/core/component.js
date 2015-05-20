@@ -171,11 +171,17 @@ function $MbComponentProvider () {
 
 			var componentLink = $mbComponent.componentLink = $compile(el.contents());
 
+			// Compile the component
+			// for the first time
+			// before it gets showed
+			// up
 			component.once('visibleChangeStart', function () {
 				componentLink(scope);
 			});
 
-			$animate.enter(el, bodyEl);
+			$animate.enter(el, bodyEl).then(function () {
+				component.emit('enter');
+			});
 
 			component.setElement(el);
 
