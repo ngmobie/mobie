@@ -1,15 +1,28 @@
 function $MbModalProvider () {
 	var defaults = this.defaults = {
-		templateUrl: 'components/modal/modal.html'
+		templateUrl: 'components/modal/modal.html',
+		activeBodyClass: 'mb-modal-visible'
 	};
 
-	function $MbModalFactory ($mbComponent) {
+	function $MbModalFactory ($mbComponent, $animate, $mbBackdrop, $q) {
 		var bodyEl = angular.element(document.body);
 
 		return function (options) {
 			options = angular.extend({}, defaults, options);
-			var scope = options.scope;
 			var $mbModal = $mbComponent(options);
+			var scope = options.scope;
+			var component = $mbModal.component;
+
+			component.on('visibleChangeStart', function () {
+				$mbBackdrop.show();
+				$animate.addClass(bodyEl, options.activeBodyClass);
+			});
+
+			component.on('notVisibleChangeStart', function () {
+				$mbBackdrop.hide();
+				$animate.removeClass(bodyEl, options.activeBodyClass);
+			});
+
 			return $mbModal;
 		};
 	}
@@ -18,6 +31,7 @@ function $MbModalProvider () {
 }
 
 angular.module('mobie.components.modal', [
-	'mobie.core.component'
+	'mobie.core.component',
+	'mobie.components.backdrop',
 ])
 .provider('$mbModal', $MbModalProvider);
