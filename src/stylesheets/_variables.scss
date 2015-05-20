@@ -56,15 +56,31 @@ $border-radius-large:             6px !default;
 $border-radius-small:             3px !default;
 
 
+// Item
+// -------------------------------
+
+$item-border-width:								1px;
+$item-padding:										16px;
+
+$item-default-bg:									#fff;
+$item-default-bg-active:					darken($item-default-bg, 10%);
+
+
+// List
+// -------------------------------
+
+
 // Sidenav
 // -------------------------------
+
 $sidenav-width: 									80%;
 $sidenav-bg:											#fff;
 
 
 // Backdrop
 // -------------------------------
-$backdrop-bg:											rgba(0,0,0,0.3);
+
+$backdrop-bg:											rgba(0,0,0,0.5);
 
 
 // Bar
@@ -87,5 +103,6 @@ $bar-default-active-border:       $bar-default-bg !default;
 // -------------------------------
 
 $z-index-bar:               0 !default;
+$z-index-item:              0 !default;
 $z-index-backdrop:          9 !default;
 $z-index-sidenav:           10 !default;

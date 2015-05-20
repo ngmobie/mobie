@@ -25,6 +25,12 @@
 	&.mb-visible-remove-active {
 		animation-name: slideOutLeft;
 	}
+
+	.list{
+		.item {
+			border-top-width: 0px;
+		}
+	}
 }
 
 .mb-visible-add,

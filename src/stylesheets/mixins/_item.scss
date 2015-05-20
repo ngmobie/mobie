@@ -1,0 +1,11 @@
+@mixin item-style($item-bg, $item-border, $item-color, $item-bg-active: darken($item-bg, 5%)) {
+  border-color: $item-border;
+  background-color: $item-bg;
+  color: $item-color;
+  user-select: none;
+  transition: background-color 200ms ease-in-out;
+
+  &:active {
+    background-color: $item-bg-active;
+  }
+}
