@@ -1,15 +1,52 @@
 describe('mobie.components.modal', function () {
-	var $mbModal, $rootScope, $timeout;
+	var $mbModal, $rootScope, $animate;
 
+	beforeEach(module('ngAnimateMock'))
 	beforeEach(module('mobie.components.modal'));
 
-	beforeEach(inject(function (_$mbModal_, _$rootScope_, _$timeout_) {
+	beforeEach(inject(function (_$mbModal_, _$rootScope_, _$animate_) {
 		$rootScope = _$rootScope_;
-		$timeout = _$timeout_;
+		$animate = _$animate_;
 		$mbModal = _$mbModal_;
 	}));
 
 	describe('$mbModal', function () {
+		it('should remove component when scope is destroyed', function () {
+			var scope = $rootScope.$new();
+			scope.obj = {
+				value: 1000
+			};
+			scope.$apply()
+
+			var template = '<mb-modal>' +
+				'<div>' +
+					'that it, this is my modal template. ' +
+					'and that is my value ' +
+					'{{ obj.value }}' +
+				'<div>'+
+			'</mb-modal>';
+
+			var modal = $mbModal({
+				template: template,
+				scope: scope
+			});
+
+			$rootScope.$digest()
+
+			assert.equal(template, modal.options.template);
+
+			modal.show();
+
+			$rootScope.$digest();
+			$animate.triggerCallbacks();
+
+			assert.ok(modal.component.getElement());
+
+			scope.$destroy();
+
+			assert.equal(undefined, modal.component.getElement());
+		})
+
 		it('should recompile the modal before show', function () {
 			var scope = $rootScope.$new();
 
@@ -38,7 +75,7 @@ describe('mobie.components.modal', function () {
 			modal.show();
 
 			$rootScope.$digest();
-			$timeout.flush()
+			$animate.triggerCallbacks();
 
 			var mbModalEl = angular.element(document.querySelector('mb-modal'));
 
