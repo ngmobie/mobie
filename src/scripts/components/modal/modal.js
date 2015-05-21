@@ -4,7 +4,7 @@ function $MbModalProvider () {
 		activeBodyClass: 'mb-modal-visible'
 	};
 
-	function $MbModalFactory ($mbComponent, $animate, $mbBackdrop, $q) {
+	function $MbModalFactory ($mbComponent, $animate, $mbBackdrop, Helpers) {
 		var bodyEl = angular.element(document.body);
 
 		return function (options) {
@@ -18,9 +18,11 @@ function $MbModalProvider () {
 				$animate.addClass(bodyEl, options.activeBodyClass);
 			});
 
-			component.on('notVisibleChangeStart', function () {
-				$mbBackdrop.hide();
-				$animate.removeClass(bodyEl, options.activeBodyClass);
+			component.on('notVisible', function () {
+				Helpers.safeDigest(scope, function () {
+					$mbBackdrop.hide();
+					$animate.removeClass(bodyEl, options.activeBodyClass);
+				});
 			});
 
 			return $mbModal;
@@ -32,6 +34,7 @@ function $MbModalProvider () {
 
 angular.module('mobie.components.modal', [
 	'mobie.core.component',
+	'mobie.core.helpers',
 	'mobie.components.backdrop',
 ])
 .provider('$mbModal', $MbModalProvider);

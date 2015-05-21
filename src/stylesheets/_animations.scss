@@ -1,25 +1,9 @@
-// .mb-hidden {
-// 	.mb-hidden-add,
-// 	.mb-hidden-remove {
-// 		animation-fill-mode: backwards;
-// 	}
-
-// 	#{&}-add {
-// 		animation-play-state: paused;
-
-// 		&#{&}-add-active {
-// 			animation-play-state: running;
-// 		}
-// 	}
-
-// 	#{&}-remove {
-// 		animation-play-state: paused;
-
-// 		&#{&}-remove-active {
-// 			animation-play-state: running;
-// 		}
-// 	}
-// }
+.mb-hidden {
+	&.mb-hidden-add,
+	&.mb-hidden-remove {
+		display: block !important;
+	}
+}
 
 @mixin mb-animation-play-state () {
 	#{&}-add,
@@ -107,6 +91,7 @@
 	@include mb-animation-play-state();
 
 	&.mb-visible-remove,
+	&.mb-hidden-add,
 	&.ng-hide,
 	&.ng-leave {
 		animation-name: slideOutLeft;
