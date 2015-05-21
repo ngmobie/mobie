@@ -62,7 +62,6 @@ function MbComponentFactory (MbComponentInterface, $animate, $q) {
 			this.emit('visibleStateChangeStart', visibleState);
 
 			if(hasAnimationClass) {
-				console.log('animating rs')
 				promises.unshift($animate[animationClassMethod](el, animationClass));
 			}
 

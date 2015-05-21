@@ -1,25 +1,25 @@
-.mb-hidden {
-	.mb-hidden-add,
-	.mb-hidden-remove {
-		animation-fill-mode: backwards;
-	}
+// .mb-hidden {
+// 	.mb-hidden-add,
+// 	.mb-hidden-remove {
+// 		animation-fill-mode: backwards;
+// 	}
 
-	#{&}-add {
-		animation-play-state: paused;
+// 	#{&}-add {
+// 		animation-play-state: paused;
 
-		&#{&}-add-active {
-			animation-play-state: running;
-		}
-	}
+// 		&#{&}-add-active {
+// 			animation-play-state: running;
+// 		}
+// 	}
 
-	#{&}-remove {
-		animation-play-state: paused;
+// 	#{&}-remove {
+// 		animation-play-state: paused;
 
-		&#{&}-remove-active {
-			animation-play-state: running;
-		}
-	}
-}
+// 		&#{&}-remove-active {
+// 			animation-play-state: running;
+// 		}
+// 	}
+// }
 
 @mixin mb-animation-play-state () {
 	#{&}-add,
@@ -61,14 +61,27 @@
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
 
-	&.mb-slide-left-add,
+	&#{&}-add,
+	&#{&}-remove {
+		transition: 1s all ease-in-out;
+	}
+
+	&#{&}-remove {
+		background-color: red;
+
+		&#{&}-active {
+			background-color: blue;
+		}
+	}
+
+	&#{&}-add,
 	&.ng-hide-remove,
 	&.ng-move,
 	&.ng-enter {
 		animation-name: slideInLeft;
 	}
 
-	&.mb-slide-left-remove,
+	&#{&}-remove,
 	&.ng-hide,
 	&.ng-leave {
 		animation-name: slideOutLeft;
