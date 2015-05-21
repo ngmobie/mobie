@@ -17,52 +17,6 @@ describe('mobie.components.sidenav', function (){
 	}))
 
 	describe('mbSidenav directive', function () {
-		it('should accept custom animation class with mbAnimation', function () {
-			var animationClass = 'my-animation-class-1 my-animation-class-2';
-			var button = angular.element('<button ng-click="toggle()"></div>')
-			var el = angular.element('<div><div mb-sidenav mb-animation="' + animationClass + '" data-component-id="my-left-sidenav">{{ my.value }}</div></div>');
-			el.prepend(button);
-			animationClass = 'mb-my-animation-class-1 mb-my-animation-class-2';
-
-			var mbSidenav = angular.element(getEl(el, '[mb-sidenav]'));
-			var scope = $rootScope.$new();
-			
-			el = $compile(el)(scope);
-
-			scope.my = {
-				value: 1000
-			};
-
-			scope.toggle = function () {
-				return $mbSidenav('my-left-sidenav').toggle();
-			};
-
-			scope.$digest()
-
-			assert.equal('1000', mbSidenav.text())
-
-			assert.equal('my-left-sidenav', mbSidenav.attr('data-component-id'))
-
-			assert.ok(mbSidenav.hasClass('mb-hidden'), 'does not have the hidden class');
-
-			scope.toggle();
-
-			$animate.triggerCallbacks()
-			$rootScope.$digest()
-			$animate.triggerCallbacks()
-
-			assert.equal(false, mbSidenav.hasClass('mb-hidden'), 'does have the hidden class');
-			assert.ok(mbSidenav.isolateScope().mbSidenavCtrl.component.isVisible, 'is not visible');
-
-			scope.toggle()
-
-			$animate.triggerCallbacks()
-			$rootScope.$digest();
-			$animate.triggerCallbacks()
-
-			assert.equal(false, mbSidenav.isolateScope().mbSidenavCtrl.component.isVisible, 'is visible');
-		});
-
 		it('should instantiate a mbSidenav directive', function () {
 			var el = angular.element('<div><div mb-sidenav data-component-id="left">{{ my.value }}</div></div>');
 			var mbSidenav = el.children('[mb-sidenav]');
@@ -236,18 +190,18 @@ describe('mobie.components.sidenav', function (){
 			sidenav = $compile(sidenav)(scope);
 
 			$rootScope.$digest()
+			$animate.triggerCallbacks()
 
 			$mbSidenav('sidenav5').on('visibleChangeStart', function () {
-				assert.equal(false, !angular.element(document.querySelector('.backdrop')).hasClass('mb-hidden'))
-			})
+				assert.ok(sidenav.hasClass('mb-hidden'));
+				assert.ok(angular.element(document.querySelector('.backdrop')).hasClass('mb-visible'))
+			});
+			
 			$mbSidenav('sidenav5').on('visible', function () {
-				assert.ok(!angular.element(document.querySelector('.backdrop')).hasClass('mb-hidden'))
-			})
-			$mbSidenav('sidenav5').show()
+				assert.equal(false, angular.element(document.querySelector('.backdrop')).hasClass('mb-hidden'), 'has the mb-hidden class even after sidenav is visible')
+			});
 
-			$animate.triggerCallbacks()
-			$rootScope.$digest()
-			$animate.triggerCallbacks()
+			$mbSidenav('sidenav5').show()
 		})
 	})
 });

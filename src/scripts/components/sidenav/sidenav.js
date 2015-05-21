@@ -34,10 +34,11 @@ angular.module('mobie.components.sidenav', [
 	'mobie.components.animation',
 	'mobie.components.backdrop',
 	'mobie.core.registry',
-	'mobie.core.component'
+	'mobie.core.component',
+	'mobie.core.helpers'
 ])
 .directive('mbClose', CloseDirective)
-.controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, MbComponent, $mbComponentRegistry, $mbBackdrop) {
+.controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop) {
 	var component = this.component = new MbComponent($element, {
 		id: $attrs.componentId
 	});
@@ -46,16 +47,21 @@ angular.module('mobie.components.sidenav', [
 	$mbComponentRegistry.register(this.component);
 
 	function onClickListener(evt) {
-		component.hide();
-		$scope.$apply();
+		Helpers.safeDigest($scope, function () {
+			component.hide();
+		});
 	}
 
 	component.on('visibleChangeStart', function () {
-		$mbBackdrop.show();
+		Helpers.safeDigest($scope, function () {
+			$mbBackdrop.show();
+		});
 	});
 
 	component.on('visibleStateChangeError', function () {
-		$mbBackdrop.hide();
+		Helpers.safeDigest($scope, function () {
+			$mbBackdrop.hide();
+		});
 	});
 
 	component.on('visible', function () {
@@ -64,7 +70,9 @@ angular.module('mobie.components.sidenav', [
 
 	component.on('notVisible', function () {
 		backdropEl.off('click', onClickListener);
-		$mbBackdrop.hide();
+		Helpers.safeDigest($scope, function () {
+			$mbBackdrop.hide();
+		});
 	});
 })
 .factory('$mbSidenav', $MbSidenavFactory)

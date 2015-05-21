@@ -13,23 +13,11 @@ body.mb-modal-visible {
 	color: $modal-color;
 	transform: translate3d(0,100%,0);
 
+	&.mb-hidden {
+		display: none;
+	}
+
 	&.mb-visible {
 		transform: translate3d(0,0,0);
-	}
-
-	&.mb-visible-add,
-	&.mb-visible-remove {
-		animation-duration: 300ms;
-		animation-timing-function: ease-in-out;
-	}
-
-	&.mb-visible-add,
-	&.mb-visible-add-active {
-		animation-name: slideInUp;
-	}
-
-	&.mb-visible-remove,
-	&.mb-visible-remove-active {
-		animation-name: slideOutDown;
 	}
 }

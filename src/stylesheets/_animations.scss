@@ -93,7 +93,7 @@
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
 
-	&#{&}-add,
+	&.mb-visible-add,
 	&.ng-show-add,
 	&.ng-move,
 	&.ng-enter {
@@ -106,9 +106,34 @@
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
 
-	&#{&}-remove,
+	&.mb-visible-remove,
 	&.ng-hide,
 	&.ng-leave {
 		animation-name: slideOutLeft;
+	}
+}
+
+.mb-slide-in-up {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&.mb-visible-add,
+	&.ng-show-add,
+	&.ng-move,
+	&.ng-enter {
+		animation-name: slideInUp;
+	}
+}
+
+.mb-slide-out-up {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&.mb-visible-remove,
+	&.ng-hide,
+	&.ng-leave {
+		animation-name: slideOutUp;
 	}
 }

@@ -70,10 +70,7 @@ function HelpersFactory ($rootScope, $q, EventEmitter) {
 			scope = $rootScope;
 		}
 
-		angular.isDefined(scope.$$phase) ||
-		angular.isDefined(scope.$root.$$phase) ?
-		scope.$$postDigest(fn) :
-		scope.$apply(fn);
+		scope.$$phase || (scope.$root && scope.$root.$$phase) ? scope.$$postDigest(fn) : scope.$apply(fn);
 	};
 
   var id = 0;
