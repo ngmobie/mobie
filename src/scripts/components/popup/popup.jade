@@ -1,0 +1,8 @@
+.popup-container
+	.popup
+		.popup-head(ng-if="title")
+			h3.popup-title(ng-bind="title")
+		.popup-body(ng-bind="text", ng-if="text")
+		.popup-body(ng-bind-html="template", ng-if="template")
+		.popup-buttons
+			button(ng-repeat="button in buttons", ng-click="button.onTap(scope, $event)", class="button", ng-bind="button.text")

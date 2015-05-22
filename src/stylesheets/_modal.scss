@@ -6,18 +6,19 @@ body.mb-modal-visible {
 	display: block;
 	position: absolute;
 	top: 0;
+	left: 0;
 	z-index: $z-index-modal;
 	min-height: 100%;
 	width: 100%;
 	background-color: $modal-bg;
 	color: $modal-color;
-	transform: translate3d(0,100%,0);
 
 	&.mb-hidden {
-		display: none;
-	}
-
-	&.mb-visible {
-		transform: translate3d(0,0,0);
+		transform: translate3d(0,100%,0);
+		
+		&:not(.mb-hidden-add):not(.mb-hidden-remove) {
+			top: -9999px;
+			left: -9999px;
+		}
 	}
 }

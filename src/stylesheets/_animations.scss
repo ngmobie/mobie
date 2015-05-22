@@ -1,14 +1,24 @@
-.mb-hidden {
-	&.mb-hidden-add,
-	&.mb-hidden-remove {
-		display: block !important;
-	}
+@keyframes scaleOut {
+  from {
+  	transform: scale(1);
+  }
+  to {
+  	transform: scale(0.8);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+  	transform: scale(0.8);
+  }
+  to {
+  	transform: scale(1);
+  }
 }
 
 @mixin mb-animation-play-state () {
 	#{&}-add,
 	#{&}-remove {
-		animation-fill-mode: backwards;
 	}
 
 	#{&}-add,
@@ -120,5 +130,30 @@
 	&.ng-hide,
 	&.ng-leave {
 		animation-name: slideOutUp;
+	}
+}
+
+.mb-zoom-in {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&.mb-visible-add,
+	&.ng-show-add,
+	&.ng-move,
+	&.ng-enter {
+		animation-name: zoomIn;
+	}
+}
+
+.mb-zoom-out {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+
+	&.mb-visible-remove,
+	&.ng-hide,
+	&.ng-leave {
+		animation-name: zoomOut;
 	}
 }

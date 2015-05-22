@@ -196,6 +196,10 @@ function $MbComponentProvider () {
 				options.template = $templateCache.get(options.templateUrl);
 			}
 
+			if(angular.isUndefined(options.template)) {
+				throw new Error('template must have something');
+			}
+
 			el = options.el = angular.element(options.template);
 
 			var componentLink = $mbComponent.componentLink = $compile(el);
