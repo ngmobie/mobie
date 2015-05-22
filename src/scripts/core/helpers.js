@@ -60,18 +60,25 @@ function HelpersFactory ($rootScope, $q, EventEmitter) {
 	  return $q.reject(new Error('The method ' + methodName + ' is not implemented'));
 	}
 
+  function safeDigest (scope, fn) {
+    if(angular.isFunction(scope)) {
+      fn = scope;
+      scope = $rootScope;
+    }
+
+    if(angular.isUndefined(fn)) {
+      fn = function () {};
+    }
+
+    scope.$$phase || (scope.$root && scope.$root.$$phase) ? fn() : scope.$apply(fn);
+  }
+
   DefaultClass.extend = extend;
   inherits(DefaultClass, EventEmitter);
 
 	Helpers.createClass = createClass;
 	Helpers.notImplemented = notImplemented;
-	Helpers.safeDigest = function (scope, fn) {
-		if(angular.isUndefined(scope)) {
-			scope = $rootScope;
-		}
-
-		scope.$$phase || (scope.$root && scope.$root.$$phase) ? scope.$$postDigest(fn) : scope.$apply(fn);
-	};
+	Helpers.safeDigest = safeDigest;
 
   var id = 0;
   Helpers.nextId = nextId;

@@ -1,30 +1,40 @@
-.mb-hidden {
-	&.mb-hidden-add,
-	&.mb-hidden-remove {
-		display: block !important;
-	}
+@keyframes scaleOut {
+  from {
+  	transform: scale(1);
+  }
+  to {
+  	transform: scale(0.9);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+  	transform: scale(0.9);
+  }
+  to {
+  	transform: scale(1);
+  }
 }
 
 @mixin mb-animation-play-state () {
-	#{&}-add,
-	#{&}-remove {
-		animation-fill-mode: backwards;
-	}
-
+	.mb-visible-add,
 	#{&}-add,
 	&.ng-enter {
 		animation-play-state: paused;
 
+		.mb-visible-add-active,
 		&#{&}-add-active,
 		&.ng-enter-active {
 			animation-play-state: running;
 		}
 	}
 
+	.mb-hidden-add,
 	#{&}-remove,
 	&.ng-leave {
 		animation-play-state: paused;
 
+		.mb-hidden-add-active,
 		&#{&}-remove-active,
 		&.ng-leave-active {
 			animation-play-state: running;
@@ -39,36 +49,20 @@
 	}
 }
 
-.mb-slide-left {
-	transform: translate3d(0,0,0);
-	animation-duration: 300ms;
-	animation-timing-function: ease-in-out;
-	@include mb-animation-play-state();
-
-	&#{&}-add,
-	&#{&}-remove {
-		transition: 1s all ease-in-out;
-	}
-
-	&#{&}-remove {
-		background-color: red;
-
-		&#{&}-active {
-			background-color: blue;
-		}
-	}
-
-	&#{&}-add,
+@mixin mb-animation-in ($animation-name) {
+	&.mb-hidden-remove,
 	&.ng-hide-remove,
 	&.ng-move,
 	&.ng-enter {
-		animation-name: slideInLeft;
+		animation-name: $animation-name;
 	}
+}
 
-	&#{&}-remove,
-	&.ng-hide,
+@mixin mb-animation-out ($animation-name) {
+	&.mb-hidden-add,
+	&.ng-hide-add,
 	&.ng-leave {
-		animation-name: slideOutLeft;
+		animation-name: $animation-name;
 	}
 }
 
@@ -76,49 +70,47 @@
 	animation-duration: 300ms;
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
-
-	&.mb-visible-add,
-	&.ng-show-add,
-	&.ng-move,
-	&.ng-enter {
-		animation-name: slideInRight;
-	}
+	@include mb-animation-in(slideInRight);
 }
 
 .mb-slide-out-left {
 	animation-duration: 300ms;
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
+	@include mb-animation-out(slideOutLeft);
+}
 
-	&.mb-visible-remove,
-	&.mb-hidden-add,
-	&.ng-hide,
-	&.ng-leave {
-		animation-name: slideOutLeft;
-	}
+.mb-slide-in-left {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+	@include mb-animation-in(slideInLeft);
 }
 
 .mb-slide-in-up {
 	animation-duration: 300ms;
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
-
-	&.mb-visible-add,
-	&.ng-show-add,
-	&.ng-move,
-	&.ng-enter {
-		animation-name: slideInUp;
-	}
+	@include mb-animation-in(slideInUp);
 }
 
 .mb-slide-out-up {
 	animation-duration: 300ms;
 	animation-timing-function: ease-in-out;
 	@include mb-animation-play-state();
+	@include mb-animation-out(slideOutUp);
+}
 
-	&.mb-visible-remove,
-	&.ng-hide,
-	&.ng-leave {
-		animation-name: slideOutUp;
-	}
+.mb-zoom-in {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+	@include mb-animation-in(zoomIn);
+}
+
+.mb-zoom-out {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+	@include mb-animation-out(zoomOut);
 }

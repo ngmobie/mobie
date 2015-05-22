@@ -211,6 +211,32 @@ describe('mobie.core.component', function () {
 			component = new MbComponent(el)
 		}))
 
+		it('should prevent already showed/hidden components', function () {
+			var called = false;
+
+			var el = angular.element('<div>')
+			var component = new MbComponent(el);
+			
+			component.on('visibleChangeStart', function () {
+				called = !called;
+			})
+
+			component.show();
+
+			$animate.triggerCallbacks()
+			$rootScope.$digest()
+
+			assert.ok(component.getElement().hasClass('mb-visible'))
+			assert.ok(called);
+
+			component.show();
+
+			// $animate.triggerCallbacks()
+			// $rootScope.$digest()
+
+			// assert.ok(called)
+		});
+
 		it('should instantiate a new component', function () {
 			assert.equal(MbComponent, component.constructor);
 		})

@@ -8,8 +8,9 @@
 
 ### Improving your development experience
 
-#### You don't need a cli, use `gulp-livereload`
+#### You don't need a cli, use `gulp-livereload` and `express`
 
+gulpfile.js
 ```js
 var livereload = require('gulp-livereload');
 var paths = {
@@ -20,6 +21,30 @@ gulp.task('livereload', function () {
 	livereload.listen();
 	gulp.watch('www/{css,js}/*.{css,js}').on('change', livereload.changed);
 });
+```
+
+index.js
+```js
+var express = require('express');
+var app = express();
+
+app.use(express.static('www'));
+app.get('/', function (req, res) {
+	res.render('index.html');
+});
+
+app.listen(8080);
+```
+
+package.json
+```js
+{
+	"main": "index.js"
+}
+```
+
+```
+node .
 ```
 
 ### Improving your application performance/bootstrap
