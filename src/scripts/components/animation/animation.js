@@ -1,4 +1,27 @@
 angular.module('mobie.components.animation', [])
+.directive('mbAnimationDuration', function () {
+	return postLink;
+
+	function postLink (scope, element, attrs) {
+		function setAnimationDuration (ms) {
+			if(!angular.isUndefined(ms) && ms !== '') {
+				ms = ms + 'ms';
+			}
+
+			element.css('-webkit-animation-duration', ms);
+			element.css('-moz-animation-duration', ms);
+			element.css('animation-duration', ms);
+		}
+
+		attrs.$observe('mbAnimationDuration', function (ms) {
+			if(angular.isUndefined(ms)) {
+				return setAnimationDuration(undefined);
+			}
+			
+			setAnimationDuration(ms);
+		});
+	}
+})
 .directive('mbAnimation', function () {
 	return function (scope, element, attrs) {
 		var previousClass = undefined;
