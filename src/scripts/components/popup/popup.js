@@ -27,14 +27,14 @@ function $MbPopupProvider () {
 			});
 		}
 
-		function safeDigest() {
-			return Helpers.safeDigest.apply(Helpers, arguments);
+		function safeDigest(fn) {
+			Helpers.safeDigest(scope, fn);
 		}
 
 		function asyncDigest () {
 			return $q(function (resolve) {
-				safeDigest(scope, function () {
-					resolve();
+				safeDigest(function (scope) {
+					resolve(scope);
 				});
 			});
 		}
@@ -70,19 +70,30 @@ function $MbPopupProvider () {
 		function setComponent (isActive) {
 			return asyncDigest().then(function (){
 				return component[isActive ? 'show' : 'hide']();
-			})
+			});
 		}
 
 		function hide (notTouchBackdrop) {
-			var promises = [];
-			return setComponent(false).then(function () {
-				promises.push(setBackdrop(notTouchBackdrop));
+			return $q.all([
+				setComponent(false),
+				setBackdrop(notTouchBackdrop),
+				setActiveBodyClass(false)
+			]).then(function () {
+				return unbindEvents();
+			});
+		}
 
-				promises.push(setActiveBodyClass(false));
+		function scopeReset () {
+			scopeExtend({
+				text: '',
+				title: '',
+				template: ''
+			});
+		}
 
-				return $q.all(promises).then(function () {
-					return unbindEvents();
-				});
+		function scopeExtend(options) {
+			safeDigest(function (scope) {
+				angular.extend(scope, options);
 			});
 		}
 
@@ -93,20 +104,20 @@ function $MbPopupProvider () {
 				});
 			}
 
-			var promises = [];
-			angular.extend(scope, options);
+			scopeReset();
+			scopeExtend(options);
 			angular.forEach(scope.buttons, function (btn, i) {
-				if(!angular.isFunction (btn.onTap)) {
+				if(!angular.isFunction(btn.onTap)) {
 					scope.buttons[i].onTap = defaultOnTapFn;
 				}
 			});
 
-			return setComponent(true).then(function () {
-				promises.push(setBackdrop(true));
-				promises.push(setActiveBodyClass(true));
-				return $q.all(promises).then(function () {
-					return bindEvents();
-				});
+			return $q.all([
+				setComponent(true),
+				setBackdrop(true),
+				setActiveBodyClass(true)
+			]).then(function () {
+				return bindEvents();
 			});
 		}
 
@@ -119,7 +130,7 @@ function $MbPopupProvider () {
 
 angular.module('mobie.components.popup', [
 	'mobie.core.helpers',
-	'mobie.components.backdrop',
 	'mobie.core.component',
+	'mobie.components.backdrop'
 ])
 .provider('$mbPopup', $MbPopupProvider);

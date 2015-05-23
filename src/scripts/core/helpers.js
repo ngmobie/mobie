@@ -70,7 +70,7 @@ function HelpersFactory ($rootScope, $q, EventEmitter) {
       fn = function () {};
     }
 
-    scope.$$phase || (scope.$root && scope.$root.$$phase) ? fn() : scope.$apply(fn);
+    scope.$$phase || (scope.$root && scope.$root.$$phase) ? fn(scope) : scope.$apply(fn);
   }
 
   DefaultClass.extend = extend;
