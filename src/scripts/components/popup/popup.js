@@ -67,12 +67,15 @@ function $MbPopupProvider () {
 			return component.getVisibleState();
 		}
 
+		// Set the component to some
+		// visibleState (hidden or visible)
 		function setComponent (isActive) {
 			return asyncDigest().then(function (){
 				return component[isActive ? 'show' : 'hide']();
 			});
 		}
 
+		// Hide the popup
 		function hide (notTouchBackdrop) {
 			return $q.all([
 				setComponent(false),
@@ -83,27 +86,39 @@ function $MbPopupProvider () {
 			});
 		}
 
+		// Reset the popup scope
+		// with the default options
 		function scopeReset () {
 			scopeExtend({
 				text: '',
 				title: '',
-				template: ''
+				template: '',
+				buttons: []
 			});
 		}
 
+		// Extend the popup scope
 		function scopeExtend(options) {
 			safeDigest(function (scope) {
 				angular.extend(scope, options);
 			});
 		}
 
+		// Show the popup
 		function show (options) {
+			// If the popup is visible
+			// just hide with the `notTouchBackdrop`
+			// option, and then, show it again, with
+			// the new options
 			if(getVisibleState()) {
 				return hide(true).then(function () {
 					return show(options);
 				});
 			}
 
+			// Reset the actual scope, for we don't
+			// want to get a undesired `title` option,
+			// right?
 			scopeReset();
 			scopeExtend(options);
 			angular.forEach(scope.buttons, function (btn, i) {
