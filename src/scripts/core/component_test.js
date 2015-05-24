@@ -11,6 +11,72 @@ describe('mobie.core.component', function () {
 	}))
 
 	describe('$mbComponent', function () {
+		it('should compile the component before show', function () {
+			var scope = $rootScope.$new();
+
+			scope.obj = {
+				value: 1000
+			};
+			scope.$apply()
+
+			var template = '<mb-my-component>' +
+				'<div>' +
+					'that it, this is my modal template. ' +
+					'and that is my value ' +
+					'{{ obj.value }}' +
+				'<div>'+
+			'</mb-my-component>';
+
+			var modal = $mbComponent({
+				template: template,
+				scope: scope
+			});
+
+			$rootScope.$digest()
+
+			assert.equal(template, modal.options.template);
+
+			modal.show();
+
+			$rootScope.$digest();
+			$animate.triggerCallbacks();
+
+			var mbComponentEl = angular.element(document.querySelector('mb-my-component'));
+
+			var compiledTpl = 'that it, this is my modal template. and that is my value 1000';
+			assert.equal(compiledTpl, mbComponentEl.text());
+
+			scope.obj = {
+				value: 1001
+			};
+
+			scope.$apply();
+
+			assert.equal(compiledTpl.replace('1000', '1001'), mbComponentEl.text())
+		});
+		
+		it('should only compile the element before show', function () {
+			var scope = $rootScope.$new();
+			var template = '<mb-component2>{{mycomponentvalue}}</mb-component2>';
+
+			var modal = $mbComponent({
+				template: template,
+				scope: scope
+			});
+
+			scope.mycomponentvalue = 1000;
+
+			$rootScope.$digest();
+
+			var mbComponent2 = angular.element(document.querySelector('mb-component2'));
+			assert.equal('{{mycomponentvalue}}', mbComponent2.text())
+
+			modal.show();
+			$rootScope.$digest();
+
+			assert.equal('1000', mbComponent2.text())
+		});
+
 		it('should remove hidden class, add visible class and then animate', function () {
 			var scope = $rootScope.$new();
 			var template = '<mb-component2></mb-component2>';
@@ -71,50 +137,6 @@ describe('mobie.core.component', function () {
 
 			assert.equal(undefined, modal.component.getElement());
 		})
-
-		it('should recompile the component before show', function () {
-			var scope = $rootScope.$new();
-
-			scope.obj = {
-				value: 1000
-			};
-			scope.$apply()
-
-			var template = '<mb-my-component>' +
-				'<div>' +
-					'that it, this is my modal template. ' +
-					'and that is my value ' +
-					'{{ obj.value }}' +
-				'<div>'+
-			'</mb-my-component>';
-
-			var modal = $mbComponent({
-				template: template,
-				scope: scope
-			});
-
-			$rootScope.$digest()
-
-			assert.equal(template, modal.options.template);
-
-			modal.show();
-
-			$rootScope.$digest();
-			$animate.triggerCallbacks();
-
-			var mbComponentEl = angular.element(document.querySelector('mb-my-component'));
-
-			var compiledTpl = 'that it, this is my modal template. and that is my value 1000';
-			assert.equal(compiledTpl, mbComponentEl.text());
-
-			scope.obj = {
-				value: 1001
-			};
-
-			scope.$apply();
-
-			assert.equal(compiledTpl.replace('1000', '1001'), mbComponentEl.text())
-		});
 
 		it('should support mb-animation directive', function () {
 			var scope = $rootScope.$new();
