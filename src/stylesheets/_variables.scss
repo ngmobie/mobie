@@ -56,50 +56,79 @@ $border-radius-large:             6px !default;
 $border-radius-small:             3px !default;
 
 
+// Grids
+// -------------------------------
+
+$grid-padding-width:              10px !default;
+$grid-responsive-sm-break:        567px !default;  // smaller than landscape phone
+$grid-responsive-md-break:        767px !default;  // smaller than portrait tablet
+$grid-responsive-lg-break:        1023px !default; // smaller than landscape tablet
+
+
 // Item
 // -------------------------------
 
-$item-border-width:								1px;
-$item-padding:										16px;
+$item-border-width:								1px !default;
+$item-padding:										16px !default;
 
-$item-default-bg:									#fff;
-$item-default-bg-active:					darken($item-default-bg, 10%);
+$item-default-bg:									#fff !default;
+$item-default-bg-active:					darken($item-default-bg, 10%) !default;
+
+$item-divider-bg:                 #f5f5f5 !default;
+$item-divider-color:              #222 !default;
+$item-divider-padding:            5px 15px !default;
 
 
 // List
 // -------------------------------
 
 
+// Checkbox
+// -------------------------------
+$checkbox-width:									28px !default;
+$checkbox-height:									28px !default;
+$checkbox-border-radius:					$checkbox-width !default;
+$checkbox-border-width:						1px !default;
+
+$checkbox-off-border-default:     #ddd !default;
+$checkbox-on-bg-default:          #387ef5 !default;
+$checkbox-on-border-default:      $checkbox-on-bg-default !default;
+$checkbox-off-bg-color:						#fff !default;
+
+$checkbox-check-width:            1px !default;
+$checkbox-check-color:            #fff !default;
+
+
 // Sidenav
 // -------------------------------
 
-$sidenav-width: 									80%;
-$sidenav-bg:											#fff;
+$sidenav-width: 									80% !default;
+$sidenav-bg:											#fff !default;
 
 
 // Backdrop
 // -------------------------------
 
-$backdrop-bg:											rgba(0,0,0,0.5);
+$backdrop-bg:											rgba(0,0,0,0.5) !default;
 
 
 // Modal
 // -------------------------------
 
-$modal-bg:												#fff;
-$modal-color:											#000;
+$modal-bg:												#fff !default;
+$modal-color:											#000 !default;
 
 
 // Button
 // -------------------------------
 
-$button-padding:									12px;
-$button-bg:												#387ef5;
-$button-active-bg:								darken($button-bg, 8%);
-$button-color:										#fff;
-$button-border:										darken($button-bg, 7%);
+$button-padding:									12px !default;
+$button-bg:												#387ef5 !default;
+$button-active-bg:								darken($button-bg, 8%) !default;
+$button-color:										#fff !default;
+$button-border:										darken($button-bg, 7%) !default;
 
-$button-bar-button-font-size:			13px;
+$button-bar-button-font-size:			13px !default;
 
 
 // Bar
