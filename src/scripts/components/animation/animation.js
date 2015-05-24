@@ -1,8 +1,6 @@
 angular.module('mobie.components.animation', [])
 .directive('mbAnimationDuration', function () {
-	return postLink;
-
-	function postLink (scope, element, attrs) {
+	return function postLink (scope, element, attrs) {
 		function setAnimationDuration (ms) {
 			if(!angular.isUndefined(ms) && ms !== '') {
 				ms = ms + 'ms';
@@ -20,7 +18,7 @@ angular.module('mobie.components.animation', [])
 			
 			setAnimationDuration(ms);
 		});
-	}
+	};
 })
 .directive('mbAnimation', function () {
 	return function (scope, element, attrs) {
