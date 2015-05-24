@@ -23,29 +23,25 @@
 	}
 }
 
-[mb-checkbox] {
-	&.mb-checked,
-	&.mb-checked-add,
-	&.mb-checked-remove {
-		.checkbox-icon {
-			background-color: $bar-default-bg;
-			border-color: $bar-default-bg;
+.item-checkbox {
+	input[type="checkbox"]:checked+.checkbox-icon {
+		background-color: $bar-default-bg;
+		border-color: $bar-default-bg;
 
-			&:after {
-			  border-color: #fff;
-			  content: ' ';
-			  position: absolute;
-			  left: 7px;
-			  top: 11px;
-			  transform: rotate(140deg);
-			  width: 13px;
-			  height: 3px;
-			  bottom: 15px;
-			  border-width: 1px;
-			  border-left-width: 0px;
-			  border-bottom-width: 0px;
-			  border-style: solid;
-			}
+		&:after {
+		  border-color: #fff;
+		  content: ' ';
+		  position: absolute;
+		  left: 7px;
+		  top: 11px;
+		  transform: rotate(140deg);
+		  width: 13px;
+		  height: 3px;
+		  bottom: 15px;
+		  border-width: 1px;
+		  border-left-width: 0px;
+		  border-bottom-width: 0px;
+		  border-style: solid;
 		}
 	}
 }
