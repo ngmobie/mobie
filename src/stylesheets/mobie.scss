@@ -2,7 +2,7 @@
 
 @import
 	// Reset
-	"reset",
+  "reset",
 
 	// Animations
 	"animate/animate",
@@ -15,11 +15,14 @@
   "mixins/mixins",
 	
 	// Components
+  "grid",
+  "type",
   "bar",
   "item",
   "list",
   "popup",
   "modal",
+  "checkbox",
   "button",
   "backdrop",
   "sidenav";

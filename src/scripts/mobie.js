@@ -3,6 +3,7 @@ angular.module('mobie.components', [
 	'mobie.components.sidenav',
 	'mobie.components.backdrop',
 	'mobie.components.popup',
+	'mobie.components.checkbox',
 	'mobie.components.modal',
 	'mobie.components.icon'
 ]);
