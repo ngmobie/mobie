@@ -101,6 +101,13 @@
 	@include mb-animation-out(slideOutUp);
 }
 
+.mb-slide-out-down {
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+	@include mb-animation-out(slideOutDown);
+}
+
 .mb-zoom-in {
 	animation-duration: 300ms;
 	animation-timing-function: ease-in-out;
