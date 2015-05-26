@@ -9,6 +9,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "bower": "^1.4.1",
+    "canonical-path": "0.0.2",
+    "dgeni": "^0.4.1",
+    "dgeni-packages": "^0.10.13",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.3.0",
     "gulp-concat": "^2.5.2",
@@ -18,11 +22,13 @@
     "gulp-pleeease": "^1.2.0",
     "gulp-ruby-sass": "^1.0.5",
     "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.4",
     "gulp-wrapper": "^1.0.0",
     "karma": "^0.12.31",
     "karma-assert": "^1.0.0",
     "karma-chrome-launcher": "^0.1.12",
     "karma-mocha": "^0.1.10",
+    "lodash": "^3.9.3",
     "mocha": "^2.2.5"
   },
   "dependencies": {

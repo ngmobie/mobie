@@ -1,6 +1,9 @@
+var log = require('gulp-util').log;
 var gulp = require('gulp');
 var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
+var bower = require('bower');
+var Dgeni = require('dgeni');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var wrapper = require('gulp-wrapper');
@@ -17,6 +20,30 @@ var paths = {
 		'!src/scripts/**/*_test.js'
 	]
 };
+
+gulp.task('docs-deps', ['build'], function (done) {
+	gulp.src([
+		'build/mobie.js',
+		'build/mobie.css',
+		'build/mobie.tpl.js'
+	])
+	.pipe(gulp.dest('build/docs/lib'))
+
+	bower.commands.install([], {}, {
+		directory: 'build/docs/lib'
+	}).on('log', function (result) {
+		log('bower:', result.id, result.data.endpoint.name);
+	}).on('error', function (error) {
+		log(error);
+	}).on('end', function () {
+		done();
+	});
+});
+
+gulp.task('docs', ['docs-deps'], function () {
+	var dgeni = new Dgeni([require('./docs')])
+	return dgeni.generate();
+});
 
 gulp.task('templates', function () {
 	gulp.src(paths.templates)
@@ -46,3 +73,6 @@ gulp.task('scripts', function () {
 		}))
 		.pipe(gulp.dest('build'));
 });
+
+gulp.task('build', ['scripts', 'templates', 'stylesheets']);
+gulp.task('default', ['build', 'livereload', 'watch'])
