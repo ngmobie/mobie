@@ -167,7 +167,14 @@ function $MbComponentProvider () {
 
 		return function (options) {
 			var $mbComponent = {},
-					el;
+					el,
+					template;
+
+			if(angular.isString(options)) {
+				template = options;
+				options = {};
+				options.template = template;
+			}
 
 			$mbComponent.options = options = angular.extend({}, defaults, options);
 
@@ -175,7 +182,7 @@ function $MbComponentProvider () {
 				options.scope = $rootScope.$new();
 			}
 
-			var scope = options.scope = options.scope.$new();
+			var scope = options.scope = $mbComponent.scope = options.scope.$new();
 			var component = options.component = $mbComponent.component = new MbComponent();
 
 			scope.$on('$destroy', function () {
@@ -193,14 +200,14 @@ function $MbComponentProvider () {
 			// using provided
 			// template/templateUrl
 			if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
-				options.template = $templateCache.get(options.templateUrl);
+				template = options.template = $templateCache.get(options.templateUrl);
 			}
 
 			if(angular.isUndefined(options.template)) {
 				throw new Error('template must have something');
 			}
 
-			el = options.el = angular.element(options.template);
+			el = options.el = $mbComponent.element = angular.element(options.template);
 
 			var componentLink = $mbComponent.componentLink = $compile(el);
 

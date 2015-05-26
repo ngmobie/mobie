@@ -11,6 +11,54 @@ describe('mobie.core.component', function () {
 	}))
 
 	describe('$mbComponent', function () {
+		it('should automatically use $rootScope if you don\'t provide one', function () {
+			var template = '<mb-my-component>' +
+				'<div>' +
+					'that it, this is my modal template. ' +
+					'and that is my value: ' +
+					'<span ng-bind="myvalue">{{ myvalue }}</span>' +
+				'<div>'+
+			'</mb-my-component>';
+
+			var myComp = $mbComponent({
+				template: template
+			});
+
+			var scope = myComp.options.scope;
+			assert.ok(scope.$new);
+
+			var el = myComp.component.getElement();
+
+			myComp.show();
+
+			scope.myvalue = 'we are just happy';
+
+			$rootScope.$digest();
+
+			assert.equal('that it, this is my modal template. and that is my value: we are just happy', el.text());
+
+			// it should not use rootScope it self, should create a child scope
+			assert.equal(undefined, $rootScope.myvalue)
+		});
+
+		it('should accept template as the first argument', function () {
+			var template = '<div>oh my {{value}}</div>';
+
+			var comp2 = $mbComponent(template);
+
+			comp2.scope.value = 'god';
+
+			var el = comp2.element;
+
+			assert.equal('oh my {{value}}', el.text());
+
+			comp2.show();
+
+			$rootScope.$digest();
+
+			assert.equal('oh my god', el.text());
+		});
+
 		it('should compile the component before show', function () {
 			var scope = $rootScope.$new();
 
