@@ -1,3 +1,11 @@
+/**
+ * @name MbComponent
+ * @description
+ * Create a new instance of MbComponent
+ * @param {DOMElement} componentEl the component element, which will be showed and hidded
+ * @param {string} id the component id
+ * @param {object} options the component options
+ */
 function MbComponentFactory (MbComponentInterface, $animate) {
 	var MbComponent = MbComponentInterface.extend({
 		initialize: function (componentEl, id, options) {
@@ -34,24 +42,63 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 				}
 			});
 		},
+
+		/**
+		 * @name MbComponent#show
+		 * @kind function
+		 * @description Show the component
+		 * @return {Promise} the animation callback promise
+		 */
 		show: function () {
 			return this.setVisibleState(true);
 		},
+
+		/**
+		 * @name MbComponent#hide
+		 * @kind function
+		 * @description Hide the component
+		 * @return {Promise} the animation callback promise
+		 */
 		hide: function () {
 			return this.setVisibleState(false);
 		},
+
+		/**
+		 * @name MbComponent#toggle
+		 * @kind function
+		 * @description Toggle the component visible state
+		 * @return {Promise} the animation callback promise
+		 */
 		toggle: function () {
 			return this.setVisibleState(!this.getVisibleState());
 		},
+
 		getHiddenClass: function () {
 			return 'mb-hidden';
 		},
+
 		getVisibleClass: function () {
 			return 'mb-visible';
 		},
+
 		getVisibleState: function () {
 			return !!this.isVisible;
 		},
+
+		/**
+		 * @name MbComponent#setVisibleState
+		 * @kind function*
+		 *
+		 * @description Emit `visibleStateChangeStart` event before do anything,
+		 * 		then add the visible class and/or remove the hidden, according
+		 * 		to the setted visible state param and emit the final event
+		 *		`visibleStateChangeSuccess` or `visibleStateChangeError` if we
+		 *		got an error.
+		 *
+		 * @param {Boolean} visibleState the visible state to set
+		 *
+		 * @return {Promise} the animation callback promise
+		 */
 		setVisibleState: function (visibleState) {
 			var self = this,
 					el = this.getElement(),
@@ -74,6 +121,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 				self.emit('visibleStateChangeError', err);
 			});
 		},
+
 		setId: function (id) {
 			if(angular.isDefined(this.getId())) {
 				throw new Error('You cannot change a component.id more than once');
@@ -86,9 +134,11 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 
 			return this;
 		},
+
 		getId: function () {
 			return this.id;
 		},
+
 		setElement: function (componentEl) {
 			var el = this.componentEl = componentEl,
 					isVisible = this.getVisibleState(),
@@ -100,9 +150,11 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 
 			return this;
 		},
+
 		getElement: function () {
 			return this.componentEl;
 		},
+
 		enterElement: function (parent, after) {
 			var self = this;
 
@@ -116,11 +168,13 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 				self.emit('enterElementSuccess');
 			});
 		},
+
 		removeElement: function () {
 			this.getElement().remove();
 			this.componentEl = undefined;
 			return this;
 		},
+
 		leaveElement: function () {
 			var self = this;
 
@@ -130,6 +184,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 				self.emit('leaveElementSuccess');
 			});
 		},
+
 		destroy: function () {
 			this.removeElement();
 		}
@@ -155,10 +210,15 @@ function MbComponentInterface (Helpers) {
 	return MbComponentInterface;
 }
 
-// This service will be used to build
-// components which will be reused just
-// like this one, which will need to be
-// recompiled before any action of showing
+/**
+ * @ngdoc service
+ * @name $mbComponent
+ * 
+ * @description This service will be used to build
+ *		components which will be reused just
+ *		like this one, which will need to be
+ *		recompiled before any action of showing
+ */
 function $MbComponentProvider () {
 	var defaults = this.defaults = {};
 

@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
+var Dgeni = require('dgeni');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var wrapper = require('gulp-wrapper');
@@ -17,6 +18,11 @@ var paths = {
 		'!src/scripts/**/*_test.js'
 	]
 };
+
+gulp.task('docs', function () {
+	var dgeni = new Dgeni([require('./docs')])
+	return dgeni.generate();
+});
 
 gulp.task('templates', function () {
 	gulp.src(paths.templates)

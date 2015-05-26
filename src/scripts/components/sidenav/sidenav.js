@@ -1,4 +1,4 @@
-function CloseDirective () {
+ function CloseDirective () {
 	return {
 		require: '?^mbSidenav',
 		link: function (scope, element, attrs, mbSidenav) {
@@ -21,6 +21,10 @@ function $MbSidenavFactory ($mbComponentRegistry) {
 	};
 }
 
+/**
+ * @ngdoc directive
+ * @name mbSidenav
+ */
 function SidenavDirective () {
 	return {
 		restrict: 'EA',
