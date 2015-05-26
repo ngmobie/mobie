@@ -1,3 +1,47 @@
 .bar {
 	@include bar();
 }
+
+[mb-back-button] {
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	transition: 200ms opacity ease-in-out, 300ms transform ease-in-out;
+
+	&.mb-hidden {
+		display: none;
+		opacity: 0;
+	}
+
+	&.mb-hidden-add,
+	&.mb-hidden-remove,
+	&.mb-visible-add,
+	&.mb-visible-remove {
+		display: block;
+	}
+
+	&.mb-hidden-remove {
+		opacity: 0.3;
+		transform: translate3d(20%,0,0);
+
+		&.mb-hidden-remove-active {
+			opacity: 1;
+		}
+	}
+
+	&.mb-visible-add {
+		&.mb-visible-add-active {
+			transform: translate3d(0,0,0);
+		}
+	}
+
+	&.mb-visible-remove {
+		opacity: 1;
+		transform: translate3d(0,0,0);
+
+		&.mb-visible-remove-active {
+			transform: translate3d(20%,0,0);
+			opacity: 0.3;
+		}
+	}
+}
