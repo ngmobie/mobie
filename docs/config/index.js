@@ -21,13 +21,13 @@ module.exports = new Package('mobie', [
   log.level = 'info';
 
   // Specify the base path used when resolving relative paths to source and output files
-  readFilesProcessor.basePath = path.resolve(__dirname, '..');
+  readFilesProcessor.basePath = path.resolve(__dirname, '../..');
 
   // Specify collections of source files that should contain the documentation to extract
   readFilesProcessor.sourceFiles = [
     {
       // Process all js files in `src` and its subfolders ...
-      include: 'src/**/*.js',
+      include: 'src/scripts/**/*.js',
       // When calculating the relative path to these files use this as the base path.
       // So `src/foo/bar.js` will have relative path of `foo/bar.js`
       basePath: 'src'
@@ -37,12 +37,8 @@ module.exports = new Package('mobie', [
   // Add a folder to search for our own templates to use when rendering docs
   templateFinder.templateFolders.unshift(path.resolve(__dirname, 'templates'));
 
-  // Specify how to match docs to templates.
-  // In this case we just use the same static template for all docs
-  templateFinder.templatePatterns.unshift('common.template.html');
-
   // Specify where the writeFilesProcessor will write our generated doc files
-  writeFilesProcessor.outputFolder  = 'build/docs';
+  writeFilesProcessor.outputFolder = 'build/docs';
 })
 
 .config(function (computePathsProcessor) {

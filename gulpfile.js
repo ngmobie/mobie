@@ -18,10 +18,25 @@ var paths = {
 	scripts: [
 		'src/scripts/**/*.js',
 		'!src/scripts/**/*_test.js'
-	]
+	],
+	docs: {
+		scripts: ['docs/app/src/**/*.js']
+	}
 };
 
-gulp.task('docs-deps', ['build'], function (done) {
+gulp.task('docs-scripts', function () {
+	gulp.src(paths.docs.scripts)
+	.pipe(ngAnnotate())
+	.pipe(uglify())
+	.pipe(concat('app.js'))
+	.pipe(wrapper({
+		header: `(function (window, angular, undefined) {`,
+		footer: `}(window, angular, undefined));`
+	}))
+	.pipe(gulp.dest('build/docs/js'));
+});
+
+gulp.task('docs-deps', ['build', 'docs-scripts'], function (done) {
 	gulp.src([
 		'build/mobie.js',
 		'build/mobie.css',
@@ -29,19 +44,25 @@ gulp.task('docs-deps', ['build'], function (done) {
 	])
 	.pipe(gulp.dest('build/docs/lib'))
 
-	bower.commands.install([], {}, {
+	var bowerTask = bower.commands.install([], {}, {
 		directory: 'build/docs/lib'
-	}).on('log', function (result) {
+	});
+
+	bowerTask.on('log', function (result) {
 		log('bower:', result.id, result.data.endpoint.name);
-	}).on('error', function (error) {
+	});
+
+	bowerTask.on('error', function (error) {
 		log(error);
-	}).on('end', function () {
+	});
+
+	bowerTask.on('end', function () {
 		done();
 	});
 });
 
-gulp.task('docs', ['docs-deps'], function () {
-	var dgeni = new Dgeni([require('./docs')])
+gulp.task('docs-build', ['docs-deps', 'docs-scripts'], function () {
+	var dgeni = new Dgeni([require('./docs/config')])
 	return dgeni.generate();
 });
 
