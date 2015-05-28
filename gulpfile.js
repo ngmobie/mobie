@@ -13,16 +13,22 @@ var ngTemplates = require('gulp-ng-templates');
 
 var paths = {
 	templates: [
-		'src/scripts/**/*.jade'
+		'src/**/*.jade'
 	],
 	scripts: [
-		'src/scripts/**/*.js',
-		'!src/scripts/**/*_test.js'
+		'src/**/*.js',
+		'!src/**/*_test.js'
 	],
 	docs: {
-		scripts: ['docs/app/src/**/*.js']
+		scripts: ['docs/app/src/**/*.js'],
+		assets: ['docs/app/assets/**/*.*']
 	}
 };
+
+gulp.task('docs-assets', function () {
+	gulp.src(paths.docs.assets)
+	.pipe(gulp.dest('build/docs'))
+});
 
 gulp.task('docs-scripts', function () {
 	gulp.src(paths.docs.scripts)
@@ -36,7 +42,7 @@ gulp.task('docs-scripts', function () {
 	.pipe(gulp.dest('build/docs/js'));
 });
 
-gulp.task('docs-deps', ['build', 'docs-scripts'], function (done) {
+gulp.task('docs-deps', ['build', 'docs-scripts', 'docs-assets'], function (done) {
 	gulp.src([
 		'build/mobie.js',
 		'build/mobie.css',
@@ -78,7 +84,7 @@ gulp.task('templates', function () {
 });
 
 gulp.task('stylesheets', function () {
-	sass('src/stylesheets/mobie.scss')
+	sass('stylesheets/mobie.scss')
 		.pipe(pleeease())
 		.pipe(gulp.dest('build'));
 });

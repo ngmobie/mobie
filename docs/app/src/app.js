@@ -1,9 +1,44 @@
+function LeftbarController ($scope, pagesData) {
+	$scope.pages = _(pagesData)
+		.filter(function (page) {
+		  return page.area;
+		})
+		.groupBy('area')
+		.mapValues(function (value, key) {
+		  return _.groupBy(value, 'module');
+		})
+		.mapValues(function (value, key) {
+		  return _(value).mapValues(function (value, key) {
+		    return _.groupBy(value, 'docType');
+		  }).value();
+		})
+		.value();
+}
+
 angular.module('docsApp', [
 	'ngAnimate',
-	'ui.router'
+	'ngRoute',
+	'pagesData'
 ])
-.config(function ($stateProvider) {
-	_.forEach(MB_PAGES, function (page) {
-		//
-	});
+.controller('LeftbarController', LeftbarController)
+.config(function ($routeProvider, pagesDataProvider) {
+	var pages = pagesDataProvider.pages;
+	var basePath = '/';
+
+	_(pages)
+	.filter(function (page) {
+		return page.area && page.module &&
+					page.docType && page.name;
+	})
+	.forEach(function (page) {
+		var routePath = pagesDataProvider.resolve(page);
+
+		routePath = path.resolve(basePath, routePath);
+
+		$routeProvider
+		.when(routePath, {
+			templateUrl: path.resolve('/partials', page.partialPath + '.html')
+		});
+	})
+	.value();
 });

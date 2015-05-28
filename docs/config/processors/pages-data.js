@@ -6,13 +6,19 @@ module.exports = function generatePagesDataProcessor () {
 		$process: function (docs) {
 			var pagesData = [];
 
+			// We are only interested in docs that are in an area
+      var pages = _.filter(docs, function(doc) {
+        return doc.area;
+      });
+
 			_.forEach(docs, function (doc, index) {
 				pagesData.push({
 					partialPath: doc.path,
 					aliases: doc.aliases,
 					module: doc.module,
 					area: doc.area,
-					name: doc.name
+					name: doc.name,
+					docType: doc.docType
 				});
 			});
 

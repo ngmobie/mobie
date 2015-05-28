@@ -27,7 +27,7 @@ module.exports = new Package('mobie', [
   readFilesProcessor.sourceFiles = [
     {
       // Process all js files in `src` and its subfolders ...
-      include: 'src/scripts/**/*.js',
+      include: 'src/**/*.js',
       // When calculating the relative path to these files use this as the base path.
       // So `src/foo/bar.js` will have relative path of `foo/bar.js`
       basePath: 'src'

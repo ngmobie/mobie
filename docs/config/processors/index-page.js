@@ -13,6 +13,9 @@ module.exports = function generateIndexPagesProcessor() {
     $runAfter: ['adding-extra-docs'],
     $runBefore: ['extra-docs-added'],
     $process: function(docs) {
+      docs.forEach(function (doc) {
+        console.log(doc.moduleDoc)
+      })
       docs.push({
         docType: 'indexPage',
         id: 'index',
