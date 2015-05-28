@@ -1,4 +1,5 @@
 /**
+ * @ngdoc object
  * @name MbComponent
  * @description
  * Create a new instance of MbComponent
@@ -44,6 +45,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		},
 
 		/**
+		 * @ngdoc method
 		 * @name MbComponent#show
 		 * @kind function
 		 * @description Show the component
@@ -54,6 +56,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		},
 
 		/**
+		 * @ngdoc method
 		 * @name MbComponent#hide
 		 * @kind function
 		 * @description Hide the component
@@ -64,6 +67,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		},
 
 		/**
+		 * @ngdoc method
 		 * @name MbComponent#toggle
 		 * @kind function
 		 * @description Toggle the component visible state
@@ -86,8 +90,9 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		},
 
 		/**
+		 * @ngdoc method
 		 * @name MbComponent#setVisibleState
-		 * @kind function*
+		 * @kind function
 		 *
 		 * @description Emit `visibleStateChangeStart` event before do anything,
 		 * 		then add the visible class and/or remove the hidden, according
@@ -185,6 +190,13 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 			});
 		},
 
+		/**
+		 * @ngdoc method
+		 * @name MbComponent#destroy
+		 *
+		 * @description
+		 * Destroys the element permanently
+		 */
 		destroy: function () {
 			this.removeElement();
 		}

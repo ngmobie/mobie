@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 angular.module("mobie").run(["$templateCache", function($templateCache) {$templateCache.put("components/modal/modal.html","<div class=\"modal\"></div>");
 $templateCache.put("components/popup/popup.html","<div class=\"popup-container\"><div class=\"popup\"><div ng-if=\"title\" class=\"popup-head\"><h3 ng-bind=\"title\" class=\"popup-title\"></h3></div><div ng-bind=\"text\" ng-if=\"text\" class=\"popup-body\"></div><div ng-bind-html=\"template\" ng-if=\"template\" class=\"popup-body\"></div><div class=\"popup-buttons\"><button ng-repeat=\"button in buttons\" ng-click=\"button.onTap(scope, $event)\" ng-bind=\"button.text\" class=\"button\"></button></div></div></div>");}]);
+=======
+angular.module("mobie").run(["$templateCache", function($templateCache) {$templateCache.put("mobie/components/modal/modal.html","<div class=\"modal\"></div>");
+$templateCache.put("mobie/components/popup/popup.html","<div class=\"popup-container\"><div class=\"popup\"><div ng-if=\"title\" class=\"popup-head\"><h3 ng-bind=\"title\" class=\"popup-title\"></h3></div><div ng-bind=\"text\" ng-if=\"text\" class=\"popup-body\"></div><div ng-bind-html=\"template\" ng-if=\"template\" class=\"popup-body\"></div><div class=\"popup-buttons\"><button ng-repeat=\"button in buttons\" ng-click=\"button.onTap(scope, $event)\" ng-bind=\"button.text\" class=\"button\"></button></div></div></div>");}]);
+>>>>>>> develop
