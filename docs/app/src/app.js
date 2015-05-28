@@ -1,16 +1,16 @@
 function LeftbarController ($scope, pagesData) {
 	$scope.pages = _(pagesData)
 		.filter(function (page) {
-		  return page.area;
+			return page.area;
 		})
 		.groupBy('area')
 		.mapValues(function (value, key) {
-		  return _.groupBy(value, 'module');
+			return _.groupBy(value, 'module');
 		})
 		.mapValues(function (value, key) {
-		  return _(value).mapValues(function (value, key) {
-		    return _.groupBy(value, 'docType');
-		  }).value();
+			return _(value).mapValues(function (value, key) {
+				return _.groupBy(value, 'docType');
+			}).value();
 		})
 		.value();
 }
@@ -37,7 +37,7 @@ angular.module('docsApp', [
 
 		$routeProvider
 		.when(routePath, {
-			templateUrl: path.resolve('/partials', page.partialPath + '.html')
+			templateUrl: path.join('partials', page.partialPath + '.html')
 		});
 	})
 	.value();
