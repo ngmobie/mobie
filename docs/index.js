@@ -5,8 +5,13 @@ var Package = require('dgeni').Package;
 
 // Create and export a new Dgeni package called dgeni-example. This package depends upon
 // the jsdoc and nunjucks packages defined in the dgeni-packages npm module.
+<<<<<<< HEAD
 module.exports = new Package('mobie', [
   require('dgeni-packages/ngdoc'),
+=======
+module.exports = new Package('dgeni-example', [
+  require('dgeni-packages/jsdoc'),
+>>>>>>> 01f94e0263d5c9dbd03b13e063815aec354fbf88
   require('dgeni-packages/nunjucks')
 ])
 
