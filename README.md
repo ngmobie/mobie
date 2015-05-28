@@ -1,5 +1,11 @@
 # mobie
 
+### Installation
+
+```
+bower install --save mobie
+```
+
 ### Why mobie?
 
 - Well optimized to be as fast as it can in any mobile device
