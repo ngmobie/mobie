@@ -62,10 +62,10 @@ node .
 Type those commands 
 ```
 cordova platform add browser
-cordova run browser
+cordova prepare browser
 ```
 
-And change `app.use(express.static('www'))` to `app.use(express.static('platforms/browser/www'))`, so you can use your browser as a platform and have access to all Cordova plugins or something close to this. It may prevent your application to break if you're using a plugin which only runs in a mobile device, like `plugin.google.maps`.
+And change `app.use(express.static('www'))` to `app.use(express.static('platforms/browser/www'))`, so you can use your browser as a platform and have access to all Cordova plugins or something close to this. It may prevent your application to break if you're using a plugin which only runs in a mobile device, like `plugin.google.maps`. Remember to always execute `cordova prepare browser` after change any file in your `www` folder, for Cordova will copy everything on her and put into `platforms/browser/www`.
 
 ### Improving your application performance/bootstrap
 
