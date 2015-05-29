@@ -1,5 +1,9 @@
 # mobie
 
+### Demo
+
+Checkout a demo page [here](http://ngmobie.github.io/mobie-demo/#/app/index)
+
 ### Installation
 
 ```
