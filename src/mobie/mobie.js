@@ -16,5 +16,6 @@ angular.module('mobie.core', [
 	'mobie.core.helpers',
 	'mobie.core.registry',
 	'mobie.core.eventemitter',
+	'mobie.core.scroll',
 	'mobie.core.component'
 ]);
