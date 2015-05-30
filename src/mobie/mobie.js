@@ -4,6 +4,7 @@ angular.module('mobie.components', [
 	'mobie.components.backdrop',
 	'mobie.components.popup',
 	'mobie.components.modal',
+	'mobie.components.bar',
 	'mobie.components.icon'
 ]);
 

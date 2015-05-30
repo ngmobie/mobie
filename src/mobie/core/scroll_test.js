@@ -10,7 +10,9 @@ describe('mobie.core.scroll', function () {
 		$rootScope.$watch(function () {
 			return window.document.body.scrollTop;
 		}, function () {
-			$(window).trigger('scroll');
+			var evt = document.createEvent('Event');
+			evt.initEvent('scroll', true, true);
+			window.dispatchEvent(evt);
 		});
 	}));
 
