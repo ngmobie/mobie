@@ -1,5 +1,7 @@
 # mobie
 
+A library to help you to build a scalable mobile application using AngularJS and whatever you want. This project stylesheets is based on [Ionic Framework](https://github.com/driftyco/ionic/blob/master/scss/).
+
 ### Demo
 
 Checkout a demo page [here](http://ngmobie.github.io/mobie-demo/#/app/index)
