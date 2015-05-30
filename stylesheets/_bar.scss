@@ -1,5 +1,13 @@
 .bar {
 	@include bar();
+
+	&.mb-fixed-top {
+		transition: 300ms transform ease-in-out;
+	}
+}
+
+.sidenav.mb-visible+.bar.mb-fixed-top {
+	transform: translate3d(0,-100%,0) !important;
 }
 
 [mb-back-button] {
