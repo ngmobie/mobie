@@ -22,7 +22,7 @@ angular.module('mobie.components.animation', [])
 })
 .directive('mbAnimation', function () {
 	return function (scope, element, attrs) {
-		var previousClass = undefined;
+		var previousClass;
 
 		function resolveClassName (newClassName) {
 			previousClass = '';
