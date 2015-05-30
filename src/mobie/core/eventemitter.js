@@ -138,6 +138,7 @@ EventEmitter.prototype.addListener = function addListener(type, listener) {
 
   // Check for listener leak
   if (angular.isObject(this._events[type]) && !this._events[type].warned) {
+    /* jshint ignore:start */
     var m;
     if (!angular.isUndefined(this._maxListeners)) {
       m = this._maxListeners;
@@ -153,6 +154,7 @@ EventEmitter.prototype.addListener = function addListener(type, listener) {
                     this._events[type].length, type);
       console.trace();
     }
+    /* jshint ignore:end */
   }
 
   return this;
