@@ -1,3 +1,14 @@
+// Linked list items
+a.item {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
 .item {
 	@include item-style(
     $item-default-bg,
@@ -73,4 +84,108 @@
     color: $item-divider-color;
     font-weight: 500;
   }
+}
+
+// Item Avatar
+// -------------------------------
+
+.item-avatar,
+.item-avatar .item-content,
+.item-avatar-left,
+.item-avatar-left .item-content {
+  padding-left: $item-avatar-width + ($item-padding * 2);
+  min-height: $item-avatar-width + ($item-padding * 2);
+
+  > img:first-child,
+  .item-image {
+    position: absolute;
+    top: $item-padding;
+    left: $item-padding;
+    max-width: $item-avatar-width;
+    max-height: $item-avatar-height;
+    width: 100%;
+    height: 100%;
+    border-radius: $item-avatar-border-radius;
+  }
+}
+
+.item-avatar-right,
+.item-avatar-right .item-content {
+  padding-right: $item-avatar-width + ($item-padding * 2);
+  min-height: $item-avatar-width + ($item-padding * 2);
+
+  > img:first-child,
+  .item-image {
+    position: absolute;
+    top: $item-padding;
+    right: $item-padding;
+    max-width: $item-avatar-width;
+    max-height: $item-avatar-height;
+    width: 100%;
+    height: 100%;
+    border-radius: $item-avatar-border-radius;
+  }
+}
+
+/**
+ * Complex Items
+ * --------------------------------------------------
+ * Adding .item-complex allows the .item to be slidable and
+ * have options underneath the button, but also requires an
+ * additional .item-content element inside .item.
+ * Basically .item-complex removes any default settings which
+ * .item added, so that .item-content looks them as just .item.
+ */
+
+.item-complex,
+a.item.item-complex,
+button.item.item-complex {
+  padding: 0;
+}
+.item-complex .item-content,
+.item-radio .item-content {
+  position: relative;
+  z-index: $z-index-item;
+  padding: $item-padding (ceil( ($item-padding * 3) + ($item-padding / 3) ) - 5) $item-padding $item-padding;
+  border: none;
+  background-color: white;
+}
+
+a.item-content {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.item-text-wrap .item,
+.item-text-wrap .item-content,
+.item-text-wrap,
+.item-text-wrap h1,
+.item-text-wrap h2,
+.item-text-wrap h3,
+.item-text-wrap h4,
+.item-text-wrap h5,
+.item-text-wrap h6,
+.item-text-wrap p,
+.item-complex.item-text-wrap .item-content,
+.item-body h1,
+.item-body h2,
+.item-body h3,
+.item-body h4,
+.item-body h5,
+.item-body h6,
+.item-body p {
+  overflow: visible;
+  white-space: normal;
+}
+.item-complex.item-text-wrap,
+.item-complex.item-text-wrap h1,
+.item-complex.item-text-wrap h2,
+.item-complex.item-text-wrap h3,
+.item-complex.item-text-wrap h4,
+.item-complex.item-text-wrap h5,
+.item-complex.item-text-wrap h6,
+.item-complex.item-text-wrap p {
+  overflow: visible;
+  white-space: normal;
 }
