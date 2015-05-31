@@ -12,30 +12,76 @@
 function $MbScrollProvider () {
 	this.$get = $MbScrollFactory;
 
-	function $MbScrollFactory ($window, Helpers) {
+	var defaults = this.defaults = {
+		scrollStoppedMs: 100
+	};
+
+	function $MbScrollFactory ($window, $timeout, Helpers) {
 		var windowEl = angular.element($window);
 		var bodyEl = windowEl[0].document.body;
 
 		var MbScroll = Helpers.createClass({
+			scrollStoppedFn: function (evt) {
+				this.emit('scrollStop', evt);
+			},
+
 			initialize: function () {
 				var self = this;
 
 				windowEl.on('scroll', function (evt) {
 					self.emit('scroll', evt);
 				});
+				
+				this.on('scroll', this.onScroll);
+				this.on('scrollStop', this.onScrollStop);
 
-				var lastScrollTop;
-				self.on('scroll', function (evt) {
-					var currentScrollTop = bodyEl.scrollTop;
-					if(currentScrollTop === 0) {
-						self.emit('scrollTop', evt);
+				Object.defineProperty(this, 'scrollY', {
+					get: function () {
+						return this.getScrollY();
 					}
-					if(currentScrollTop > lastScrollTop) {
-						self.emit('scrollDown', evt);
-					} else {
-						self.emit('scrollUp', evt);
-					}
-					lastScrollTop = currentScrollTop;
+				});
+			},
+
+			/**
+			 * @ngdoc method
+			 * @name $mbScroll#getLastScrollY
+			 * @description Return the last stored `window.scrollY`
+			 *   which have been cached after the `scrollStop`
+			 *   event
+			 */
+			getLastScrollY: function () {
+				return this.lastScrollY;
+			},
+			
+			setLastScrollY: function (lastScrollY) {
+				this.lastScrollY = lastScrollY;
+			},
+
+			getScrollY: function () {
+				return windowEl.prop('scrollY');
+			},
+
+			onScrollStop: function () {
+				this.setLastScrollY(this.getScrollY());
+			},
+			
+			onScroll: function (evt) {
+				var currentScrollY = window.scrollY;
+				var self = this;
+
+				$timeout.cancel(this.scrollStoppedPromise);
+
+				if(currentScrollY === 0) {
+					this.emit('scrollTop', evt);
+				}
+				if(currentScrollY > this.lastScrollY) {
+					this.emit('scrollDown', evt);
+				} else {
+					this.emit('scrollUp', evt);
+				}
+
+				this.scrollStoppedPromise = $timeout(defaults.scrollStoppedMs).then(function () {
+					self.scrollStoppedFn(evt);
 				});
 			}
 		});
