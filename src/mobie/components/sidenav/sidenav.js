@@ -1,4 +1,50 @@
- function CloseDirective () {
+function $MbSidenavController ($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
+	var bodyEl = angular.element($window.document.body),
+			backdropEl = $mbBackdrop.getElement(),
+			sidenavOptions = $mbSidenav.getOptions(),
+			activeBodyClass = sidenavOptions.activeBodyClass;
+
+	function digest(fn) {
+		return Helpers.safeDigest($scope, fn);
+	}
+
+	function setVisibleState (visibleState) {
+		digest(function () {
+			$mbBackdrop[visibleState ? 'show' : 'hide']();
+
+			if(angular.isString(activeBodyClass)) {
+				$animate[visibleState ? 'addClass' : 'removeClass'](bodyEl, activeBodyClass);
+			}
+		});
+	}
+
+	function onClickListener(evt) {
+		digest(function () {
+			component.hide();
+		});
+	}
+
+	var component = this.component = new MbComponent($element, {
+		id: $attrs.componentId
+	});
+
+	$mbComponentRegistry.register(this.component);
+
+	component.on('visibleChangeStart', function () {
+		setVisibleState(true);
+	});
+
+	component.on('visible', function () {
+		backdropEl.on('click', onClickListener);
+	});
+
+	component.on('notVisible', function () {
+		backdropEl.off('click', onClickListener);
+		setVisibleState(false);
+	});
+}
+
+function CloseDirective () {
 	return {
 		require: '?^mbSidenav',
 		link: function (scope, element, attrs, mbSidenav) {
@@ -15,10 +61,21 @@
 	};
 }
 
-function $MbSidenavFactory ($mbComponentRegistry) {
-	return function (componentId) {
-		return $mbComponentRegistry.get(componentId);
+function $MbSidenavProvider () {
+	var defaults = this.defaults = {
+		activeBodyClass: 'mb-sidenav-visible'
 	};
+
+	function $MbSidenavFactory ($mbComponentRegistry) {
+		return angular.extend(function (componentId) {
+			return $mbComponentRegistry.get(componentId);
+		}, {
+			getOptions: function () {
+				return defaults;
+			}
+		});
+	}
+	this.$get = $MbSidenavFactory;
 }
 
 /**
@@ -42,42 +99,6 @@ angular.module('mobie.components.sidenav', [
 	'mobie.core.helpers'
 ])
 .directive('mbClose', CloseDirective)
-.controller('$mbSidenavController', function ($scope, $element, $attrs, $transclude, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop) {
-	var component = this.component = new MbComponent($element, {
-		id: $attrs.componentId
-	});
-	var backdropEl = $mbBackdrop.getElement();
-
-	$mbComponentRegistry.register(this.component);
-
-	function onClickListener(evt) {
-		Helpers.safeDigest($scope, function () {
-			component.hide();
-		});
-	}
-
-	component.on('visibleChangeStart', function () {
-		Helpers.safeDigest($scope, function () {
-			$mbBackdrop.show();
-		});
-	});
-
-	component.on('visibleStateChangeError', function () {
-		Helpers.safeDigest($scope, function () {
-			$mbBackdrop.hide();
-		});
-	});
-
-	component.on('visible', function () {
-		backdropEl.on('click', onClickListener);
-	});
-
-	component.on('notVisible', function () {
-		backdropEl.off('click', onClickListener);
-		Helpers.safeDigest($scope, function () {
-			$mbBackdrop.hide();
-		});
-	});
-})
-.factory('$mbSidenav', $MbSidenavFactory)
-.directive('mbSidenav', SidenavDirective)
+.controller('$mbSidenavController', $MbSidenavController)
+.provider('$mbSidenav', $MbSidenavProvider)
+.directive('mbSidenav', SidenavDirective);

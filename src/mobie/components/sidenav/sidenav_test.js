@@ -17,6 +17,26 @@ describe('mobie.components.sidenav', function (){
 	}))
 
 	describe('mbSidenav directive', function () {
+		it('should add a active body class when is active', function () {
+			var el = angular.element('<div><div mb-sidenav data-component-id="sidenav-left-1">{{ my.value }}</div></div>');
+			var mbSidenav = el.children('[mb-sidenav]');
+			var scope = $rootScope.$new();
+			
+			el = $compile(el)(scope);
+
+			scope.my = {
+				value: 1000
+			};
+
+			scope.$digest()
+
+			$mbSidenav('sidenav-left-1').toggle();
+
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			assert.ok(angular.element(document.body).hasClass('mb-sidenav-visible'));
+		});
 		it('should instantiate a mbSidenav directive', function () {
 			var el = angular.element('<div><div mb-sidenav data-component-id="left">{{ my.value }}</div></div>');
 			var mbSidenav = el.children('[mb-sidenav]');
