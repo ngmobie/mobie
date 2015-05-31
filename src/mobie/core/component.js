@@ -206,7 +206,7 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 }
 
 function MbComponentInterface (Helpers) {
-	var MbComponentInterface = Helpers.createClass({
+	return Helpers.createClass({
 		show: Helpers.notImplemented('show'),
 		hide: Helpers.notImplemented('hide'),
 		toggle: Helpers.notImplemented('toggle'),
@@ -218,8 +218,6 @@ function MbComponentInterface (Helpers) {
 		getVisibleState: Helpers.notImplemented('getVisibleState'),
 		setVisibleState: Helpers.notImplemented('setVisibleState')
 	});
-
-	return MbComponentInterface;
 }
 
 /**
@@ -310,4 +308,4 @@ angular.module('mobie.core.component', [
 ])
 .factory('MbComponentInterface', MbComponentInterface)
 .factory('MbComponent', MbComponentFactory)
-.provider('$mbComponent', $MbComponentProvider)
+.provider('$mbComponent', $MbComponentProvider);
