@@ -3,47 +3,39 @@
  * @name mbBarFixedTop
  * @restrict A
  */
-function BarFixedTopDirective ($mbScroll, Helpers) {
+function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent, Helpers) {
 	function postLink (scope, element, attrs) {
-		var actualY = 0;
+		var ms = 60,
+				component = new MbComponent(element),
+				animationPromise,
+				visibleState = true;
 
-		function setTranslateY(actualY) {
-			element.css('transform', 'translate3d(0,' + actualY + 'px,0)');
+		function cancelTimeout () {
+			return $timeout.cancel(animationPromise);
 		}
 
-		var lastActualY = actualY;
-		window.addEventListener('scroll', function () {
-			if(actualY !== lastActualY) {
-				setTranslateY(actualY);
-			}
-			lastActualY = actualY;
-		});
+		function setVisibleState (visibleState) {
+			return Helpers.safeDigest(scope, function () {
+				cancelTimeout();
+				animationPromise = $timeout(ms).then(function () {
+					return component[visibleState ? 'show' : 'hide']();
+				});
+			});
+		}
 
 		$mbScroll.on('scrollTop', function () {
-			if(actualY !== 0) {
-				actualY = 0;
-			}
+			setVisibleState(true);
 		});
 
 		$mbScroll.on('scrollDown', function (evt) {
-			var offsetHeight = element.prop('offsetHeight');
-
-			if((actualY * -1) >= offsetHeight) {
-				return;
-			}
-
-			actualY -= 17.5;
+			setVisibleState(false);
 		});
 
 		$mbScroll.on('scrollUp', function (evt) {
-			var offsetHeight = element.prop('offsetHeight');
-
-			if(actualY >= 0) {
-				return;
-			}
-
-			actualY += 17.5;
+			setVisibleState(true);
 		});
+
+		setVisibleState(visibleState);
 	}
 
 	return {
