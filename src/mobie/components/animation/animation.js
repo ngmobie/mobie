@@ -1,5 +1,6 @@
 /**
- * @ngdoc mbAnimation
+ * @ngdoc directive
+ * @name mbAnimation
  * @restrict A
  * @description Add to the element
  *   which will be animated when `mb-visible` and
