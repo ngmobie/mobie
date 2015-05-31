@@ -85,8 +85,41 @@ $item-avatar-height:              40px !default;
 $item-avatar-border-radius:       50% !default;
 
 
-// List
+// Toggle
 // -------------------------------
+
+$toggle-width:                    51px !default;
+$toggle-height:                   31px !default;
+$toggle-border-width:             2px !default;
+$toggle-border-radius:            20px !default;
+
+$toggle-handle-width:             $toggle-height - ($toggle-border-width * 2) !default;
+$toggle-handle-height:            $toggle-handle-width !default;
+$toggle-handle-radius:            $toggle-handle-width !default;
+$toggle-handle-dragging-bg-color: darken(#fff, 5%) !default;
+
+$toggle-off-bg-color:             #fff !default;
+$toggle-off-border-color:         #e6e6e6 !default;
+
+$toggle-transition-duration:      .3s !default;
+
+$toggle-hit-area-expansion:   5px;
+
+
+// Range
+// -------------------------------
+
+$range-track-height:              2px !default;
+$range-slider-width:              28px !default;
+$range-slider-height:             28px !default;
+$range-slider-border-radius:      50% !default;
+$range-icon-size:                 24px !default;
+$range-slider-box-shadow:         0 0 2px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,0.2) !default;
+
+$toggle-handle-off-bg-color:      $light !default;
+$toggle-handle-on-bg-color:       $toggle-handle-off-bg-color !default;
+
+$range-default-track-bg:          #ccc !default;
 
 
 // Card
