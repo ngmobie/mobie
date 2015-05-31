@@ -7,6 +7,10 @@ a.item {
   &:focus {
     text-decoration: none;
   }
+
+  &:active {
+    background-color: $item-bg-active;
+  }
 }
 
 .item {
