@@ -1,0 +1,29 @@
+/**
+ * Cards and Inset Lists
+ * --------------------------------------------------
+ * A card and list-inset are close to the same thing, except a card as a box shadow.
+ */
+.card,
+.list-inset {
+  overflow: hidden;
+  margin: ($content-padding * 2) $content-padding;
+  border-radius: $card-border-radius;
+  background-color: $card-body-bg;
+}
+
+.card {
+  padding-top: $item-border-width;
+  padding-bottom: $item-border-width;
+  box-shadow: $card-box-shadow;
+
+  .item {
+    border-left: 0;
+    border-right: 0;
+  }
+  .item:first-child {
+    border-top: 0;
+  }
+  .item:last-child {
+    border-bottom: 0;
+  }
+}
