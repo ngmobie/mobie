@@ -4,6 +4,14 @@
 	&.mb-fixed-top {
 		transition: 300ms transform ease-in-out;
 	}
+
+	&.mb-visible {
+		transform: translate3d(0,0%,0);
+	}
+
+	&.mb-hidden {
+		transform: translate3d(0,-100%,0);
+	}
 }
 
 .sidenav.mb-visible+.bar.mb-fixed-top {
