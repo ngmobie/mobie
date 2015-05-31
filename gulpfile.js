@@ -4,6 +4,7 @@ var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
 var bower = require('bower');
 var Dgeni = require('dgeni');
+var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var wrapper = require('gulp-wrapper');
@@ -89,15 +90,37 @@ gulp.task('stylesheets', function () {
 		.pipe(gulp.dest('build'));
 });
 
-gulp.task('scripts', function () {
+var scriptsHeaderObj = {
+	header: `(function (document, window, angular, undefined) { 'use strict';`,
+	footer: `}(document, window, angular, undefined))`
+};
+
+gulp.task('scripts-min', function () {
 	gulp.src(paths.scripts)
 		.pipe(ngAnnotate())
 		.pipe(uglify())
-		.pipe(concat('mobie.js'))
-		.pipe(wrapper({
-			header: `(function (document, window, angular, undefined) { 'use strict';`,
-			footer: `}(document, window, angular, undefined))`
+		.pipe(concat('mobie.min.js'))
+		.pipe(wrapper(scriptsHeaderObj))
+		.pipe(gulp.dest('build'));
+});
+
+gulp.task('scripts-jshint', function () {
+	gulp.src(paths.scripts)
+		.pipe(jshint({ lookup: true }))
+		.pipe(jshint.reporter());
+});
+
+gulp.task('scripts', ['scripts-min'], function () {
+	gulp.src(paths.scripts)
+		.pipe(ngAnnotate())
+		.pipe(uglify({
+			mangle: false,
+			output: {
+				beautify: true,
+			}
 		}))
+		.pipe(concat('mobie.js'))
+		.pipe(wrapper(scriptsHeaderObj))
 		.pipe(gulp.dest('build'));
 });
 
