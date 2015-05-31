@@ -10,6 +10,7 @@ module.exports = new Package('mobie', [
   require('dgeni-packages/nunjucks')
 ])
 
+.processor(require('./processors/module-docs'))
 .processor(require('./processors/index-page'))
 .processor(require('./processors/pages-data'))
 

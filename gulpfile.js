@@ -10,6 +10,7 @@ var uglify = require('gulp-uglify');
 var wrapper = require('gulp-wrapper');
 var pleeease = require('gulp-pleeease');
 var ngAnnotate = require('gulp-ng-annotate');
+var livereload = require('gulp-livereload');
 var ngTemplates = require('gulp-ng-templates');
 
 var paths = {
@@ -22,7 +23,8 @@ var paths = {
 	],
 	docs: {
 		scripts: ['docs/app/src/**/*.js'],
-		assets: ['docs/app/assets/**/*.*']
+		assets: ['docs/app/assets/**/*.*'],
+		templates: ['docs/app/src/templates/**/*.html']
 	}
 };
 
@@ -31,7 +33,7 @@ gulp.task('docs-assets', function () {
 	.pipe(gulp.dest('build/docs'))
 });
 
-gulp.task('docs-scripts', function () {
+gulp.task('docs-scripts', ['docs-templates'], function () {
 	gulp.src(paths.docs.scripts)
 	.pipe(ngAnnotate())
 	.pipe(uglify())
@@ -73,6 +75,37 @@ gulp.task('docs-build', ['docs-deps', 'docs-scripts'], function () {
 	return dgeni.generate();
 });
 
+gulp.task('docs-livereload', function () {
+	livereload.listen();
+	gulp.watch('build/docs/{js,css,partials}/*.{js,css,html}').on('change', livereload.changed);
+});
+
+gulp.task('docs-watch', ['docs-livereload'], function () {
+	gulp.watch('docs/**/*.*', ['docs-build']);
+});
+
+var express = require('express');
+gulp.task('docs-serve', ['docs-watch'], function () {
+	var app = express();
+	app.use(express.static('build/docs'));
+	app.get('/', function (req, res) {
+		res.render('index.html');
+	});
+	app.listen(8080, function () {
+		console.log('Documentation server is running at 0.0.0.0:8080');
+	});
+});
+
+gulp.task('docs-templates', function () {
+	gulp.src(paths.docs.templates)
+	.pipe(ngTemplates({
+		module: 'docsApp',
+		standalone: false,
+		filename: 'templates.js'
+	}))
+	.pipe(gulp.dest('build/docs/js'));
+});
+
 gulp.task('templates', function () {
 	gulp.src(paths.templates)
 		.pipe(jade())
@@ -104,8 +137,8 @@ gulp.task('scripts-min', function () {
 		.pipe(gulp.dest('build'));
 });
 
-gulp.task('scripts-jshint', function () {
-	gulp.src(paths.scripts)
+gulp.task('jshint', function () {
+	gulp.src(paths.scripts.concat(paths.docs.scripts))
 		.pipe(jshint({ lookup: true }))
 		.pipe(jshint.reporter());
 });

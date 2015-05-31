@@ -11,7 +11,7 @@
   <h1 class="api-profile-header-heading">{$ doc.name $}</h1>
   <ol class="api-profile-header-structure naked-list step-list">
     {% block related_components %}{% endblock %}
-    <li>
+    <li class="ng-hide">
       - {$ doc.docType $} in module <a href="{$ doc.moduleDoc.path $}">{$ doc.moduleDoc.name $}</a>
     </li>
   </ol>

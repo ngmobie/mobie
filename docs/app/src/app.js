@@ -25,6 +25,32 @@ angular.module('docsApp', [
 	var pages = pagesDataProvider.pages;
 	var basePath = '/';
 
+	$routeProvider.when('/index', {
+		templateUrl: 'app-index.html',
+		controller: ['$scope', 'readmeContent', function ($scope, readmeContent) {
+			$scope.readmeContent = readmeContent;
+		}],
+		resolve: {
+			readmeContent: ['$http', '$sce', function ($http, $sce) {
+				return $http.get('https://cdn.rawgit.com/ngmobie/mobie/master/README.md').then(function (res) {
+					return res.data;
+				}).then(function (md) {
+					return marked.parse(md);
+				}).then(function (htmlCode) {
+					var el = angular.element('<div>');
+					el.html(htmlCode);
+					_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
+						el.style.display = 'none';
+					});
+
+					return el.html();
+				}).then(function (htmlCode) {
+					return $sce.trustAsHtml(htmlCode);
+				});
+			}]
+		}
+	});
+
 	_(pages)
 	.filter(function (page) {
 		return page.area && page.module &&
@@ -41,4 +67,8 @@ angular.module('docsApp', [
 		});
 	})
 	.value();
+
+	$routeProvider.otherwise({
+		redirectTo: '/index'
+	});
 });
