@@ -38,6 +38,6 @@ function $MbModalProvider () {
 angular.module('mobie.components.modal', [
 	'mobie.core.component',
 	'mobie.core.helpers',
-	'mobie.components.backdrop',
+	'mobie.components.backdrop'
 ])
 .provider('$mbModal', $MbModalProvider);
