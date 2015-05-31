@@ -1,0 +1,42 @@
+@import "variables";
+@import "../../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
+
+ul {
+	list-style-type: none;
+	padding: 0px;
+}
+
+.label.type-hint-promise {
+	@extend .label-default;
+}
+
+.type-hint-object {
+	@extend .label-warning;
+}
+
+.type-hint-string {
+	@extend .label-success;
+}
+
+table.variables-matrix {
+	thead {
+		th {
+			padding: 8px 5px;
+		}
+	}
+	td {
+		display: block;
+  	float: left;
+  	margin-right: 8px;
+	}
+}
+
+.iframe-mobile-example {
+	border: 2px solid #eee;
+	border-radius: 10px;
+	/*width="320"*/
+}
+
+.column-left.ng-hide+.col-xs-12 {
+	@include make-lg-column(12);
+}

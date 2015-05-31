@@ -33,7 +33,7 @@ gulp.task('docs-assets', function () {
 	.pipe(gulp.dest('build/docs'))
 });
 
-gulp.task('docs-scripts', ['docs-templates'], function () {
+gulp.task('docs-scripts', function () {
 	gulp.src(paths.docs.scripts)
 	.pipe(ngAnnotate())
 	.pipe(uglify())
@@ -70,7 +70,7 @@ gulp.task('docs-deps', ['build', 'docs-scripts', 'docs-assets'], function (done)
 	});
 });
 
-gulp.task('docs-build', ['docs-deps', 'docs-scripts'], function () {
+gulp.task('docs-build', ['docs-deps'], function () {
 	var dgeni = new Dgeni([require('./docs/config')])
 	return dgeni.generate();
 });
@@ -80,8 +80,16 @@ gulp.task('docs-livereload', function () {
 	gulp.watch('build/docs/{js,css,partials}/*.{js,css,html}').on('change', livereload.changed);
 });
 
+gulp.task('docs-stylesheets', function () {
+	sass('./docs/app/scss/app.scss')
+	.pipe(gulp.dest('build/docs/css'));
+});
+
 gulp.task('docs-watch', ['docs-livereload'], function () {
-	gulp.watch('docs/**/*.*', ['docs-build']);
+	gulp.watch('docs/app/scss/**/*.scss', ['docs-stylesheets']);
+	gulp.watch('docs/app/src/**/*.js', ['docs-scripts']);
+	gulp.watch('docs/app/src/**/*.html', ['docs-templates']);
+	gulp.watch('docs/config/**/*.{js,html}', ['docs-build']);
 });
 
 var express = require('express');

@@ -15,15 +15,33 @@ function LeftbarController ($scope, pagesData) {
 		.value();
 }
 
+function MobileExampleController ($scope) {}
+
 angular.module('docsApp', [
 	'ngAnimate',
 	'ngRoute',
 	'pagesData'
 ])
+.directive('mbHideWhen', ['$location', function ($location) {
+	return {
+		link: function (scope, element, attrs) {
+			scope.$watch(function () {
+				return $location.path();
+			}, function (locationPath) {
+				element[locationPath === attrs.mbHideWhen ? 'addClass' : 'removeClass']('ng-hide');
+			});
+		}
+	};
+}])
 .controller('LeftbarController', LeftbarController)
 .config(function ($routeProvider, pagesDataProvider) {
 	var pages = pagesDataProvider.pages;
 	var basePath = '/';
+
+	$routeProvider.when('/example', {
+		templateUrl: 'mobile-example.html',
+		controller: ['$scope', MobileExampleController]
+	});
 
 	$routeProvider.when('/index', {
 		templateUrl: 'app-index.html',

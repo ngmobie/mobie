@@ -14,6 +14,19 @@ module.exports = new Package('mobie', [
 .processor(require('./processors/index-page'))
 .processor(require('./processors/pages-data'))
 
+.config(function (renderDocsProcessor) {
+  renderDocsProcessor.extraData.git = {
+    version: {
+      branch: 'master',
+      isSnapshot: true
+    },
+    info: {
+      owner: 'ngmobie',
+      repo: 'mobie'
+    }
+  };
+})
+
 // Configure our dgeni-example package. We can ask the Dgeni dependency injector
 // to provide us with access to services and processors that we wish to configure
 .config(function(log, readFilesProcessor, templateFinder, writeFilesProcessor) {
