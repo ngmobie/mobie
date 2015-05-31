@@ -1,26 +1,11 @@
-angular.module('mobie.components.animation', [])
-.directive('mbAnimationDuration', function () {
-	return function postLink (scope, element, attrs) {
-		function setAnimationDuration (ms) {
-			if(!angular.isUndefined(ms) && ms !== '') {
-				ms = ms + 'ms';
-			}
-
-			element.css('-webkit-animation-duration', ms);
-			element.css('-moz-animation-duration', ms);
-			element.css('animation-duration', ms);
-		}
-
-		attrs.$observe('mbAnimationDuration', function (ms) {
-			if(angular.isUndefined(ms)) {
-				return setAnimationDuration(undefined);
-			}
-			
-			setAnimationDuration(ms);
-		});
-	};
-})
-.directive('mbAnimation', function () {
+/**
+ * @ngdoc mbAnimation
+ * @restrict A
+ * @description Add to the element
+ *   which will be animated when `mb-visible` and
+ *   `mb-hidden` class is removed and added
+ */
+function AnimationDirective () {
 	return function (scope, element, attrs) {
 		var previousClass;
 
@@ -61,4 +46,28 @@ angular.module('mobie.components.animation', [])
 			addClass(previousClass);
 		});
 	};
-});
+}
+
+angular.module('mobie.components.animation', [])
+.directive('mbAnimationDuration', function () {
+	return function postLink (scope, element, attrs) {
+		function setAnimationDuration (ms) {
+			if(!angular.isUndefined(ms) && ms !== '') {
+				ms = ms + 'ms';
+			}
+
+			element.css('-webkit-animation-duration', ms);
+			element.css('-moz-animation-duration', ms);
+			element.css('animation-duration', ms);
+		}
+
+		attrs.$observe('mbAnimationDuration', function (ms) {
+			if(angular.isUndefined(ms)) {
+				return setAnimationDuration(undefined);
+			}
+			
+			setAnimationDuration(ms);
+		});
+	};
+})
+.directive('mbAnimation', AnimationDirective);
