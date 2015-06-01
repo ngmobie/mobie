@@ -4,9 +4,10 @@
 [mb-affix-mobile-template] {
 	transition: 200ms opacity ease-in-out;
 	opacity: 1;
-}
-[mb-affix-mobile-template].mb-hidden {
-	opacity: 0;
+
+	&.mb-hidden {
+		opacity: 0;
+	}
 }
 
 .mb-affix-active-add,

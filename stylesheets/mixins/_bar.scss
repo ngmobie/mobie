@@ -1,15 +1,9 @@
-@mixin bar ($bar-height: $bar-height, $bar-bg: $bar-default-bg, $bar-color: $bar-default-color) {
+@mixin bar-style ($bar-height: $bar-height, $bar-bg: $bar-default-bg, $bar-color: $bar-default-color) {
 	height: $bar-height;
 	background-color: $bar-bg;
-  width: 100%;
-  display: block;
-  text-align: center;
-  position: relative;
 
 	.title {
 		line-height: $bar-height;
-		user-select: none;
-		margin: 0px;
 		color: $bar-color;
 	}
 }

@@ -4,6 +4,7 @@ var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
 var bower = require('bower');
 var Dgeni = require('dgeni');
+var cssmin = require('gulp-cssmin');
 var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -45,7 +46,7 @@ gulp.task('docs-scripts', function () {
 	.pipe(gulp.dest('build/docs/js'));
 });
 
-gulp.task('docs-deps', ['build', 'docs-scripts', 'docs-assets'], function (done) {
+gulp.task('docs-deps', ['build', 'docs-scripts', 'docs-templates', 'docs-assets'], function (done) {
 	gulp.src([
 		'build/mobie.js',
 		'build/mobie.css',
@@ -82,6 +83,7 @@ gulp.task('docs-livereload', function () {
 
 gulp.task('docs-stylesheets', function () {
 	sass('./docs/app/scss/app.scss')
+	.pipe(cssmin())
 	.pipe(gulp.dest('build/docs/css'));
 });
 
@@ -132,6 +134,7 @@ gulp.task('templates', function () {
 gulp.task('stylesheets', function () {
 	sass('stylesheets/mobie.scss')
 		.pipe(pleeease())
+		.pipe(cssmin())
 		.pipe(gulp.dest('build'));
 });
 
