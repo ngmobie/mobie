@@ -64,11 +64,16 @@ angular.module('docsApp', [
 	'ui.router',
 	'pagesData',
 	'docsApp.affix',
+	'docsApp.footer',
 	'docsApp.highlight'
 ])
 .directive('mbSref', SrefDirective)
 .controller('LeftbarController', LeftbarController)
 .config(['$stateProvider', 'pagesDataProvider', function ($stateProvider, pagesDataProvider) {
+	$stateProvider.state('best-practices', {
+		url: '/best-its-important',
+		templateUrl: 'best-practices.html'
+	});
 	$stateProvider.state('example', {
 		url: '/example',
 		templateUrl: 'mobile-example.html',
