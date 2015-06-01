@@ -18,15 +18,15 @@
 
 	&:active {
 		.checkbox-icon {
-			border-color: $bar-default-bg;
+			border-color: $brand-primary;
 		}
 	}
 }
 
 .item-checkbox {
 	input[type="checkbox"]:checked+.checkbox-icon {
-		background-color: $bar-default-bg;
-		border-color: $bar-default-bg;
+		background-color: $brand-primary;
+		border-color: $brand-primary;
 
 		&:after {
 		  border-color: #fff;
