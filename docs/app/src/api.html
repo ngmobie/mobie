@@ -1,0 +1,24 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-4 col-xs-12 column-left" ng-controller="LeftbarController as leftbarCtrl">
+			<div ng-repeat="(key, value) in pages track by $index">
+				<h3>{{ key }}</h3>
+				
+				<div ng-repeat="(key, value) in value track by $index">
+					<h4>{{ key }}</h4>
+
+					<div ng-repeat="(key, value) in value track by $index">
+						<h5>{{ key }}</h5>
+
+						<ul>
+							<li ng-repeat="item in value">
+								<a mb-sref="item.stateName">{{ item.name }}</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8 col-xs-12" ui-view></div>
+	</div>
+</div>

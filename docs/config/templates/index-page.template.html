@@ -7,6 +7,7 @@
 	
 	<title>Mobie Docs</title>
 
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/github.min.css">
 	<link rel="stylesheet" href="lib/normalize.css/normalize.css">
 	<link rel="stylesheet" href="css/app.css">
 </head>
@@ -28,44 +29,32 @@
 	    <div class="collapse navbar-collapse">
 	    	<ul class="navbar-nav nav">
 	    		<li>
-	    			<a href="#/example">Example</a>
+	    			<a ui-sref="example">Example</a>
+	    		</li>
+	    		<li>
+	    			<a ui-sref="api.index">API</a>
+	    		</li>
+	    		<li>
+	    			<a ui-sref="css-examples">CSS</a>
 	    		</li>
 	    	</ul>
 	    </div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4 col-xs-12 column-left" ng-controller="LeftbarController as leftbarCtrl" mb-hide-when="/example">
-				<div ng-repeat="(key, value) in pages track by $index">
-					<h3>{{ key }}</h3>
-					
-					<div ng-repeat="(key, value) in value track by $index">
-						<h4>{{ key }}</h4>
+	<div ui-view></div>
 
-						<div ng-repeat="(key, value) in value track by $index">
-							<h5>{{ key }}</h5>
+	<div class="footer"></div>
 
-							<ul>
-								<li ng-repeat="item in value">
-									<a ng-href="{{ '#/' + item.partialPath }}">{{ item.name }}</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-8 col-xs-12" ng-view></div>
-		</div>
-	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
 
+	<script src="lib/jquery/dist/jquery.min.js"></script>
 	<script src="lib/marked/marked.min.js"></script>
 	<script src="lib/node-browser/dist/all.min.js"></script>
 	<script src="lib/lodash/lodash.min.js"></script>
 	<script src="lib/angular/angular.js"></script>
 	<script src="lib/angular-animate/angular-animate.js"></script>
-	<script src="lib/angular-route/angular-route.js"></script>
+	<script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
 	<script src="lib/mobie.js"></script>
 	<script src="lib/mobie.tpl.js"></script>
 	<script src="js/pages-data.js"></script>

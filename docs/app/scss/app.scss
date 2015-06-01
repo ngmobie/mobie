@@ -1,6 +1,98 @@
 @import "variables";
 @import "../../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
 
+.footer {
+  position: relative;
+  z-index: 100;
+  padding: 20px 0 0 0;
+  background: #2b3442;
+  color: #a4b3cd;
+  text-align: center;
+  font-size: 14px;
+  font-family: "AvenirNextLTPro-Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  min-height: 470px;
+}
+
+.phone-example-right {
+}
+.phone-example-right:not(.mb-affix-active) {
+	display: none;
+}
+
+.mb-affix-column {
+	ul {
+		margin-bottom: 10px;
+
+		> li {
+			&.mb-affix-active {
+				> a {
+					border-right: 2px solid #4F8EF7;
+					color: #4F8EF7;
+				}
+			}
+
+			&:hover a {
+				text-decoration: none;
+			}
+
+			> a {
+				color: $text-color;
+				cursor: pointer;
+				transition: 200ms color ease-in-out;
+				width: 100%;
+				display: block;
+
+				&:hover {
+					color: darken($text-color, 9%);
+				}
+			}
+
+			> ul {
+				padding-left: 10px;
+				margin-top: 6px;
+
+				> li > a {
+					font-size: 90%;
+				}
+			}
+		}
+	}
+}
+
+[mb-device-preview] {
+	&.fixed-preview {
+		position: fixed;
+		right: auto;
+		transform: translate3d(0, 0, 0);
+		top: 19px;
+	}
+}
+
+.mb-affix-right-column {
+  border: 1px solid rgb(238, 238, 238);
+  height: 300px;
+  border-radius: 10px;
+}
+
+.mb-affix-column-fixed+.affix-contents {
+	@include make-md-column-offset(2);
+}
+
+.affix-content-section {
+	padding-top: 20px;
+	padding-bottom: 60px;
+	min-height: 320px;
+	transition: 200ms transform ease-in-out;
+
+	h3 {
+		margin-top: 0px;
+	}
+
+	&.mb-affix-active {
+		color: darken($text-color, 12%);
+	}
+}
+
 ul {
 	list-style-type: none;
 	padding: 0px;
@@ -39,4 +131,8 @@ table.variables-matrix {
 
 .column-left.ng-hide+.col-xs-12 {
 	@include make-lg-column(12);
+}
+
+.hljs {
+	background-color: transparent;
 }

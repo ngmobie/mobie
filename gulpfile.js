@@ -24,7 +24,7 @@ var paths = {
 	docs: {
 		scripts: ['docs/app/src/**/*.js'],
 		assets: ['docs/app/assets/**/*.*'],
-		templates: ['docs/app/src/templates/**/*.html']
+		templates: ['docs/app/src/**/*.html']
 	}
 };
 

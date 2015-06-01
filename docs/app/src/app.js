@@ -1,3 +1,4 @@
+LeftbarController.$inject = ['$scope', 'pagesData'];
 function LeftbarController ($scope, pagesData) {
 	$scope.pages = _(pagesData)
 		.filter(function (page) {
@@ -15,78 +16,158 @@ function LeftbarController ($scope, pagesData) {
 		.value();
 }
 
+MobileExampleController.$inject = ['$scope'];
 function MobileExampleController ($scope) {}
 
-angular.module('docsApp', [
-	'ngAnimate',
-	'ngRoute',
-	'pagesData'
-])
-.directive('mbHideWhen', ['$location', function ($location) {
+SrefDirective.$inject = ['$state'];
+function SrefDirective ($state) {
 	return {
-		link: function (scope, element, attrs) {
-			scope.$watch(function () {
-				return $location.path();
-			}, function (locationPath) {
-				element[locationPath === attrs.mbHideWhen ? 'addClass' : 'removeClass']('ng-hide');
+		scope: {
+			mbSref: '='
+		},
+		link: function(scope, element, attrs) {
+			scope.$watch('mbSref', function (mbSref) {
+				var stateHref = $state.href(mbSref);
+				attrs.$set('href', stateHref);
 			});
 		}
 	};
-}])
-.controller('LeftbarController', LeftbarController)
-.config(function ($routeProvider, pagesDataProvider) {
-	var pages = pagesDataProvider.pages;
-	var basePath = '/';
+}
 
-	$routeProvider.when('/example', {
-		templateUrl: 'mobile-example.html',
-		controller: ['$scope', MobileExampleController]
+IndexController.$inject = ['$scope', 'readmeContent'];
+function IndexController ($scope, readmeContent) {
+	$scope.readmeContent = readmeContent;
+}
+
+ReadmeContentFactory.$inject = ['$http', '$sce'];
+function ReadmeContentFactory ($http, $sce) {
+	return $http.get('https://cdn.rawgit.com/ngmobie/mobie/master/README.md').then(function (res) {
+		return res.data;
+	}).then(function (md) {
+		return marked.parse(md);
+	}).then(function (htmlCode) {
+		var el = angular.element('<div>');
+		el.html(htmlCode);
+
+		_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
+			el.style.display = 'none';
+		});
+
+		return el.html();
+	}).then(function (htmlCode) {
+		return $sce.trustAsHtml(htmlCode);
 	});
+}
 
-	$routeProvider.when('/index', {
+angular.module('docsApp', [
+	'ngAnimate',
+	'ui.router',
+	'pagesData',
+	'docsApp.affix',
+	'docsApp.highlight'
+])
+.directive('mbSref', SrefDirective)
+.controller('LeftbarController', LeftbarController)
+.config(['$stateProvider', 'pagesDataProvider', function ($stateProvider, pagesDataProvider) {
+	$stateProvider.state('example', {
+		url: '/example',
+		templateUrl: 'mobile-example.html',
+		controller: MobileExampleController
+	})
+	.state('index', {
+		url: '/index',
 		templateUrl: 'app-index.html',
-		controller: ['$scope', 'readmeContent', function ($scope, readmeContent) {
-			$scope.readmeContent = readmeContent;
-		}],
+		controller: IndexController,
 		resolve: {
-			readmeContent: ['$http', '$sce', function ($http, $sce) {
-				return $http.get('https://cdn.rawgit.com/ngmobie/mobie/master/README.md').then(function (res) {
-					return res.data;
-				}).then(function (md) {
-					return marked.parse(md);
-				}).then(function (htmlCode) {
-					var el = angular.element('<div>');
-					el.html(htmlCode);
-					_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
-						el.style.display = 'none';
-					});
-
-					return el.html();
-				}).then(function (htmlCode) {
-					return $sce.trustAsHtml(htmlCode);
-				});
-			}]
+			readmeContent: ReadmeContentFactory
 		}
 	});
 
-	_(pages)
-	.filter(function (page) {
-		return page.area && page.module &&
-					page.docType && page.name;
+	$stateProvider.state('api', {
+		url: '/api',
+		templateUrl: 'api.html'
 	})
-	.forEach(function (page) {
-		var routePath = pagesDataProvider.resolve(page);
-
-		routePath = path.resolve(basePath, routePath);
-
-		$routeProvider
-		.when(routePath, {
-			templateUrl: path.join('partials', page.partialPath + '.html')
-		});
-	})
-	.value();
-
-	$routeProvider.otherwise({
-		redirectTo: '/index'
+	.state('api.index', {
+		url: '/getting-started',
+		templateUrl: 'api-index.html'
 	});
+}])
+.config(['$stateProvider', 'pagesDataProvider', function ($stateProvider, pagesDataProvider) {
+	var pages = pagesDataProvider.pages;
+	var definedStates = {};
+
+	function getStateType (index) {
+		if(index === 0) {
+			return 'area';
+		} else if (index === 1) {
+			return 'module';
+		} else if (index === 2) {
+			return 'docType';
+		} else if (index === 3) {
+			return 'name';
+		}
+	}
+
+	_(pages).filter(function (page) {
+		return page.area;
+	}).forEach(function (page) {
+		var stateName = '';
+
+		function nextState (nextName, index) {
+			nextName = nextName.replace(/\./g, '_');
+			stateName = [stateName, nextName].join(index > 0 ? '.' : '');
+		}
+
+		page.stateName.split('.').forEach(function (nextName, index) {
+			var stateType = getStateType(index);
+
+			nextState(nextName, index);
+
+			if(stateType === 'area') {
+				return;
+			}
+
+			if(definedStates[stateName]) {
+				return;
+			}
+
+			var stateOptions = {
+				url: '/' + nextName
+			};
+
+			if(stateType === 'name') {
+				stateOptions.templateUrl = path.join('partials', page.partialPath + '.html');
+			} else {
+				stateOptions.template = '<div ui-view></div>';
+			}
+
+			$stateProvider.state(stateName, stateOptions);
+
+			definedStates[stateName] = true;
+		});
+	}).value();
+}])
+.directive('mbDevicePreview', function () {
+	return function (scope, element, attrs) {
+		var offset = element.offset();
+		var oldWidth;
+
+		window.addEventListener('scroll', function () {
+			if($(window).scrollTop() > offset.top) {
+				if(!element.hasClass('fixed-preview')) {
+					oldWidth = element.prop('offsetWidth');
+					element
+					.css('left', Math.round(element.offset().left) + 'px')
+					.css('width', oldWidth)
+					.addClass('fixed-preview');
+				}
+			} else {
+				if(element.hasClass('fixed-preview')) {
+					element[0].style.left = '';
+					element[0].style.width = '';
+					element.removeClass('fixed-preview');
+				}
+			}
+		});
+	};
 });
