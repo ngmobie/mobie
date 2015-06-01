@@ -33,6 +33,15 @@ function HighlightDirective () {
 				}
 
 				var el = element[0].querySelector('.highlight pre code');
+
+				// Remove all 'ng-scope' classes from all elements (esthetic purposes)
+				_.forEach(element[0].querySelectorAll('.ng-scope'), function (el) {
+					el.classList.remove('ng-scope');
+					// And remove all the ugly empty attribute class (why is it there anyway?)
+					if(el.classList.length < 1) {
+						el.outerHTML = el.outerHTML.replace(' class=""', '');
+					}
+				});
 				
 				el.innerHTML = safe_tags_replace(el.innerHTML).trim();
 
