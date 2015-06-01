@@ -1,6 +1,11 @@
-@mixin bar-style ($bar-height: $bar-height, $bar-bg: $bar-default-bg, $bar-color: $bar-default-color) {
+@mixin bar-style (
+	$bar-height: $bar-height,
+	$bar-bg: $bar-default-bg,
+	$bar-color: $bar-default-color
+) {
 	height: $bar-height;
 	background-color: $bar-bg;
+	border-color: 
 
 	.title {
 		line-height: $bar-height;
