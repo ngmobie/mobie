@@ -1,0 +1,13 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar
+			h4.title Checkbox
+		.list
+			.item.item-divider Divider 1
+			label.item.item-checkbox(ng-repeat="person in persons | limitTo: 3 track by $index", ng-click="fakerCtrl.checkPerson(person)")
+				.checkbox.checkbox-circle.input-hidden
+					input(type="checkbox", ng-model="person.checked")
+					i.checkbox-icon
+				.item-content {{person.name}}

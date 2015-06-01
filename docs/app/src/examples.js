@@ -1,11 +1,16 @@
 ExamplesController.$inject = ['$scope'];
 function ExamplesController ($scope) {
 	var items = [{
+		name: 'Introduction',
+		example: false
+	}, {
 		name: 'List',
 		subitems: [{
-			name: 'Divider',
+			name: 'List Dividers',
 			link: 'list-divider'
 		}]
+	}, {
+		name: 'Checkbox'
 	}];
 
 	function normalizeItemTmpUrl (item) {
@@ -17,7 +22,7 @@ function ExamplesController ($scope) {
 			return item;
 		}
 
-		return _.isArray(item) ? item.map(normalize) : normalize(item);
+		return _.isArray(item) ? _.map(item, normalize) : normalize(item);
 	}
 
 	$scope.items = _(items).map(function (item) {

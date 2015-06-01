@@ -1,6 +1,19 @@
 @import "variables";
 @import "../../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
 
+[mb-affix-mobile-template] {
+	transition: 200ms opacity ease-in-out;
+	opacity: 1;
+}
+[mb-affix-mobile-template].mb-hidden {
+	opacity: 0;
+}
+
+.mb-affix-active-add,
+.mb-affix-active-remove {
+	transition: 200ms opacity ease-in-out;
+}
+
 .footer {
   position: relative;
   z-index: 100;
@@ -9,7 +22,7 @@
   color: #a4b3cd;
   text-align: center;
   font-size: 14px;
-  font-family: "AvenirNextLTPro-Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Arial, sans-serif;
   min-height: 470px;
 }
 
@@ -60,6 +73,14 @@
 }
 
 [mb-device-preview] {
+	padding: 0px;
+	iframe {
+	  width: 100%;
+	  margin: 0px;
+	  padding: 0px;
+	  border: 0px;
+	  height: 100%;
+	}
 	&.fixed-preview {
 		position: fixed;
 		right: auto;
@@ -70,8 +91,11 @@
 
 .mb-affix-right-column {
   border: 1px solid rgb(238, 238, 238);
-  height: 300px;
-  border-radius: 10px;
+  
+  &, iframe {
+  	border-radius: 10px;
+  	height: 500px;
+  }
 }
 
 .mb-affix-column-fixed+.affix-contents {

@@ -1,0 +1,11 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar
+			h4.title List dividers
+		ul.list
+			li.item.item-divider Divider 1
+			li.item(ng-repeat="person in persons | limitTo: 2 track by $index", ng-bind="person.name")
+			li.item.item-divider Divider 2
+			li.item(ng-repeat="person in persons | limitTo: 3 track by $index", ng-bind="person.name")

@@ -30,7 +30,7 @@ var paths = {
 
 gulp.task('docs-assets', function () {
 	gulp.src(paths.docs.assets)
-	.pipe(gulp.dest('build/docs'))
+	.pipe(gulp.dest('build/docs'));
 });
 
 gulp.task('docs-scripts', function () {
@@ -88,7 +88,7 @@ gulp.task('docs-stylesheets', function () {
 gulp.task('docs-watch', ['docs-livereload'], function () {
 	gulp.watch('docs/app/scss/**/*.scss', ['docs-stylesheets']);
 	gulp.watch('docs/app/src/**/*.js', ['docs-scripts']);
-	gulp.watch('docs/app/src/**/*.html', ['docs-templates']);
+	gulp.watch('docs/app/src/**/*.{html,jade}', ['docs-templates']);
 	gulp.watch('docs/config/**/*.{js,html}', ['docs-build']);
 });
 
@@ -105,6 +105,10 @@ gulp.task('docs-serve', ['docs-watch'], function () {
 });
 
 gulp.task('docs-templates', function () {
+	gulp.src(['docs/app/src/**/*.mobile.jade'])
+	.pipe(jade())
+	.pipe(gulp.dest('build/docs'));
+
 	gulp.src(paths.docs.templates)
 	.pipe(ngTemplates({
 		module: 'docsApp',

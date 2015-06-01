@@ -94,9 +94,14 @@ function AffixContentDirective ($window, $animate) {
 			return;
 		}
 
+		if(_.isUndefined(scope.example)) {
+			scope.example = true;
+		}
+
 		mbAffix.set(scope.href, {
 			isActive: false,
-			link: scope.href
+			link: scope.href,
+			example: scope.example
 		});
 	}
 
@@ -148,6 +153,7 @@ function AffixContentDirective ($window, $animate) {
 		require: '?^mbAffix',
 		scope: {
 			href: '=mbAffixId',
+			example: '=mbHasExample'
 		},
 		compile: function () {
 			return {
@@ -183,7 +189,7 @@ function AffixMobileTemplateDirective ($animate) {
 	return {
 		require: '?^mbAffix',
 		template: '<div ng-repeat="(key, item) in _$items$_" id="{{ item.link }}" class="phone-example-right">' +
-			'<ng-include src="item.mobileTemplatePath"></ng-include>' +
+			'<iframe ng-src="{{item.mobileTemplatePath}}"></iframe>' +
 		'</div>',
 		link: function (scope, element, attrs, mbAffix) {
 			if(!mbAffix) {
@@ -220,7 +226,12 @@ function AffixMobileTemplateDirective ($animate) {
 			});
 
 			scope.$on('$affixChanged', function (event, item) {
-				scope.template = item.link;
+				if(item.example) {
+					$animate.setClass(element, 'mb-visible', 'mb-hidden');
+					scope.template = item.link;
+				} else {
+					$animate.setClass(element, 'mb-hidden', 'mb-visible');
+				}
 			});
 		}
 	};

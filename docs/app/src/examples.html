@@ -1,6 +1,6 @@
 <div class="container" mb-affix>
 	<div class="row">
-		<div mb-affix-column class="col-md-2 mb-affix-column">
+		<div mb-affix-column class="col-md-2 mb-affix-column hidden-xs">
 			<ul>
 				<li
 					ng-repeat="item in items track by $index"
@@ -14,25 +14,28 @@
 				</li>
 			</ul>
 		</div>
-		<div class="col-md-6 affix-contents">
+		<div class="col-md-7 affix-contents col-xs-12">
 			<section
 				ng-repeat-start="item in items track by $index"
 				ng-include="item.templateUrl"
 				mb-affix-content
+				mb-has-example="item.example"
 				mb-affix-id="item.link"
 				id="{{ item.link }}"
 				class="affix-content-section"
-			></section>
+			>
+			</section>
 			<section
 				ng-repeat-end
 				ng-repeat="subitem in item.subitems track by $index"
 				ng-include="subitem.templateUrl"
 				mb-affix-content
+				mb-has-example="subitem.example"
 				mb-affix-id="subitem.link"
 				id="{{ subitem.link }}"
 				class="affix-content-section"
 			></section>
 		</div>
-		<div class="col-md-4 mb-affix-right-column" mb-affix-mobile-template mb-device-preview></div>
+		<div class="col-md-3 mb-affix-right-column hidden-xs" mb-affix-mobile-template mb-device-preview></div>
 	</div>
 </div>

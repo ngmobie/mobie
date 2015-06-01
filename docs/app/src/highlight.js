@@ -33,7 +33,12 @@ function HighlightDirective () {
 				}
 
 				var el = element[0].querySelector('.highlight pre code');
+				
 				el.innerHTML = safe_tags_replace(el.innerHTML).trim();
+
+				// Keep the identation with 2 spaces
+				el.innerHTML = el.innerHTML.replace(/\t/g, '  ');
+
 				hljs.highlightBlock(el);
 			};
 		}
