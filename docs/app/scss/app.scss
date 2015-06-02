@@ -28,25 +28,7 @@
 }
 
 .phone-example-right {
-	transition: 300ms opacity ease-in-out;
-
-	&.mb-affix-active-add {
-		opacity: 0.6;
-
-		&#{&}-active {
-			opacity: 1;
-		}
-	}
-
-	&.mb-affix-active-remove {
-		opacity: 1;
-
-		&#{&}-active {
-			opacity: 0.6;
-		}
-	}
-
-	&:not(.mb-affix-active):not(.mb-affix-active-add):not(.mb-affix-active-remove) {
+	&:not(.mb-affix-active) {
 		display: none;
 	}
 }
