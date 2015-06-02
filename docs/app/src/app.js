@@ -69,7 +69,9 @@ angular.module('docsApp', [
 ])
 .directive('mbSref', SrefDirective)
 .controller('LeftbarController', LeftbarController)
-.config(['$stateProvider', 'pagesDataProvider', function ($stateProvider, pagesDataProvider) {
+.config(['$stateProvider', '$urlRouterProvider', 'pagesDataProvider', function ($stateProvider, $urlRouterProvider, pagesDataProvider) {
+	$urlRouterProvider.otherwise('/index');
+
 	$stateProvider.state('best-practices', {
 		url: '/best-its-important',
 		templateUrl: 'best-practices.html'
