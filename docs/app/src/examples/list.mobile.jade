@@ -2,7 +2,7 @@ extends ./base.mobile.jade
 
 block content
 	div(ng-controller="FakerController as fakerCtrl")
-		.bar
+		.bar.bar-header
 			h4.title List
 		ul.list
 			li.item(ng-repeat="person in persons | limitTo: 6 track by $index", ng-bind="person.name")
