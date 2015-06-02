@@ -39,8 +39,8 @@ function IndexController ($scope, readmeContent) {
 	$scope.readmeContent = readmeContent;
 }
 
-ReadmeContentFactory.$inject = ['$http', '$sce'];
-function ReadmeContentFactory ($http, $sce) {
+ReadmeContentFactory.$inject = ['$http', '$sce', '$compile', '$rootScope'];
+function ReadmeContentFactory ($http, $sce, $compile, $rootScope) {
 	return $http.get('https://cdn.rawgit.com/ngmobie/mobie/master/README.md').then(function (res) {
 		return res.data;
 	}).then(function (md) {
@@ -51,6 +51,33 @@ function ReadmeContentFactory ($http, $sce) {
 
 		_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
 			el.style.display = 'none';
+		});
+
+		_.forEach(el[0].querySelectorAll('pre>code'), function (el) {
+			var highlightEl = angular.element('<mb-highlight>');
+			
+			_.forEach(el.classList, function (className) {
+				var match = match = /(?:lang\-)([A-z]+)/.exec(className);
+				if(match) {
+					var languageName = match[1];
+
+					// check for possible names and adapt to highlight.js
+					if(languageName === 'js') {
+						languageName = 'javascript';
+					}
+					
+					highlightEl.attr('language', languageName);
+				}
+			});
+
+			highlightEl.html(el.innerHTML);
+
+			var parentEl = angular.element(el).parent();
+
+			$compile(highlightEl)($rootScope);
+
+			parentEl.after(highlightEl);
+			parentEl.remove();
 		});
 
 		return el.html();
