@@ -25,9 +25,16 @@ a.item {
 	display: block;
 	z-index: $z-index-item;
 	padding: $item-padding;
-	border-width: $item-border-width;
-	border-style: solid;
-	margin: -1px 0px 0px -1px;
+	
+  border-top-width: $item-border-width;
+  border-top-style: solid;
+
+  border-bottom-width: $item-border-width;
+	border-bottom-style: solid;
+
+  margin: 0px;
+  margin-top: -1px;
+
 	font-size: 16px;
 
 	h2 {
