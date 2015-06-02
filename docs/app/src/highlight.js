@@ -45,13 +45,17 @@ function HighlightDirective () {
 					el.innerHTML = safe_tags_replace(el.innerHTML).trim();
 				}
 
-				// Keep the identation with 2 spaces
-				el.innerHTML = el.innerHTML.replace(/\t/g, '  ');
-
 				hljs.highlightBlock(el);
 			};
 		}
 	};
 }
 
-angular.module('docsApp.highlight', []).directive('mbHighlight', HighlightDirective);
+angular.module('docsApp.highlight', [])
+.config(function () {
+	hljs.configure({
+		tabReplace: '\t',
+		languages: ['html', 'javascript']
+	});
+})
+.directive('mbHighlight', HighlightDirective);
