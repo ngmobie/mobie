@@ -17,6 +17,7 @@ function $AffixController ($scope, $element, $attrs, $transclude, $location, $an
 		if(this.activeItem.link !== href) {
 			this.activate(href);
 			this.updateHash();
+			$anchorScroll();
 		}
 	};
 
@@ -31,6 +32,24 @@ function $AffixController ($scope, $element, $attrs, $transclude, $location, $an
 	this.isActive = function (href) {
 		return this.activeItem === this.items[href];
 	};
+
+	// when the user loads the page
+	// for the first time
+	var unwatch = $scope.$watch(function () {
+		return $location.hash();
+	}, function (hash) {
+		if(hash !== '') {
+			$scope.$$postDigest(function () {
+				ctrl.go(hash);
+			});
+		}
+
+		unwatch();
+	});
+
+	$scope.$on('$affixChanged', function (href) {
+		ctrl.updateHash();
+	});
 
 	$scope.$watch(function () {
 		return ctrl.activeItem.link;
@@ -255,6 +274,9 @@ function AffixMobileTemplateDirective ($animate) {
 }
 
 angular.module('docsApp.affix', [])
+.config(['$anchorScrollProvider', function ($anchorScrollProvider) {
+	$anchorScrollProvider.disableAutoScrolling();
+}])
 .directive('mbAffixHref', AffixHrefDirective)
 .directive('mbAffixColumn', AffixColumnDirective)
 .directive('mbAffix', AffixDirective)
