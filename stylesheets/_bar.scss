@@ -9,6 +9,7 @@
   .title {
   	user-select: none;
 		margin: 0px;
+		line-height: $bar-height;
   }
 
 	&.mb-fixed-top {
@@ -38,10 +39,18 @@
          (min-resolution: 144dpi),
          (min-resolution: 1.5dppx) {
     border: none;
-    background-image: linear-gradient(0deg, $bar-default-border, $bar-default-border 50%, transparent 50%);
+    background-image: linear-gradient(0deg, $bar-default-border-color, $bar-default-border-color 50%, transparent 50%);
     background-position: bottom;
     background-size: 100% 1px;
     background-repeat: no-repeat;
+  }
+
+  &.bar-primary {
+		@include bar-style(
+			$bar-bg: $bar-primary-bg,
+			$bar-color: $bar-primary-color,
+			$bar-border-color: $bar-primary-border-color
+		);
   }
 }
 
