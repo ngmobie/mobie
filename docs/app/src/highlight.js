@@ -41,7 +41,9 @@ function HighlightDirective () {
 					el.outerHTML = el.outerHTML.replace(/(class="")/g, '');
 				});
 				
-				el.innerHTML = safe_tags_replace(el.innerHTML).trim();
+				if(scope.language === 'html') {
+					el.innerHTML = safe_tags_replace(el.innerHTML).trim();
+				}
 
 				// Keep the identation with 2 spaces
 				el.innerHTML = el.innerHTML.replace(/\t/g, '  ');
