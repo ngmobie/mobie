@@ -91,10 +91,9 @@
 }
 
 .mb-affix-right-column {
-  border: 1px solid rgb(238, 238, 238);
+  border: 1px solid #eee;
   
   &, iframe {
-  	border-radius: 10px;
   	height: 500px;
   }
 }
