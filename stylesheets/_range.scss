@@ -34,7 +34,7 @@
     left: -2001px;
     width: 2000px;
     height: $range-track-height;
-    background: $dark;
+    background: #000;
     content: ' ';
   }
 
@@ -68,7 +68,7 @@
    }
    &::-ms-fill-lower{
      height: $range-track-height;
-     background:$dark;
+     background: #000;
    }
    &::-ms-fill-upper {
      height: $range-track-height;

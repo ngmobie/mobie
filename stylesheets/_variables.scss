@@ -1,15 +1,10 @@
 // Colors
 // -------------------------------
 
-$light:                           #fff !default;
-$stable:                          #f8f8f8 !default;
-$positive:                        #387ef5 !default;
-$calm:                            #11c1f3 !default;
-$balanced:                        #33cd5f !default;
-$energized:                       #ffc900 !default;
-$assertive:                       #ef473a !default;
-$royal:                           #886aea !default;
-$dark:                            #444 !default;
+$brand-primary:                   #387ef5 !default;
+$brand-success:										#33cd5f !default;
+$brand-danger:										#ef473a !default;
+$brand-info:											#ffc900 !default;
 
 
 // Base
@@ -37,7 +32,7 @@ $headings-line-height:            1.2 !default;
 $base-background-color:           #fff !default;
 $base-color:                      #000 !default;
 
-$link-color:                      $positive !default;
+$link-color:                      $brand-primary !default;
 $link-hover-color:                darken($link-color, 15%) !default;
 
 $content-padding:                 10px !default;
@@ -116,7 +111,7 @@ $range-slider-border-radius:      50% !default;
 $range-icon-size:                 24px !default;
 $range-slider-box-shadow:         0 0 2px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,0.2) !default;
 
-$toggle-handle-off-bg-color:      $light !default;
+$toggle-handle-off-bg-color:      #fff !default;
 $toggle-handle-on-bg-color:       $toggle-handle-off-bg-color !default;
 
 $range-default-track-bg:          #ccc !default;
@@ -195,11 +190,17 @@ $bar-padding-portrait:            5px !default;
 $bar-padding-landscape:           5px !default;
 $bar-transparency:                1 !default;
 
-$bar-default-bg:                  #387ef5 !default;
-$bar-default-color:               #fff !default;
-$bar-default-border:              $bar-default-bg !default;
+$bar-default-bg:                  #fff !default;
+$bar-default-color:               #000 !default;
+$bar-default-border-color:        darken($bar-default-bg, 10%) !default;
 $bar-default-active-bg:           $bar-default-bg !default;
 $bar-default-active-border:       $bar-default-bg !default;
+
+$bar-primary-bg:                  $brand-primary !default;
+$bar-primary-color:               #fff !default;
+$bar-primary-border-color:        $bar-primary-bg !default;
+$bar-primary-active-bg:           $bar-primary-bg !default;
+$bar-primary-active-border:       $bar-primary-bg !default;
 
 
 // Z-Indexes
