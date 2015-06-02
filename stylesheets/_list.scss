@@ -3,6 +3,14 @@
 	margin-bottom: 20px;
 	padding-top: $item-border-width;
 	padding-bottom: $item-border-width;
+
+	&:last-child {
+	  margin-bottom: 0px;
+
+	  &.card {
+	    margin-bottom: 40px;
+	  }
+	}
 }
 
 ul.list {
