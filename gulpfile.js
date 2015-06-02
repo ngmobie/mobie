@@ -22,6 +22,7 @@ var paths = {
 		'src/**/*.js',
 		'!src/**/*_test.js'
 	],
+	stylesheets: ['stylesheets/**/*.scss'],
 	docs: {
 		scripts: ['docs/app/src/**/*.js'],
 		assets: ['docs/app/assets/**/*.*'],
@@ -46,14 +47,22 @@ gulp.task('docs-scripts', function () {
 	.pipe(gulp.dest('build/docs/js'));
 });
 
-gulp.task('docs-deps', ['build', 'docs-scripts', 'docs-templates', 'docs-assets'], function (done) {
+gulp.task('docs-mobie-build', function () {
 	gulp.src([
 		'build/mobie.js',
 		'build/mobie.css',
 		'build/mobie.tpl.js'
 	])
-	.pipe(gulp.dest('build/docs/lib'))
+	.pipe(gulp.dest('build/docs/lib'));
+});
 
+gulp.task('docs-deps', [
+	'build',
+	'docs-scripts',
+	'docs-templates',
+	'docs-assets',
+	'docs-mobie-build'
+], function (done) {
 	var bowerTask = bower.commands.install([], {}, {
 		directory: 'build/docs/lib'
 	});
@@ -78,7 +87,10 @@ gulp.task('docs-build', ['docs-deps'], function () {
 
 gulp.task('docs-livereload', function () {
 	livereload.listen();
-	gulp.watch('build/docs/{js,css,partials}/*.{js,css,html}').on('change', livereload.changed);
+	gulp.watch([
+		'build/docs/{js,css,partials}/*.{js,css,html}',
+		'build/docs/lib/mobie.*'
+	]).on('change', livereload.changed);
 });
 
 gulp.task('docs-stylesheets', function () {
@@ -92,6 +104,10 @@ gulp.task('docs-watch', ['docs-livereload'], function () {
 	gulp.watch('docs/app/src/**/*.js', ['docs-scripts']);
 	gulp.watch('docs/app/src/**/*.{html,jade}', ['docs-templates']);
 	gulp.watch('docs/config/**/*.{js,html}', ['docs-build']);
+
+	gulp.watch(paths.scripts, ['scripts', 'docs-mobie-build']);
+	gulp.watch(paths.templates, ['templates', 'docs-mobie-build']);
+	gulp.watch(paths.stylesheets, ['stylesheets', 'docs-mobie-build']);
 });
 
 var express = require('express');
