@@ -41,7 +41,7 @@ function HighlightDirective () {
 					el.outerHTML = el.outerHTML.replace(/(class="")/g, '');
 				});
 				
-				if(scope.language === 'html') {
+				if(/html/.test(scope.language)) {
 					el.innerHTML = safe_tags_replace(el.innerHTML).trim();
 				}
 
