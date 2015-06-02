@@ -22,6 +22,8 @@ function ExamplesController ($scope) {
 			name: 'Lists',
 			link: 'card-lists'
 		}]
+	}, {
+		name: 'Range'
 	}];
 
 	function normalizeItemTmpUrl (item) {
