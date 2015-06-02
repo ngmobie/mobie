@@ -4,6 +4,8 @@ function ExamplesController ($scope) {
 		name: 'Introduction',
 		example: false
 	}, {
+		name: 'Typography'
+	}, {
 		name: 'List',
 		subitems: [{
 			name: 'List Dividers',
