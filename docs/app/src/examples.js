@@ -13,6 +13,15 @@ function ExamplesController ($scope) {
 		}]
 	}, {
 		name: 'Checkbox'
+	}, {
+		name: 'Cards',
+		subitems: [{
+			name: 'Card Headers and Footers',
+			link: 'cards-headers-footers'
+		}, {
+			name: 'Lists',
+			link: 'card-lists'
+		}]
 	}];
 
 	function normalizeItemTmpUrl (item) {
