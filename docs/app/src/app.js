@@ -39,8 +39,9 @@ function IndexController ($scope, readmeContent) {
 	$scope.readmeContent = readmeContent;
 }
 
-ReadmeContentFactory.$inject = ['$http', '$sce', '$compile', '$rootScope'];
-function ReadmeContentFactory ($http, $sce, $compile, $rootScope) {
+ReadmeContentFactory.$inject = ['$http', '$sce', '$compile', '$rootScope', '$location'];
+function ReadmeContentFactory ($http, $sce, $compile, $rootScope, $location) {
+	var scope = $rootScope.$new();
 	return $http.get('https://cdn.rawgit.com/ngmobie/mobie/master/README.md').then(function (res) {
 		return res.data;
 	}).then(function (md) {
@@ -74,7 +75,7 @@ function ReadmeContentFactory ($http, $sce, $compile, $rootScope) {
 
 			var parentEl = angular.element(el).parent();
 
-			$compile(highlightEl)($rootScope);
+			$compile(highlightEl)(scope);
 
 			parentEl.after(highlightEl);
 			parentEl.remove();
@@ -94,6 +95,12 @@ angular.module('docsApp', [
 	'docsApp.footer',
 	'docsApp.highlight'
 ])
+.directive('mbFirstView', function () {
+	return function (scope, element, attrs) {
+		var uiViewEl = element[0];
+		uiViewEl.style.minHeight = window.innerHeight + 'px';
+	};
+})
 .directive('mbSref', SrefDirective)
 .controller('LeftbarController', LeftbarController)
 .config(['$stateProvider', '$urlRouterProvider', 'pagesDataProvider', function ($stateProvider, $urlRouterProvider, pagesDataProvider) {
