@@ -147,6 +147,23 @@ function AffixContentDirective ($window, $animate) {
 		scope.$on('$destroy', function () {
 			$window.off('scroll', onScroll);
 		});
+
+		// Put the link in the first heading of the element content
+		var firstHeadingEl = angular.element(element[0].querySelector('h1,h2,h3,h4,h5,h6'));
+		firstHeadingEl.attr('id', scope.href);
+
+		var anchorEl = angular.element('<a>');
+		anchorEl.on('click', function () {
+			scope.$apply(function () {
+				mbAffix.go(scope.href);
+			});
+		});
+		
+		var headingText = firstHeadingEl.text();
+		anchorEl.text(headingText);
+
+		firstHeadingEl.text('');
+		firstHeadingEl.prepend(anchorEl);
 	}
 
 	return {
