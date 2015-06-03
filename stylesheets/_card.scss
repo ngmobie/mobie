@@ -27,3 +27,9 @@
     border-bottom: 0;
   }
 }
+
+.card {
+  &.list {
+    padding-bottom: 0px;
+  }
+}
