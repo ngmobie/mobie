@@ -42,8 +42,14 @@ function HighlightDirective () {
 				});
 				
 				if(/html/.test(scope.language)) {
-					el.innerHTML = safe_tags_replace(el.innerHTML).trim();
+					el.innerHTML = safe_tags_replace(el.innerHTML);
 				}
+
+				if(/(jade|html)/.test(scope.language)) {
+					el.innerHTML = el.innerHTML.replace(/<span>/g, '').replace(/<\/span>/g, '');
+				}
+
+				el.innerHTML = el.innerHTML.trim();
 
 				hljs.highlightBlock(el);
 			};
