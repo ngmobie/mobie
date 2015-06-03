@@ -1,0 +1,20 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Select
+		.list
+			.item.item-divider My guy is
+			.item
+				.item-content {{data.myguy || '???'}}
+			.item.item-divider My wife is
+			.item
+				.item-content {{data.mywife || '???'}}
+			.item.item-divider Choices
+			label.item.item-input.item-select
+				.input-label Your guy
+				select(ng-model="data.myguy", ng-options="person.name as person.name for person in persons | limitTo: 4")
+			label.item.item-input.item-select
+				.input-label Your wife
+				select(ng-model="data.mywife", ng-options="person.name as person.name for person in persons | limitTo: 4")
