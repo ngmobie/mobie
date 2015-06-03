@@ -1,0 +1,16 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Cards Images
+		div(ng-repeat="person in persons | limitTo: 3 track by $index")
+			.list.card(ng-repeat="post in person.posts | limitTo: 2 track by $index")
+				.item.item-avatar
+					img(ng-src="{{ post.author.avatarUrl }}")
+					h2 {{post.author.name}}
+					p {{post.createdAt | date: 'fullDate'}}
+				.item.item-image
+					img(ng-src="{{ post.thumbnailUrl }}")
+				.item
+					.item-content  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga iste aliquid facere quos accusamus asperiores, soluta voluptates libero, quia incidunt accusantium blanditiis quibusdam sit quisquam id beatae tempore velit reiciendis!
