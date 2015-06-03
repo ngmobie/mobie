@@ -1,0 +1,7 @@
+extends ./tabs-example-base.mobile.jade
+
+block tabs
+	.tabs.fixed-bottom
+		.tab-item(ng-click="tab = ''") Home
+		.tab-item(ng-click="tab = 'favorites'") Favorites
+		.tab-item(ng-click="tab = 'settings'") Settings

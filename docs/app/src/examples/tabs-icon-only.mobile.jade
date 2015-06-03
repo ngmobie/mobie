@@ -1,0 +1,10 @@
+extends ./tabs-example-base.mobile.jade
+
+block tabs
+	.tabs.tabs-icon-only.fixed-bottom
+		.tab-item(ng-click="tab = ''")
+			i.icon.ion-home
+		.tab-item(ng-click="tab = 'favorites'")
+			i.icon.ion-star
+		.tab-item(ng-click="tab = 'settings'")
+			i.icon.ion-gear-a
