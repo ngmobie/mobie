@@ -1,0 +1,20 @@
+<h3>Radio Inputs</h3>
+
+<p>Radio buttons act no differently as standard radio input elements. Following this convention will display a list of radio buttons similarly seen in modern app.</p>
+
+<p>Each <code>item-radio</code> must have a radio input with the same input <code>name</code> attribute. The <code>radio-icon</code> class is used to designate when to show and hide the icon element.</p>
+
+<p>We prefers to use the <code>&lt;label&gt;</code> element for a radio item in order to make the entire area tappable. <b>If you use another element, it may not work properly</b>.</p>
+
+<mb-highlight language="html">
+<div class="list">
+  <label class="item item-radio">
+    <input type="radio" name="group">
+    <div class="item-content">
+      Go
+    </div>
+    <i class="radio-icon ion-checkmark"></i>
+  </label>
+  ...
+</div>
+</mb-highlight>

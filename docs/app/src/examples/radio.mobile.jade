@@ -1,0 +1,15 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Radio Inputs
+		ul.list
+			.item.item-divider Selected person
+			.item
+				.item-content {{ fakerCtrl.getPersonById(fakerCtrl.checkedId).name || '???' }}
+			.item.item-divider Available persons
+			label.item.item-radio.input-hidden(ng-repeat="person in persons | limitTo: 9 track by $index")
+				input(type="radio", name="group", value="{{ person.id }}", ng-model="fakerCtrl.checkedId")
+				.item-content {{person.name}}
+				i.radio-icon.ion-checkmark
