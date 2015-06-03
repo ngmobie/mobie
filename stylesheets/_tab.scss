@@ -1,0 +1,252 @@
+/**
+ * Tabs
+ * --------------------------------------------------
+ * A navigation bar with any number of tab items supported.
+ */
+
+.tabs {
+	border: 0;
+}
+
+.tabs {
+	display: flex;
+	box-direction: normal;
+	box-orient: horizontal;
+	flex-direction: horizontal;
+	box-pack: center;
+	flex-pack: center;
+	justify-content: center;
+	transform: translate3d(0,0,0);
+
+	@include tab-style($tabs-default-bg, $tabs-default-border-color, $tabs-default-color);
+	@include tab-badge-style($tabs-default-color, $tabs-default-bg);
+
+	z-index: $z-index-tabs;
+
+	width: 100%;
+	height: $tabs-height;
+
+	border-style: solid;
+	border-top-width: 1px;
+
+	background-size: 0;
+	line-height: $tabs-height;
+}
+
+.tabs-striped {
+	.tabs {
+		background-color: white;
+		background-image: none;
+		border: none;
+		border-bottom: 1px solid #ddd;
+		padding-top: $tabs-striped-border-width;
+	}
+	.tab-item {
+		// default android tab style
+		&.tab-item-active,
+		&.active,
+		&.activated {
+			margin-top: -$tabs-striped-border-width;
+			border-style: solid;
+			border-width: $tabs-striped-border-width 0 0 0;
+			border-color: #000;
+			.badge{
+				top:$tabs-striped-border-width;
+				opacity: 1;
+			}
+		}
+	}
+}
+
+.tabs-top {
+	&.tabs-striped {
+		padding-bottom:0;
+		.tab-item{
+			background: transparent;
+			// animate the top bar, leave bottom for platform consistency
+			-webkit-transition: color .1s ease;
+			-moz-transition: color .1s ease;
+			-ms-transition: color .1s ease;
+			-o-transition: color .1s ease;
+			transition: color .1s ease;
+			&.tab-item-active,
+			&.active,
+			&.activated {
+				margin-top: $tabs-striped-border-width - 1px;
+				border-width: 0px 0px $tabs-striped-border-width 0px !important;
+				border-style: solid;
+				> .badge, > i{
+					margin-top: -$tabs-striped-border-width + 1px;
+				}
+			}
+			.badge{
+				-webkit-transition: color .2s ease;
+				-moz-transition: color .2s ease;
+				-ms-transition: color .2s ease;
+				-o-transition: color .2s ease;
+				transition: color .2s ease;
+			}
+		}
+	}
+}
+
+/* Allow parent element to have tabs-top */
+/* If you change this, change platform.scss as well */
+.tabs-top > .tabs,
+.tabs.tabs-top {
+	top: $bar-height;
+	padding-top: 0;
+	background-position: bottom;
+	border-top-width: 0;
+	border-bottom-width: 1px;
+	.tab-item {
+		&.tab-item-active,
+		&.active,
+		&.activated {
+			.badge {
+				top: 4%;
+			}
+		}
+	}
+}
+.tabs-top ~ .bar-header {
+	border-bottom-width: 0;
+}
+
+.tab-item {
+	flex: 1;
+	display: block;
+	overflow: hidden;
+
+	max-width: $tab-item-max-width;
+	height: 100%;
+
+	color: inherit;
+	text-align: center;
+	text-decoration: none;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	font-weight: 400;
+	font-size: $tabs-text-font-size;
+	font-family: $font-family-sans-serif;
+
+	opacity: 0.7;
+
+	&:hover {
+		cursor: pointer;
+	}
+	&.tab-hidden{
+		display:none;
+	}
+}
+
+.tabs-item-hide > .tabs,
+.tabs.tabs-item-hide {
+	display: none;
+}
+
+.tabs-icon-top > .tabs .tab-item,
+.tabs-icon-top.tabs .tab-item,
+.tabs-icon-bottom > .tabs .tab-item,
+.tabs-icon-bottom.tabs .tab-item {
+	font-size: $tabs-text-font-size-side-icon;
+	line-height: $tabs-text-font-size;
+}
+
+.tab-item .icon {
+	display: block;
+	margin: 0 auto;
+	height: $tabs-icon-size;
+	font-size: $tabs-icon-size;
+}
+
+.tabs-icon-left.tabs .tab-item,
+.tabs-icon-left > .tabs .tab-item,
+.tabs-icon-right.tabs .tab-item,
+.tabs-icon-right > .tabs .tab-item {
+	font-size: $tabs-text-font-size-side-icon;
+
+	.icon {
+		display: inline-block;
+		vertical-align: top;
+		margin-top: -.1em;
+
+		&:before {
+		font-size: $tabs-icon-size - 8;
+		line-height: $tabs-height;
+		}
+	}
+}
+
+.tabs-icon-left > .tabs .tab-item .icon,
+.tabs-icon-left.tabs .tab-item .icon {
+	padding-right: 3px;
+}
+
+.tabs-icon-right > .tabs .tab-item .icon,
+.tabs-icon-right.tabs .tab-item .icon {
+	padding-left: 3px;
+}
+
+.tabs-icon-only > .tabs .icon,
+.tabs-icon-only.tabs .icon {
+	line-height: inherit;
+}
+
+
+.tab-item.has-badge {
+	position: relative;
+}
+
+.tab-item .badge {
+	position: absolute;
+	top: 4%;
+	right: 33%; // fallback
+	right: calc(50% - 26px);
+	padding: $tabs-badge-padding;
+	height: auto;
+	font-size: $tabs-badge-font-size;
+	line-height: $tabs-badge-font-size + 4;
+}
+
+
+/* Navigational tab */
+
+/* Active state for tab */
+.tab-item.tab-item-active,
+.tab-item.active,
+.tab-item.activated {
+	opacity: 1;
+}
+
+.item.tabs {
+	display: flex;
+	padding: 0;
+
+	.icon:before {
+		position: relative;
+	}
+}
+
+.tab-item.disabled,
+.tab-item[disabled] {
+	opacity: .4;
+	cursor: default;
+	pointer-events: none;
+}
+
+.tabs {
+	@media (min--moz-device-pixel-ratio: 1.5),
+				 (-webkit-min-device-pixel-ratio: 1.5),
+				 (min-device-pixel-ratio: 1.5),
+				 (min-resolution: 144dpi),
+				 (min-resolution: 1.5dppx) {
+		padding-top: 2px;
+		border-top: none !important;
+		border-bottom: none;
+		background-position: top;
+		background-size: 100% 1px;
+		background-repeat: no-repeat;
+	}
+}
