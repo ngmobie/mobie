@@ -4,6 +4,18 @@ function ExamplesController ($scope) {
 		name: 'Introduction',
 		example: false
 	}, {
+		name: 'Tabs',
+		subitems: [{
+			name: 'Icon-only Tabs',
+			link: 'tabs-icon-only'
+		}, {
+			name: 'Icon-left Tabs',
+			link: 'tabs-icon-left'
+		}, {
+			name: 'Icon-top Tabs',
+			link: 'tabs-icon-top'
+		}]
+	}, {
 		name: 'Typography'
 	}, {
 		name: 'List',
@@ -21,9 +33,16 @@ function ExamplesController ($scope) {
 		}, {
 			name: 'Lists',
 			link: 'card-lists'
+		}, {
+			name: 'Images',
+			link: 'cards-images'
 		}]
 	}, {
 		name: 'Range'
+	}, {
+		name: 'Radio'
+	}, {
+		name: 'Select'
 	}];
 
 	function normalizeItemTmpUrl (item) {
