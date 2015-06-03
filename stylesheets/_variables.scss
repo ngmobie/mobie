@@ -60,6 +60,28 @@ $grid-responsive-md-break:        767px !default;  // smaller than portrait tabl
 $grid-responsive-lg-break:        1023px !default; // smaller than landscape tablet
 
 
+// Tabs
+// -------------------------------
+
+$tabs-height:                     49px !default;
+$tabs-text-font-size:             14px !default;
+$tabs-text-font-size-side-icon:   10px !default;
+$tabs-icon-size:                  32px !default;
+$tabs-badge-padding:              1px 6px !default;
+$tabs-badge-font-size:            12px !default;
+
+$tabs-default-bg:									darken(#fff, 8%);
+$tabs-default-border-color:				darken($tabs-default-bg, 10%);
+$tabs-default-color:							#000;
+
+$tab-item-max-width:              150px !default;
+
+$tabs-off-opacity:                0.4 !default;
+$tabs-striped-off-opacity:        $tabs-off-opacity !default;
+$tabs-striped-off-color:          #000 !default;
+$tabs-striped-border-width:       2px !default;
+
+
 // Item
 // -------------------------------
 
@@ -216,3 +238,5 @@ $z-index-backdrop:          9 !default;
 $z-index-popup:      	      10 !default;
 $z-index-sidenav:           10 !default;
 $z-index-modal:           	10 !default;
+$z-index-tabs:              10 !default;
+$z-index-item-radio:				10 !default;
