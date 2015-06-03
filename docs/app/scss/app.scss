@@ -103,9 +103,13 @@ pre {
 
 .mb-affix-right-column {
   border: 1px solid #eee;
+
+  iframe {
+  	overflow: hidden;
+  }
   
   &, iframe {
-  	height: 500px;
+  	height: 505px;
   }
 }
 
