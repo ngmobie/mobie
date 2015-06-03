@@ -97,6 +97,132 @@ a.item {
 	}
 }
 
+
+/**
+ * Item select
+ * --------------------------------------------------
+ */
+
+.item-select {
+  position: relative;
+
+  select {
+    appearance: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: ($item-padding - 2) ($item-padding * 3) ($item-padding) $item-padding;
+    max-width: 65%;
+
+    border: none;
+    background: $item-default-bg;
+    color: #333;
+
+    // hack to hide default dropdown arrow in FF
+    text-indent: .01px;
+    text-overflow: '';
+
+    white-space: nowrap;
+    font-size: $font-size-base;
+
+    cursor: pointer;
+    direction: rtl; // right align the select text
+
+    &:focus {
+    	outline: none;
+    }
+
+	  &[multiple],
+	  &[size] {
+	    height: auto;
+	  }
+  }
+
+  select::-ms-expand {
+    // hide default dropdown arrow in IE
+    display: none;
+  }
+
+  option {
+    direction: ltr;
+  }
+
+  &:after {
+    position: absolute;
+    top: 50%;
+    right: $item-padding;
+    margin-top: -3px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid;
+    border-right: 5px solid rgba(0, 0, 0, 0);
+    border-left: 5px solid rgba(0, 0, 0, 0);
+    color: #999;
+    content: "";
+    pointer-events: none;
+  }
+}
+
+
+/**
+ * Radio Button Inputs
+ * --------------------------------------------------
+ */
+
+.item-radio {
+  padding: 0;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.item-radio .item-content {
+  /* give some room to the right for the checkmark icon */
+  padding-right: $item-padding * 4;
+}
+
+.item-radio .radio-icon {
+  /* checkmark icon will be hidden by default */
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: $z-index-item-radio;
+  visibility: hidden;
+  padding: $item-padding - 2;
+  height: 100%;
+  font-size: 24px;
+}
+
+.item-radio input {
+  /* hide any radio button inputs elements (the ugly circles) */
+  position: absolute;
+  left: -9999px;
+
+  &:checked ~ .item-content {
+    /* style the item content when its checked */
+    background: #f7f7f7;
+  }
+
+  &:checked ~ .radio-icon {
+    /* show the checkmark icon when its checked */
+    visibility: visible;
+  }
+}
+
+// Hack for Android to correctly display the checked item
+// http://timpietrusky.com/advanced-checkbox-hack
+.platform-android.grade-b .item-radio,
+.platform-android.grade-c .item-radio {
+  -webkit-animation: androidCheckedbugfix infinite 1s;
+}
+@keyframes androidCheckedbugfix {
+  from { padding: 0; }
+  to { padding: 0; }
+}
+
+
 /**
  * Item Icons
  * --------------------------------------------------
@@ -161,6 +287,20 @@ a.item {
 .item-icon-left.item-icon-right .icon:last-child,
 .item-icon-left .item-delete .icon {
   left: auto;
+}
+
+
+// Item Image
+// -------------------------------
+
+.item-image {
+  padding: 0;
+  text-align: center;
+
+  img:first-child, .list-img {
+    width: 100%;
+    vertical-align: middle;
+  }
 }
 
 
