@@ -15,7 +15,7 @@ bower install --save mobie
 ### Why mobie?
 
 - Well optimized to be as fast as it can in any mobile device
-- Run it anywhere, not only in Cordova Browser. (Safari, Chrome, Firefox, IE8+)
+- Run it anywhere, not only in Cordova Browser. (Safari, Chrome, Firefox etc)
 - Works in any router, without any router, you don't need to use `ui.router` or `ngRoute`, you can use whatever you want, wherever you want.
 
 ### Improving your application performance/bootstrap
