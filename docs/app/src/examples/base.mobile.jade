@@ -1,12 +1,14 @@
 doctype html
 html(ng-app="device-example-app")
 	head
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		link(href="../lib/ionicons/css/ionicons.min.css", rel="stylesheet")
 		link(href="../lib/mobie.css", rel="stylesheet")
 	body
 		block content
 
 		script(src="../lib/Faker/build/build/faker.min.js")
-		script(src="../lib/angular/angular.js")
-		script(src="../lib/mobie.js")
+		script(src="../lib/lodash/lodash.min.js")
+		script(src="../lib/angular/angular.min.js")
+		script(src="../lib/mobie.min.js")
 		script(src="../js/app.js")
