@@ -220,12 +220,68 @@ function AffixColumnDirective () {
 	}
 }
 
+AffixIframeDirective.$inject = ['$animate', '$q'];
+function AffixIframeDirective ($animate, $q) {
+	return {
+		require: '?^mbAffix',
+		scope: {
+			href: '@mbAffixId',
+			src: '@src'
+		},
+		restrict: 'E',
+		link: function (scope, element, attrs, mbAffix) {
+			if(!mbAffix) {
+				return;
+			}
+
+			var iframeEl = angular.element('<iframe>');
+			iframeEl.on('load', function () {
+				scope.$apply(function () {
+					scope.isLoading = false;
+				});
+			});
+
+			attrs.$observe('src', function (src) {
+				iframeEl.attr('src', src);
+			});
+
+			var unwatch = scope.$watch(function () {
+				return mbAffix.activeItem.link;
+			}, function (href, oldHref) {
+				if(href !== scope.href) {
+					return;
+				}
+
+				scope.isLoading = true;
+				$animate.enter(iframeEl, element).then(function () {
+					unwatch();
+				});
+			});
+
+			var loadingEl = angular.element('<i class="fa fa-spin fa-spinner"></i>');
+			var backdropEl = angular.element('<div class="backdrop"></div>');
+			scope.$watch('isLoading', function (isLoading) {
+				var method = isLoading ? 'enter' : 'leave';
+				var promises = [];
+
+				_.forEach([loadingEl, backdropEl], function (el) {
+					promises.push($animate[method](el, element));
+				});
+
+				return $q.all(promises).then(function () {
+					//
+				});
+			});
+		}
+	};
+}
+
 AffixMobileTemplateDirective.$inject = ['$animate'];
 function AffixMobileTemplateDirective ($animate) {
 	return {
 		require: '?^mbAffix',
 		template: '<div ng-repeat="(key, item) in _$items$_" id="{{ item.link }}" class="phone-example-right">' +
-			'<iframe ng-src="{{item.mobileTemplatePath}}"></iframe>' +
+			'<mb-affix-iframe data-src="{{item.mobileTemplatePath}}" mb-affix-id="{{ item.link }}"></mb-affix-iframe>' +
 		'</div>',
 		link: function (scope, element, attrs, mbAffix) {
 			if(!mbAffix) {
@@ -277,6 +333,7 @@ angular.module('docsApp.affix', [])
 .config(['$anchorScrollProvider', function ($anchorScrollProvider) {
 	$anchorScrollProvider.disableAutoScrolling();
 }])
+.directive('mbAffixIframe', AffixIframeDirective)
 .directive('mbAffixHref', AffixHrefDirective)
 .directive('mbAffixColumn', AffixColumnDirective)
 .directive('mbAffix', AffixDirective)
