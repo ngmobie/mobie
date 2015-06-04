@@ -4,6 +4,35 @@ function ExamplesController ($scope) {
 		name: 'Introduction',
 		example: false
 	}, {
+		name: 'Brand colors'
+	}, {
+		name: 'Forms',
+		subitems: [{
+			name: 'Placeholder labels',
+			link: 'forms-placeholder-labels'
+		}, {
+			name: 'Inline labels',
+			link: 'forms-inline-labels'
+		}, {
+			name: 'Stacked Labels',
+			link: 'forms-stacked-labels'
+		}, {
+			name: 'Floating Labels',
+			link: 'forms-floating-labels'
+		}, {
+			name: 'Inset Forms',
+			link: 'forms-insets'
+		}, {
+			name: 'Inset Inputs',
+			link: 'forms-inset-inputs'
+		}, {
+			name: 'Input Icons',
+			link: 'forms-input-icons'
+		}, {
+			name: 'Header Inputs',
+			link: 'forms-bar-inputs'
+		}]
+	}, {
 		name: 'Tabs',
 		subitems: [{
 			name: 'Icon-only Tabs',
@@ -14,6 +43,36 @@ function ExamplesController ($scope) {
 		}, {
 			name: 'Icon-top Tabs',
 			link: 'tabs-icon-top'
+		}]
+	}, {
+		name: 'Buttons',
+		subitems: [{
+			name: 'Block',
+			link: 'buttons-block'
+		}, {
+			name: 'Full Width',
+			link: 'buttons-full'
+		}, {
+			name: 'Different Sizes',
+			link: 'buttons-sizes'
+		}, {
+			name: 'Outlined',
+			link: 'buttons-outlined'
+		}, {
+			name: 'Clear',
+			link: 'buttons-clear'
+		}, {
+			name: 'Icons',
+			link: 'buttons-icons'
+		}, {
+			name: 'Headers/Footers',
+			link: 'buttons-headers-footers'
+		}, {
+			name: 'Clear Buttons in Headers',
+			link: 'buttons-clear-buttons-headers'
+		}, {
+			name: 'Button Bar',
+			link: 'buttons-button-bar'
 		}]
 	}, {
 		name: 'Typography'
@@ -59,7 +118,7 @@ function ExamplesController ($scope) {
 
 	$scope.items = _(items).map(function (item) {
 		if(!item.link) {
-			item.link = item.name.toLowerCase();
+			item.link = item.name.toLowerCase().replace(/\ /g, '-');
 		}
 		return normalizeItemTmpUrl(item);
 	}).value();
