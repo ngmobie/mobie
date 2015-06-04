@@ -26,7 +26,8 @@
     "angular-ui-router": "~0.2.15",
     "highlight.js": "git@github.com:isagalaev/highlight.js.git#~7.0.1",
     "Faker": "~2.1.3",
-    "ionicons": "~2.0.1"
+    "ionicons": "~2.0.1",
+    "fontawesome": "~4.3.0"
   },
   "dependencies": {
     "normalize.css": "~3.0.3"
