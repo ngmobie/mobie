@@ -161,20 +161,8 @@ gulp.task('stylesheets', function () {
 });
 
 gulp.task('stylesheets-brands', function () {
-	var brands = [{
-		name: 'primary',
-		color: '#387ef5'
-	}, {
-		name: 'success',
-		color: '#33cd5f'
-	}, {
-		name: 'info',
-		color: '#ffc900'
-	}, {
-		name: 'danger',
-		color: '#ef473a'
-	}];
-	var components = ['item', 'tabs', 'bar', 'range'];
+	var brands = ['primary', 'success', 'danger', 'info'];
+	var components = ['item', 'tabs', 'bar', 'range', 'button'];
 	var files = [
 		'stylesheets/templates/brands.template.scss'
 	];
