@@ -1,4 +1,6 @@
+var _ = require('lodash');
 var log = require('gulp-util').log;
+var path = require('path');
 var gulp = require('gulp');
 var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
@@ -8,7 +10,9 @@ var cssmin = require('gulp-cssmin');
 var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
 var wrapper = require('gulp-wrapper');
+var nunjucks = require('./nunjucks-build');
 var pleeease = require('gulp-pleeease');
 var ngAnnotate = require('gulp-ng-annotate');
 var livereload = require('gulp-livereload');
@@ -105,9 +109,11 @@ gulp.task('docs-watch', ['docs-livereload'], function () {
 	gulp.watch('docs/app/src/**/*.{html,jade}', ['docs-templates']);
 	gulp.watch('docs/config/**/*.{js,html}', ['docs-build']);
 
-	gulp.watch(paths.scripts, ['scripts', 'docs-mobie-build']);
-	gulp.watch(paths.templates, ['templates', 'docs-mobie-build']);
-	gulp.watch(paths.stylesheets, ['stylesheets', 'docs-mobie-build']);
+	gulp.watch(paths.scripts, ['scripts']);
+	gulp.watch(paths.templates, ['templates']);
+	gulp.watch(paths.stylesheets, ['stylesheets']);
+
+	gulp.watch('build/mobie.*', ['docs-mobie-build']);
 });
 
 var express = require('express');
@@ -152,6 +158,42 @@ gulp.task('stylesheets', function () {
 		.pipe(pleeease())
 		.pipe(cssmin())
 		.pipe(gulp.dest('build'));
+});
+
+gulp.task('stylesheets-brands', function () {
+	var brands = [{
+		name: 'primary',
+		color: '#387ef5'
+	}, {
+		name: 'success',
+		color: '#33cd5f'
+	}, {
+		name: 'info',
+		color: '#ffc900'
+	}, {
+		name: 'danger',
+		color: '#ef473a'
+	}];
+	var components = ['item', 'tabs', 'bar', 'range'];
+	var files = [
+		'stylesheets/templates/brands.template.scss'
+	];
+	var basePath = 'stylesheets/templates';
+	_.forEach(components, function (componentName) {
+		files.push(path.resolve(basePath, ['_' + componentName, 'template', 'scss'].join('.')));
+	});
+
+	gulp.src(files)
+	.pipe(nunjucks({
+		brands: brands,
+		components: components
+	}))
+	.pipe(rename(function (path) {
+		path.basename = path.basename.replace(/\.template/, '');
+	}))
+	.pipe(gulp.dest('stylesheets/brands')).on('end', function () {
+		process.exit(0);
+	});
 });
 
 var scriptsHeaderObj = {
