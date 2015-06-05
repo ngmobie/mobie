@@ -1,0 +1,40 @@
+
+.item-primary {
+	$bg: $item-primary-bg;
+	$border: $item-primary-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include item-style($bg, $border, $color);
+}
+
+.item-success {
+	$bg: $item-success-bg;
+	$border: $item-success-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include item-style($bg, $border, $color);
+}
+
+.item-danger {
+	$bg: $item-danger-bg;
+	$border: $item-danger-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include item-style($bg, $border, $color);
+}
+
+.item-info {
+	$bg: $item-info-bg;
+	$border: $item-info-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include item-style($bg, $border, $color);
+}
+
+.item-light {
+	$bg: $item-light-bg;
+	$border: $item-light-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include item-style($bg, $border, $color);
+}

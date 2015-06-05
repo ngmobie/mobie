@@ -1,0 +1,105 @@
+
+.tabs-primary {
+	@include tab-style($tabs-primary-bg, $tabs-primary-border-color, $tabs-primary-color);
+}
+.tabs-striped {
+	@include tabs-striped('tabs-primary', $dark, $brand-primary);
+	
+	// doing this twice so striped tabs styles don't override specific bg and color vals
+	@include tabs-striped-background('tabs-background-primary', $brand-primary);
+
+	@include tabs-striped-color('tabs-color-primary', $brand-primary);
+}
+@include tabs-background('tabs-background-primary', $brand-primary, $bar-primary-border-color);
+@include tabs-color('tabs-color-primary', $brand-primary);
+
+.tab-item.tab-item-active,
+.tab-item:active {
+	&.tab-item-primary {
+		color: $brand-primary;
+	}
+}
+
+.tabs-success {
+	@include tab-style($tabs-success-bg, $tabs-success-border-color, $tabs-success-color);
+}
+.tabs-striped {
+	@include tabs-striped('tabs-success', $dark, $brand-success);
+	
+	// doing this twice so striped tabs styles don't override specific bg and color vals
+	@include tabs-striped-background('tabs-background-success', $brand-success);
+
+	@include tabs-striped-color('tabs-color-success', $brand-success);
+}
+@include tabs-background('tabs-background-success', $brand-success, $bar-success-border-color);
+@include tabs-color('tabs-color-success', $brand-success);
+
+.tab-item.tab-item-active,
+.tab-item:active {
+	&.tab-item-success {
+		color: $brand-success;
+	}
+}
+
+.tabs-danger {
+	@include tab-style($tabs-danger-bg, $tabs-danger-border-color, $tabs-danger-color);
+}
+.tabs-striped {
+	@include tabs-striped('tabs-danger', $dark, $brand-danger);
+	
+	// doing this twice so striped tabs styles don't override specific bg and color vals
+	@include tabs-striped-background('tabs-background-danger', $brand-danger);
+
+	@include tabs-striped-color('tabs-color-danger', $brand-danger);
+}
+@include tabs-background('tabs-background-danger', $brand-danger, $bar-danger-border-color);
+@include tabs-color('tabs-color-danger', $brand-danger);
+
+.tab-item.tab-item-active,
+.tab-item:active {
+	&.tab-item-danger {
+		color: $brand-danger;
+	}
+}
+
+.tabs-info {
+	@include tab-style($tabs-info-bg, $tabs-info-border-color, $tabs-info-color);
+}
+.tabs-striped {
+	@include tabs-striped('tabs-info', $dark, $brand-info);
+	
+	// doing this twice so striped tabs styles don't override specific bg and color vals
+	@include tabs-striped-background('tabs-background-info', $brand-info);
+
+	@include tabs-striped-color('tabs-color-info', $brand-info);
+}
+@include tabs-background('tabs-background-info', $brand-info, $bar-info-border-color);
+@include tabs-color('tabs-color-info', $brand-info);
+
+.tab-item.tab-item-active,
+.tab-item:active {
+	&.tab-item-info {
+		color: $brand-info;
+	}
+}
+
+.tabs-light {
+	@include tab-style($tabs-light-bg, $tabs-light-border-color, $tabs-light-color);
+}
+.tabs-striped {
+	@include tabs-striped('tabs-light', $light, $brand-light);
+	
+	// doing this twice so striped tabs styles don't override specific bg and color vals
+	@include tabs-striped-background('tabs-background-light', $brand-light);
+
+	@include tabs-striped-color('tabs-color-light', $brand-light);
+}
+@include tabs-background('tabs-background-light', $brand-light, $bar-light-border-color);
+@include tabs-color('tabs-color-light', $brand-light);
+
+.tab-item.tab-item-active,
+.tab-item:active {
+	&.tab-item-light {
+		color: $brand-light;
+	}
+}

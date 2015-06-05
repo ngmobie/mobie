@@ -1,0 +1,45 @@
+
+.bar-primary {
+	$bg: $bar-primary-bg;
+	$border: $bar-primary-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	
+	@include bar-style($bg, $color, $border);
+}
+
+.bar-success {
+	$bg: $bar-success-bg;
+	$border: $bar-success-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	
+	@include bar-style($bg, $color, $border);
+}
+
+.bar-danger {
+	$bg: $bar-danger-bg;
+	$border: $bar-danger-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	
+	@include bar-style($bg, $color, $border);
+}
+
+.bar-info {
+	$bg: $bar-info-bg;
+	$border: $bar-info-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	
+	@include bar-style($bg, $color, $border);
+}
+
+.bar-light {
+	$bg: $bar-light-bg;
+	$border: $bar-light-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	
+	@include bar-style($bg, $color, $border);
+}

@@ -1,0 +1,50 @@
+
+.button-primary {
+	$bg: $button-primary-bg;
+	$border: $button-primary-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include button-style($bg, $color, $border);
+	@include button-clear($border);
+  @include button-outline($border);
+}
+
+.button-success {
+	$bg: $button-success-bg;
+	$border: $button-success-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include button-style($bg, $color, $border);
+	@include button-clear($border);
+  @include button-outline($border);
+}
+
+.button-danger {
+	$bg: $button-danger-bg;
+	$border: $button-danger-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include button-style($bg, $color, $border);
+	@include button-clear($border);
+  @include button-outline($border);
+}
+
+.button-info {
+	$bg: $button-info-bg;
+	$border: $button-info-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include button-style($bg, $color, $border);
+	@include button-clear($border);
+  @include button-outline($border);
+}
+
+.button-light {
+	$bg: $button-light-bg;
+	$border: $button-light-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include button-style($bg, $color, $border);
+	@include button-clear($border);
+  @include button-outline($border);
+}

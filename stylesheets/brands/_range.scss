@@ -1,0 +1,20 @@
+
+.range-primary input {
+	@include range-style($range-primary-track-bg);
+}
+
+.range-success input {
+	@include range-style($range-success-track-bg);
+}
+
+.range-danger input {
+	@include range-style($range-danger-track-bg);
+}
+
+.range-info input {
+	@include range-style($range-info-track-bg);
+}
+
+.range-light input {
+	@include range-style($range-light-track-bg);
+}
