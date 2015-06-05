@@ -1,0 +1,18 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Stacked Labels
+		.list
+			label.item.item-input.item-stacked-label
+				span.input-label First name
+				input(type="text", placeholder="Victor")
+			label.item.item-input.item-stacked-label
+				span.input-label Last name
+				input(type="text", placeholder="Queiroz")
+			label.item.item-input.item-stacked-label
+				span.input-label E-mail
+				input(type="text", placeholder="personal@something.com")
+		.padding
+			button.button.button-block Submit

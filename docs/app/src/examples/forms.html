@@ -1,0 +1,21 @@
+<h3>Forms</h3>
+
+<p>A list is also used to group related input elements. Both item-input and item is then used to designate each individual input field and it's associated label.</p>
+
+<p>We prefers to create the <code>item-input</code> out of the <code>&lt;label&gt;</code> element so that when any part of the row is tapped then the underlying input receives focus.</p>
+
+<p>Additionally, developers should be aware of the various HTML5 Input types so users will be presented with the appropriate virtual keyboard.</p>
+
+<mb-highlight language="html">
+<div class="list">
+  <label class="item item-input">
+    <input type="text" placeholder="First name">
+  </label>
+  <label class="item item-input">
+    <input type="text" placeholder="Last name">
+  </label>
+  <div class="item">
+    <button class="button button-block">Send</button>
+  </div>
+</div>
+</mb-highlight>

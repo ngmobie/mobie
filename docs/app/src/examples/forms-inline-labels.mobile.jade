@@ -1,0 +1,17 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Inline Labels
+		.list
+			form(name="form", ng-submit="fakerCtrl.submitForm('Form submitted, and your name is \"{{ my.name.is }}\". Your password is \"{{ my.password.is }}\"')")
+				.item.item-input
+					span.input-label Username
+					input(type="text", ng-model="my.name.is", required)
+				.item.item-input
+					span.input-label Password
+					input(type="password", ng-model="my.password.is", required)
+		.padding
+			p
+				button.button-block.button.button-primary(ng-disabled="form.$invalid") Submit

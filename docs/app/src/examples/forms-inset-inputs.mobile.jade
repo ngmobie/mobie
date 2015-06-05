@@ -1,0 +1,12 @@
+extends ./base.mobile.jade
+
+block content
+	.bar.bar-header
+		h4.title Inset Inputs
+	.list(ng-controller="FakerController as fakerCtrl")
+		.item.item-input-inset
+			label.item-input-wrapper
+				input(type="text", placeholder="Search a term", ng-model="query")
+			button.button.button-small Submit
+		.item(ng-repeat="person in persons | limitTo:20 | query:query track by $index")
+			.item-content(mb-bold="query", data-bind="person.name")

@@ -1,0 +1,13 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Inset Forms
+		.list.list-inset
+			.item.item-input
+				input(type="text", placeholder="First name")
+			.item.item-input
+				input(type="text", placeholder="Last name")
+		.padding
+			button.button.button-block Submit

@@ -1,0 +1,18 @@
+extends ./base.mobile.jade
+
+block content
+  div(ng-controller="FakerController as fakerCtrl")
+    .bar.bar-header
+      h4.title Floating Labels
+    .list
+      .item.item-input.item-floating-label
+        span.input-label First name
+        input(type="text", placeholder="First name")
+      .item.item-input.item-floating-label
+        span.input-label Last name
+        input(type="text", placeholder="Last name")
+      .item.item-input.item-floating-label
+        span.input-label Email
+        input(type="text", placeholder="Email")
+    .padding
+      button.button.button-block Submit
