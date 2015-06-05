@@ -1,4 +1,5 @@
-# mobie
+Mobie [![Build Status](https://travis-ci.org/ngmobie/mobie.svg?branch=master)](https://travis-ci.org/ngmobie/mobie)
+=========
 
 A library to help you to build a scalable mobile application using AngularJS and whatever you want. This project stylesheets is based on [Ionic Framework](https://github.com/driftyco/ionic/blob/master/scss/) and our components in [Angular Material](https://github.com/angular/material).
 
