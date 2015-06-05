@@ -1,0 +1,5 @@
+{% for brand in brands %}
+.range-{{brand}} input {
+	@include range-style($range-{{brand}}-track-bg);
+}
+{% endfor %}

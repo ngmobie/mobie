@@ -1,0 +1,11 @@
+{% for brand in brands %}
+.button-{{brand}} {
+	$bg: $button-{{brand}}-bg;
+	$border: $button-{{brand}}-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include button-style($bg, $color, $border);
+	@include button-clear($border);
+  @include button-outline($border);
+}
+{% endfor %}

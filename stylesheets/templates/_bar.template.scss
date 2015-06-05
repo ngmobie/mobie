@@ -1,0 +1,10 @@
+{% for brand in brands %}
+.bar-{{brand}} {
+	$bg: $bar-{{brand}}-bg;
+	$border: $bar-{{brand}}-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	
+	@include bar-style($bg, $color, $border);
+}
+{% endfor %}

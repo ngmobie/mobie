@@ -1,0 +1,22 @@
+{% for brand in brands %}
+.tabs-{{brand}} {
+	@include tab-style($tabs-{{brand}}-bg, $tabs-{{brand}}-border-color, $tabs-{{brand}}-color);
+}
+.tabs-striped {
+	@include tabs-striped('tabs-{{ brand }}', {% if brand == "light" %}$light{% else %}$dark{% endif %}, $brand-{{ brand }});
+	
+	// doing this twice so striped tabs styles don't override specific bg and color vals
+	@include tabs-striped-background('tabs-background-{{ brand }}', $brand-{{ brand }});
+
+	@include tabs-striped-color('tabs-color-{{ brand }}', $brand-{{ brand }});
+}
+@include tabs-background('tabs-background-{{ brand }}', $brand-{{ brand }}, $bar-{{ brand }}-border-color);
+@include tabs-color('tabs-color-{{ brand }}', $brand-{{ brand }});
+
+.tab-item.tab-item-active,
+.tab-item:active {
+	&.tab-item-{{ brand }} {
+		color: $brand-{{ brand }};
+	}
+}
+{% endfor %}

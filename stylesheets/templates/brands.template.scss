@@ -1,0 +1,5 @@
+{% for component in components %}
+{% if component != "tabs" %}
+@import "{{ component }}";
+{% endif %}
+{% endfor %}

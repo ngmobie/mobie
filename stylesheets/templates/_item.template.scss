@@ -1,0 +1,9 @@
+{% for brand in brands %}
+.item-{{brand}} {
+	$bg: $item-{{brand}}-bg;
+	$border: $item-{{brand}}-border-color;
+	$color: #fff;
+	$bg-active: $bg;
+	@include item-style($bg, $border, $color);
+}
+{% endfor %}
