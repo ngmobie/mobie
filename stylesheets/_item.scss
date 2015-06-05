@@ -86,15 +86,15 @@ a.item {
 			white-space: nowrap;
 		}
 	}
+}
 
-	&.item-divider {
-		padding-top: ceil($item-padding / 2);
-		padding-bottom: ceil($item-padding / 2);
-		min-height: 30px;
-		background-color: $item-divider-bg;
-		color: $item-divider-color;
-		font-weight: 500;
-	}
+.item-divider {
+	padding-top: ceil($item-padding / 2);
+	padding-bottom: ceil($item-padding / 2);
+	min-height: 30px;
+	background-color: $item-divider-bg;
+	color: $item-divider-color;
+	font-weight: 500;
 }
 
 
@@ -128,10 +128,6 @@ a.item {
 
     cursor: pointer;
     direction: rtl; // right align the select text
-
-    &:focus {
-    	outline: none;
-    }
 
 	  &[multiple],
 	  &[size] {
