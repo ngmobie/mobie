@@ -1,0 +1,53 @@
+@mixin button-style(
+  $bg-color, $color,
+  $border-color,
+  $active-bg-color: darken($bg-color, 10%),
+  $active-border-color: $active-bg-color) {
+  border-color: $border-color;
+  background-color: $bg-color;
+  color: $color;
+
+  // Give desktop users something to play with
+  &:hover {
+    color: $color;
+    text-decoration: none;
+  }
+  &:active {
+    border-color: $active-border-color;
+    background-color: $active-bg-color;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.1);
+  }
+}
+
+@mixin button-clear($color, $font-size:"") {
+  &.button-clear {
+    border-color: transparent;
+    background: none;
+    box-shadow: none;
+    color: $color;
+
+    @if $font-size != "" {
+      font-size: $font-size;
+    }
+  }
+  &.button-icon {
+    border-color: transparent;
+    background: none;
+  }
+}
+
+@mixin button-outline($color, $text-color:"") {
+  &.button-outline {
+    border-color: $color;
+    background: transparent;
+    @if $text-color == "" {
+      $text-color: $color;
+    }
+    color: $text-color;
+    &:active {
+      background-color: $color;
+      box-shadow: none;
+      color: #fff;
+    }
+  }
+}
