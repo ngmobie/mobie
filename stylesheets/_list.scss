@@ -13,8 +13,63 @@
 	}
 }
 
+.list-inset {
+	.item {
+		border-left-width: 1px;
+		border-left-style: solid;
+		border-right-width: 1px;
+		border-right-style: solid;
+	}
+}
+
 ul.list {
 	list-style-type: none;
 	padding-left: 0px;
 	margin-top: 0px;
+}
+
+.card .item,
+.list-inset .item,
+.padding > .list .item {
+  &:first-child {
+    border-top-left-radius: $card-border-radius;
+    border-top-right-radius: $card-border-radius;
+
+    .item-content {
+      border-top-left-radius: $card-border-radius;
+      border-top-right-radius: $card-border-radius;
+    }
+  }
+  &:last-child {
+    border-bottom-right-radius: $card-border-radius;
+    border-bottom-left-radius: $card-border-radius;
+
+    .item-content {
+      border-bottom-right-radius: $card-border-radius;
+      border-bottom-left-radius: $card-border-radius;
+    }
+  }
+}
+
+.card .item:last-child,
+.list-inset .item:last-child {
+  margin-bottom: $item-border-width * -1;
+}
+
+.card .item,
+.list-inset .item,
+.padding > .list .item,
+.padding-horizontal > .list .item {
+  margin-right: 0;
+  margin-left: 0;
+
+  &.item-input input {
+    padding-right: 44px;
+  }
+}
+.padding-left > .list .item {
+  margin-left: 0;
+}
+.padding-right > .list .item {
+  margin-right: 0;
 }
