@@ -2,7 +2,7 @@ extends ./base.mobile.jade
 
 block content
 	div(ng-controller="FakerController as fakerCtrl")
-		.bar.bar-header
+		.bar.bar-header.bar-primary
 			h4.title Tabs
 		div(ng-switch, on="tab")
 			.list(ng-switch-when="favorites")
