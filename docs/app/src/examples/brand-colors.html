@@ -1,0 +1,76 @@
+<h3>Brand colors</h3>
+
+<p>Any component (such as <a mb-affix-href="range">Range</a>, <a mb-affix-href="list">List</a> etc.) can be styled with the 4 standard brand colors available by default in Mobie. Which is:</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Brand color</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        Primary
+      </td>
+      <td>
+        <button class="btn btn-primary">
+          #387ef5
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Success
+      </td>
+      <td>
+        <button class="btn btn-success">
+          #33cd5f
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Danger
+      </td>
+      <td>
+        <button class="btn btn-danger">
+          #ef473a
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Info
+      </td>
+      <td>
+        <button class="btn btn-info" ng-style="{ 'background-color': '#ffc900', 'border-color': '#ffc900' }">
+          #ffc900
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>All you have to do is join the <code>name of the component</code>-<code>brand color</code>, so if I want to hit the <code>primary</code> brand color of the <code>bar</code> component, the final name of the extending class will be <code>bar-primary</code>, since you will always use the main class, all you wanna do is add the class <code>bar-primary</code> to your <code>class</code> attribute. And of course, it's the same for all components and brand colors.</p>
+
+<h4>In action</h4>
+
+<mb-highlight language="html">
+<div class="bar bar-header">
+  <h3>Brand default</h3>
+</div>
+<div class="bar bar-primary bar-header">
+  <h3>Brand primary</h3>
+</div>
+<div class="bar bar-header brand-success">
+  <h3>Brand success</h3>
+</div>
+<div class="bar bar-header brand-danger">
+  <h3>Brand danger</h3>
+</div>
+<div class="bar bar-header brand-info">
+  <h3>Brand info</h3>
+</div>
+</mb-highlight>
