@@ -6,3 +6,39 @@
 	position: fixed;
 	bottom: 0;
 }
+
+/**
+ * Content Padding
+ * --------------------------------------------------
+ */
+
+.padding {
+  padding: $content-padding;
+}
+
+.padding-top,
+.padding-vertical {
+  padding-top: $content-padding;
+}
+
+.padding-right,
+.padding-horizontal {
+  padding-right: $content-padding;
+}
+
+.padding-bottom,
+.padding-vertical {
+  padding-bottom: $content-padding;
+}
+
+.padding-left,
+.padding-horizontal {
+  padding-left: $content-padding;
+}
+
+.padding {
+  .card, .list-inset {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
