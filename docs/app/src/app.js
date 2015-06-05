@@ -91,6 +91,7 @@ angular.module('docsApp', [
 	'ngAnimate',
 	'ui.router',
 	'pagesData',
+	'docsApp.helpers',
 	'docsApp.affix',
 	'docsApp.footer',
 	'docsApp.highlight'
