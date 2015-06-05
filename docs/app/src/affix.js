@@ -339,3 +339,55 @@ angular.module('docsApp.affix', [])
 .directive('mbAffix', AffixDirective)
 .directive('mbAffixContent', AffixContentDirective)
 .directive('mbAffixMobileTemplate', AffixMobileTemplateDirective)
+.directive('mbAffixParent', ['Helpers', '$timeout', function (Helpers, $timeout) {
+	return {
+		require: '?^mbAffix',
+		scope: {
+			href: '=mbAffixParent'
+		},
+		link: function (scope, element, attrs, mbAffix) {
+			if(!mbAffix) {
+				return;
+			}
+
+			if(element[0].tagName !== 'LI') {
+				return;
+			}
+
+			var tm,
+					els,
+					hasActive;
+
+			function removeClass () {
+				element.removeClass('mb-affix-active');
+			}
+
+			function addClass () {
+				element.addClass('mb-affix-active');
+			}
+
+			function checkForChild () {
+				Helpers.digest(scope, function () {
+					els = element[0].querySelector('.mb-affix-active');
+
+					hasActive = els ? true : false;
+
+					if(hasActive) {
+						addClass();
+					} else if(!hasActive && mbAffix.activeItem.link !== scope.href) {
+						removeClass();
+					}
+				});
+			}
+
+			scope.$watch(function () {
+				return mbAffix.activeItem.link;
+			}, function () {
+				$timeout.cancel(tm);
+				tm = $timeout(function () {
+					checkForChild();
+				}, 300);
+			});
+		}
+	};
+}]);

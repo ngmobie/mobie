@@ -4,6 +4,7 @@
 			<ul>
 				<li
 					ng-repeat="item in items track by $index"
+					mb-affix-parent="item.link"
 				>
 					<a mb-affix-href="{{ item.link }}">{{ item.name }}</a>
 					<ul>
