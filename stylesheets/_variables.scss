@@ -1,6 +1,10 @@
 // Colors
 // -------------------------------
 
+$light:														#fff;
+$dark:														#000;
+
+$brand-light:											$light;
 $brand-primary:                   #387ef5 !default;
 $brand-success:										#33cd5f !default;
 $brand-danger:										#ef473a !default;
@@ -81,6 +85,26 @@ $tabs-striped-off-opacity:        $tabs-off-opacity !default;
 $tabs-striped-off-color:          #000 !default;
 $tabs-striped-border-width:       2px !default;
 
+$tabs-danger-bg:									$brand-danger;
+$tabs-danger-border-color:				$tabs-danger-bg;
+$tabs-danger-color: 							#fff;
+
+$tabs-success-bg:									$brand-success;
+$tabs-success-border-color:				$tabs-success-bg;
+$tabs-success-color: 							#fff;
+
+$tabs-info-bg:										$brand-info;
+$tabs-info-border-color:					$tabs-info-bg;
+$tabs-info-color: 								#fff;
+
+$tabs-primary-bg:									$brand-primary;
+$tabs-primary-border-color:				$tabs-primary-bg;
+$tabs-primary-color: 							#fff;
+
+$tabs-light-bg:										$brand-light;
+$tabs-light-border-color:					darken($tabs-light-bg, 30%);
+$tabs-light-color: 								lighten($dark, 60%);
+
 
 // Item
 // -------------------------------
@@ -104,6 +128,43 @@ $item-divider-padding:            5px 15px !default;
 $item-avatar-width:               40px !default;
 $item-avatar-height:              40px !default;
 $item-avatar-border-radius:       50% !default;
+
+$item-danger-bg:									$brand-danger;
+$item-danger-border-color:				$item-danger-bg;
+$item-danger-color: 							#fff;
+
+$item-success-bg:									$brand-success;
+$item-success-border-color:				$item-success-bg;
+$item-success-color: 							#fff;
+
+$item-info-bg:										$brand-info;
+$item-info-border-color:					$item-info-bg;
+$item-info-color: 								#fff;
+
+$item-primary-bg:									$brand-primary;
+$item-primary-border-color:				$item-primary-bg;
+$item-primary-color: 							#fff;
+
+$item-light-bg:										$brand-light;
+$item-light-border-color:					darken($item-light-bg, 30%);
+$item-light-color: 								lighten($dark, 60%);
+
+
+// Forms
+// -------------------------------
+
+$input-height-base:               ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
+$input-height-large:              (floor($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2) !default;
+$input-height-small:              (floor($font-size-small * $line-height-small) + ($padding-small-vertical * 2) + 2) !default;
+
+$input-bg:                        $light !default;
+$input-bg-disabled:               darken($input-bg, 15%) !default;
+
+$input-color:                     #111 !default;
+$input-border:                    darken(#fff, 10%) !default;
+$input-border-width:              $item-border-width !default;
+$input-label-color:               $dark !default;
+$input-color-placeholder:         lighten($dark, 80%) !default;
 
 
 // Toggle
@@ -141,6 +202,12 @@ $toggle-handle-off-bg-color:      #fff !default;
 $toggle-handle-on-bg-color:       $toggle-handle-off-bg-color !default;
 
 $range-default-track-bg:          #ccc !default;
+
+$range-success-track-bg:					$brand-success;
+$range-danger-track-bg:						$brand-danger;
+$range-info-track-bg:							$brand-info;
+$range-primary-track-bg:					$brand-primary;
+$range-light-track-bg:						darken($brand-light, 6%);
 
 
 // Card
@@ -198,13 +265,58 @@ $modal-color:											#000 !default;
 // Button
 // -------------------------------
 
-$button-padding:									12px !default;
-$button-bg:												#387ef5 !default;
-$button-active-bg:								darken($button-bg, 8%) !default;
-$button-color:										#fff !default;
-$button-border:										darken($button-bg, 7%) !default;
+$button-color:										#000 !default;
+$button-block-margin:             10px !default;
+$button-clear-padding:            6px !default;
+$button-border-radius:            2px !default;
+$button-border-width:             1px !default;
 
-$button-bar-button-font-size:			13px !default;
+$button-bg:												#fff !default;
+$button-active-bg:								darken($button-bg, 8%) !default;
+$button-border:										darken($button-bg, 13%) !default;
+
+$button-font-size:                16px !default;
+$button-height:                   42px !default;
+$button-padding:                  12px !default;
+$button-icon-size:                139% !default;
+
+$button-large-font-size:          20px !default;
+$button-large-height:             54px !default;
+$button-large-padding:            16px !default;
+$button-large-icon-size:          32px !default;
+
+$button-small-font-size:          12px !default;
+$button-small-height:             28px !default;
+$button-small-padding:            4px !default;
+$button-small-icon-size:          16px !default;
+
+$button-bar-button-font-size:     13px !default;
+$button-bar-button-height:        32px !default;
+$button-bar-button-padding:       6px !default;
+$button-bar-button-icon-size:     20px !default;
+
+$button-default-bg:								#fff;
+$button-default-border-color:			darken($button-default-bg, 12%);
+
+$button-danger-bg:								$brand-danger;
+$button-danger-border-color:			$button-danger-bg;
+$button-danger-color: 						#fff;
+
+$button-success-bg:								$brand-success;
+$button-success-border-color:			$button-success-bg;
+$button-success-color: 						#fff;
+
+$button-info-bg:									$brand-info;
+$button-info-border-color:				$button-info-bg;
+$button-info-color: 							#fff;
+
+$button-primary-bg:								$brand-primary;
+$button-primary-border-color:			$button-primary-bg;
+$button-primary-color: 						#fff;
+
+$button-light-bg:									$brand-light;
+$button-light-border-color:				darken($button-light-bg, 30%);
+$button-light-color: 							lighten($dark, 60%);
 
 
 // Bar
@@ -215,6 +327,10 @@ $bar-title-font-size:             17px !default;
 $bar-padding-portrait:            5px !default;
 $bar-padding-landscape:           5px !default;
 $bar-transparency:                1 !default;
+
+$bar-footer-height:               $bar-height !default;
+$bar-subheader-height:            $bar-height !default;
+$bar-subfooter-height:            $bar-height !default;
 
 $bar-default-bg:                  #fff !default;
 $bar-default-color:               #000 !default;
@@ -228,10 +344,32 @@ $bar-primary-border-color:        $bar-primary-bg !default;
 $bar-primary-active-bg:           $bar-primary-bg !default;
 $bar-primary-active-border:       $bar-primary-bg !default;
 
+$bar-danger-bg:										$brand-danger;
+$bar-danger-border-color:					$bar-danger-bg;
+$bar-danger-color: 								#fff;
+
+$bar-success-bg:									$brand-success;
+$bar-success-border-color:				$bar-success-bg;
+$bar-success-color: 							#fff;
+
+$bar-info-bg:											$brand-info;
+$bar-info-border-color:						$bar-info-bg;
+$bar-info-color: 									#fff;
+
+$bar-primary-bg:									$brand-primary;
+$bar-primary-border-color:				$bar-primary-bg;
+$bar-primary-color: 							#fff;
+
+$bar-light-bg:										$brand-light;
+$bar-light-border-color:					darken($bar-light-bg, 30%);
+$bar-light-color: 								lighten($dark, 60%);
+
 
 // Z-Indexes
 // -------------------------------
 
+$z-index-bar-title:					0 !default;
+$z-index-bar-button:				1 !default;
 $z-index-bar:               0 !default;
 $z-index-item:              0 !default;
 $z-index-backdrop:          9 !default;

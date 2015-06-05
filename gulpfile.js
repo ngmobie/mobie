@@ -161,7 +161,7 @@ gulp.task('stylesheets', function () {
 });
 
 gulp.task('stylesheets-brands', function () {
-	var brands = ['primary', 'success', 'danger', 'info'];
+	var brands = ['primary', 'success', 'danger', 'info', 'light'];
 	var components = ['item', 'tabs', 'bar', 'range', 'button'];
 	var files = [
 		'stylesheets/templates/brands.template.scss'
