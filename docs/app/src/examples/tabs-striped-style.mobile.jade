@@ -1,0 +1,23 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-primary.bar-header
+			h3.title Striped Style Tabs
+		.tabs-striped.tabs-background-primary.tabs-color-light.tabs-top
+			.tabs.tabs-icon-only
+				a.tab-item.tab-item-active
+					i.icon.ion-home
+				a.tab-item
+					i.icon.ion-star
+				a.tab-item
+					i.icon.ion-gear-a
+
+		.tabs-striped.tabs-background-primary.tabs-color-light.fixed-bottom
+			.tabs.tabs-icon-only
+				a.tab-item
+					i.icon.ion-home
+				a.tab-item
+					i.icon.ion-star
+				a.tab-item.tab-item-active
+					i.icon.ion-gear-a
