@@ -217,7 +217,7 @@ function AffixColumnDirective () {
 				element.removeClass('mb-affix-column-fixed');
 			}
 		});
-	}
+	};
 }
 
 AffixIframeDirective.$inject = ['$animate', '$q'];
@@ -299,7 +299,7 @@ function AffixMobileTemplateDirective ($animate) {
 					item.mobileTemplatePath = path.join('examples', mobileTemplatePath);
 
 					return item;
-				}).value()
+				}).value();
 			});
 
 			var itemEl;

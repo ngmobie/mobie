@@ -3,5 +3,5 @@ angular.module('docsApp.footer', [])
 	return {
 		restrict: 'E',
 		templateUrl: 'footer-template.html'
-	}
+	};
 });

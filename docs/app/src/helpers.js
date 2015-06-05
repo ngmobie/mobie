@@ -11,7 +11,7 @@ function HelpersFactory () {
 				scope.$apply(fn);
 			}
 		}
-	}
+	};
 }
 
 angular.module('docsApp.helpers', [])

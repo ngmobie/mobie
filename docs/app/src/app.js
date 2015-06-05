@@ -47,7 +47,9 @@ function ReadmeContentFactory ($http, $sce, $compile, $rootScope, $location) {
 	}).then(function (md) {
 		return marked.parse(md);
 	}).then(function (htmlCode) {
-		var el = angular.element('<div>');
+		var el = angular.element('<div>'),
+				regexp = /(?:lang\-)([A-z]+)/;
+				
 		el.html(htmlCode);
 
 		_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
@@ -58,7 +60,7 @@ function ReadmeContentFactory ($http, $sce, $compile, $rootScope, $location) {
 			var highlightEl = angular.element('<mb-highlight>');
 			
 			_.forEach(el.classList, function (className) {
-				var match = match = /(?:lang\-)([A-z]+)/.exec(className);
+				var match = regexp.exec(className);
 				if(match) {
 					var languageName = match[1];
 
