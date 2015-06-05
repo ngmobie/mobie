@@ -1,0 +1,11 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Small and Large Buttons
+		.padding
+			p
+				button.button.button-large button-default
+			p(ng-repeat="brand in fakerCtrl.brands", ng-init="classes = {}; classes['button-' + brand] = true")
+				button.button.button-small(ng-class="classes") {{ 'button-' + brand }}

@@ -1,0 +1,20 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Icon Buttons
+
+		.padding
+			p
+				button.button.icon-left.ion-home Home
+			p
+				button.button.icon-left.button-primary.ion-star Favorites
+			p
+				button.button.icon-right.ion-chevron-right.button-danger Learn more
+			p
+				button.button.icon-left.ion-chevron-left.button-clear Back
+			p
+				button.button.icon.ion-gear-a
+			p
+				button.button.button-icon.icon.ion-settings.button-clear

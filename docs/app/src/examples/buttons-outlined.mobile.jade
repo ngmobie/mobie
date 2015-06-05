@@ -1,0 +1,11 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Block Buttons
+		.padding
+			p
+				button.button.button-outline.button-block button-default
+			p(ng-repeat="brand in fakerCtrl.brands", ng-init="classes = {}; classes['button-' + brand] = true")
+				button.button.button-outline.button-block(ng-class="classes") {{ 'button-' + brand }}

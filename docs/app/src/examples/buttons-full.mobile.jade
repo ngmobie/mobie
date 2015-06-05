@@ -1,0 +1,10 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Full Buttons
+		span
+			button.button.button-full button-default
+		span(ng-repeat="brand in fakerCtrl.brands", ng-init="classes = {}; classes['button-' + brand] = true")
+			button.button.button-full(ng-class="classes") {{ 'button-' + brand }}

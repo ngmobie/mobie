@@ -1,0 +1,11 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			button.button.icon.ion-navicon
+			h4.title Icon Buttons
+			button.button Edit
+		.bar.bar-header
+			button.button.icon.ion-chevron-left.button-success Back
+			button.button.icon.ion-chevron-right.icon-right.button-danger Foward

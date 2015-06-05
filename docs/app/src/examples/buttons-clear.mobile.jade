@@ -1,0 +1,10 @@
+extends ./base.mobile.jade
+
+block content
+	div(ng-controller="FakerController as fakerCtrl")
+		.bar.bar-header
+			h4.title Clear Buttons
+		span
+			button.button.button-clear button-default
+		span(ng-repeat="brand in fakerCtrl.brands", ng-init="classes = {}; classes['button-' + brand] = true")
+			button.button.button-clear(ng-class="classes") {{ 'button-' + brand }}
