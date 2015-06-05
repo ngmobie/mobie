@@ -196,7 +196,7 @@ function $MbPopupProvider() {
     }
     this.$get = $MbPopupFactory;
     var defaults = this.defaults = {
-        templateUrl: "components/popup/popup.html",
+        templateUrl: "mobie/components/popup/popup.html",
         activeBodyClass: "mb-popup-visible"
     };
     $MbPopupFactory.$inject = [ "$mbComponent", "Helpers", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout" ];
