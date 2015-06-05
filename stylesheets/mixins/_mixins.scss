@@ -1,4 +1,51 @@
 @import
 	"bar",
 	"item",
-	"tab";
+	"range",
+	"tabs",
+  "button";
+
+
+// Placeholder text
+// --------------------------------------------------
+
+@mixin placeholder($color: $input-color-placeholder, $text-indent: 0) {
+  &::-moz-placeholder { // Firefox 19+
+    color: $color;
+  }
+  &:-ms-input-placeholder {
+    color: $color;
+  }
+  &::-webkit-input-placeholder {
+    color: $color;
+    // Safari placeholder margin issue
+    text-indent: $text-indent;
+  }
+}
+
+
+// Font Mixins
+// --------------------------------------------------
+
+@mixin font-shorthand($size: $base-font-size, $weight: normal, $line-height: $base-line-height) {
+  font-weight: $weight;
+  font-size: $size;
+  line-height: $line-height;
+}
+
+
+// Clearfix
+// --------------------------------------------------
+
+@mixin clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}
