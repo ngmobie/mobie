@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="device-example-app")
+html(ng-app="device-example-app", ng-strict-di)
 	head
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		link(href="../lib/ionicons/css/ionicons.min.css", rel="stylesheet")
@@ -10,5 +10,7 @@ html(ng-app="device-example-app")
 		script(src="../lib/Faker/build/build/faker.min.js")
 		script(src="../lib/lodash/lodash.min.js")
 		script(src="../lib/angular/angular.min.js")
-		script(src="../lib/mobie.min.js")
+		script(src="../lib/angular-animate/angular-animate.min.js")
+		script(src="../lib/mobie.js")
+		script(src="../lib/mobie.tpl.js")
 		script(src="../js/app.js")
