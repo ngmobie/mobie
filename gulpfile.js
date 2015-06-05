@@ -4,6 +4,7 @@ var path = require('path');
 var gulp = require('gulp');
 var jade = require('gulp-jade');
 var sass = require('gulp-ruby-sass');
+var karma = require('karma').server;
 var bower = require('bower');
 var Dgeni = require('dgeni');
 var cssmin = require('gulp-cssmin');
@@ -140,6 +141,13 @@ gulp.task('docs-templates', function () {
 		filename: 'templates.js'
 	}))
 	.pipe(gulp.dest('build/docs/js'));
+});
+
+gulp.task('test', function(done) {
+	karma.start({
+		configFile: path.resolve(__dirname, 'karma.conf.js'),
+		singleRun: true
+	}, done);
 });
 
 gulp.task('templates', function () {
