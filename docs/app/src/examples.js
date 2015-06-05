@@ -35,14 +35,17 @@ function ExamplesController ($scope) {
 	}, {
 		name: 'Tabs',
 		subitems: [{
-			name: 'Icon-only Tabs',
+			name: 'Icon-only',
 			link: 'tabs-icon-only'
 		}, {
-			name: 'Icon-left Tabs',
+			name: 'Left Icon',
 			link: 'tabs-icon-left'
 		}, {
-			name: 'Icon-top Tabs',
+			name: 'Top Icon',
 			link: 'tabs-icon-top'
+		}, {
+			name: 'Striped Style',
+			link: 'tabs-striped-style'
 		}]
 	}, {
 		name: 'Buttons',
