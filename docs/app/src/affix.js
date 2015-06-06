@@ -4,7 +4,7 @@ function $AffixController ($scope, $element, $attrs, $transclude, $location, $an
 	var items = this.items = {};
 
 	this.activeItem = {};
-
+	this.templatesBasePath = $attrs.basePath;
 	this.activate = function (href) {
 		ctrl.activeItem = ctrl.items[href];
 	};
@@ -296,7 +296,7 @@ function AffixMobileTemplateDirective ($animate) {
 				scope._$items$_ = _(items).map(function (item) {
 					var itemName = String(item.link).toLowerCase();
 					var mobileTemplatePath = [itemName, 'mobile', 'html'].join('.');
-					item.mobileTemplatePath = path.join('examples', mobileTemplatePath);
+					item.mobileTemplatePath = path.join(mbAffix.templatesBasePath, mobileTemplatePath);
 
 					return item;
 				}).value();
