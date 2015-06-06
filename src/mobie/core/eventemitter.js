@@ -1,3 +1,91 @@
+/**
+ * @ngdoc service
+ * @name EventEmitter
+ * @module mobie.core.eventemitter
+ *
+ * @description
+ * The same EventEmitter defined at [https://iojs.org/api/events.html](https://iojs.org/api/events.html).
+ *
+ * Functions can then be attached to objects, to be executed
+ * when an event is emitted. These functions are called listeners.
+ * Inside a listener function, this refers to the EventEmitter that
+ * the listener was attached to.
+ *
+ * ## Events Names Standard
+ * Typically, event names are represented by a camel-cased string,
+ * however, there aren't any strict restrictions on that, as any
+ * string will be accepted.
+ */
+
+/**
+ * @ngdoc method
+ * @name EventEmitter#addListener
+ *
+ * @description
+ * Adds a listener to the end of the listeners array for the specified event.
+ * No checks are made to see if the listener has already been added. Multiple
+ * calls passing the same combination of event and listener will result in the
+ * listener being added multiple times.
+ *
+ * ```js
+ *   server.on('connection', function (stream) {
+ *   	console.log('someone connected!');
+ *   });
+ * ```
+ *
+ * @param {string} event Event name
+ * @param {function} listener Function that will be called when this event fires
+ *
+ * @returns {object} Returns the emitter itself
+ */
+
+/**
+ * @ngdoc method
+ * @name EventEmitter#once
+ *
+ * @description
+ * Adds a one time listener for the event. This listener is invoked only
+ * the next time the event is fired, after which it is removed.
+ *
+ * ```js
+ *   server.once('connection', function (stream) {
+ *	   console.log('Ah, we have our first user!');
+ *	 });
+ * ```
+ *
+ * @param {string} event Event name
+ * @param {function} listener Function that will be called when this event fires
+ *
+ * @returns {object} Returns the emitter itself
+ */
+
+/**
+ * @ngdoc method
+ * @name EventEmitter#removeListener
+ *
+ * @description
+ * Remove a listener from the listener array for the specified event. **Caution:**
+ * changes array indices in the listener array behind the listener.
+ *
+ * ```js
+ *   var callback = function(stream) {
+ *     console.log('someone connected!');
+ *   };
+ *   server.on('connection', callback);
+ *   // ...
+ *   server.removeListener('connection', callback);
+ * ```
+ *
+ * `removeListener` will remove, at most, one instance of a listener from the listener
+ * array. If any single listener has been added multiple times to the listener array
+ * for the specified event, then `removeListener` must be called multiple times to
+ * remove each instance.
+ *
+ * @param {string} event Event name
+ * @param {function} listener Function that will be called when this event fires
+ *
+ * @returns {object} Returns the emitter itself
+ */
 function EventEmitter() {
 	EventEmitter.init.call(this);
 }
