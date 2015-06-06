@@ -6,6 +6,7 @@
   user-select: none;
   transform: translate3d(0,0,0);
   padding: $bar-padding-portrait;
+  z-index: $z-index-bar;
 
   .title {
   	position: absolute;
@@ -47,6 +48,7 @@
 
 	&.mb-fixed-top {
 		transition: 300ms transform ease-in-out;
+    @extend .fixed-top;
 	}
 
 	&.mb-visible {
@@ -261,4 +263,8 @@
     background-size: 100% 1px;
     background-repeat: no-repeat;
   }
+}
+
+.mb-fixed-top+.list {
+  margin-top: $bar-height;
 }
