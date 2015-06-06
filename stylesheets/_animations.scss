@@ -73,6 +73,13 @@
 	@include mb-animation-in(slideInRight);
 }
 
+.mb-slide-out-right {	
+	animation-duration: 300ms;
+	animation-timing-function: ease-in-out;
+	@include mb-animation-play-state();
+	@include mb-animation-out(slideOutRight);
+}
+
 .mb-slide-out-left {
 	animation-duration: 300ms;
 	animation-timing-function: ease-in-out;
