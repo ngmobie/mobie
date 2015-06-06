@@ -7,8 +7,11 @@ var Package = require('dgeni').Package;
 // the jsdoc and nunjucks packages defined in the dgeni-packages npm module.
 module.exports = new Package('mobie', [
   require('dgeni-packages/ngdoc'),
-  require('dgeni-packages/nunjucks')
+  require('dgeni-packages/nunjucks'),
+  require('dgeni-packages/examples')
 ])
+
+.factory(require('./services/deployments/default'))
 
 .processor(require('./processors/module-docs'))
 .processor(require('./processors/index-page'))
@@ -61,4 +64,16 @@ module.exports = new Package('mobie', [
     pathTemplate: '.',
     outputPathTemplate: '${id}.html'
   });
+})
+
+.config(function (
+  generateExamplesProcessor,
+  generateProtractorTestsProcessor,
+  defaultDeployment) {
+  generateExamplesProcessor.deployments = [
+    defaultDeployment
+  ];
+  generateProtractorTestsProcessor.deployments = [
+    defaultDeployment
+  ];
 });
