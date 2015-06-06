@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="row">
-		<div class="col-md-4 col-xs-12 column-left" ng-controller="LeftbarController as leftbarCtrl">
+		<div class="col-md-3 col-xs-12 column-left" ng-controller="LeftbarController as leftbarCtrl">
 			<div ng-repeat="(key, value) in pages track by $index">
 				<h3>{{ key }}</h3>
 				
@@ -19,6 +19,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-8 col-xs-12" ui-view></div>
+		<div class="col-md-9 col-xs-12" ui-view></div>
 	</div>
 </div>
