@@ -1,7 +1,26 @@
-angular.module('mobie.core.registry', [
-	'mobie.core.helpers'
-])
-.factory('$mbComponentRegistry', function () {
+/**
+ * @ngdoc service
+ * @name $mbComponentRegistry
+ * @module mobie.core.registry
+ *
+ * @description
+ * Store components to provides them earlier
+ *
+ * ```js
+ *   app.controller('MyComponentController', ['$mbComponentRegistry', '$attrs', 'MbComponent', function ($mbComponentRegistry, $attrs, MbComponent) {
+ *     var component = this.component = new MbComponent($element, {
+ *     	id: $attrs.componentId
+ *     });
+ *
+ *     $mbComponentRegistry.register(this.component);
+ *   }]).factory('$myComponentService', ['$mbComponentRegistry', function ($mbComponentRegistry) {
+ *     return function (componentId) {
+ *       return $mbComponentRegistry.get(componentId);
+ *     };
+ *   }]);
+ * ```
+ */
+function $MbComponentRegistryFactory () {
 	var components = [];
 
 	var $mbComponentRegistry = {
@@ -40,4 +59,9 @@ angular.module('mobie.core.registry', [
 	};
 
 	return $mbComponentRegistry;
-});
+}
+
+angular.module('mobie.core.registry', [
+	'mobie.core.helpers'
+])
+.factory('$mbComponentRegistry', $MbComponentRegistryFactory);
