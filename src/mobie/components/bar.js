@@ -17,9 +17,9 @@ function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent, Helpe
 		function setVisibleState (visibleState) {
 			return Helpers.safeDigest(scope, function () {
 				cancelTimeout();
-				animationPromise = $timeout(ms).then(function () {
+				animationPromise = $timeout(function () {
 					return component[visibleState ? 'show' : 'hide']();
-				});
+				}, ms);
 			});
 		}
 

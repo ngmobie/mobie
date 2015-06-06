@@ -80,9 +80,9 @@ function $MbScrollProvider () {
 					this.emit('scrollUp', evt);
 				}
 
-				this.scrollStoppedPromise = $timeout(defaults.scrollStoppedMs).then(function () {
+				this.scrollStoppedPromise = $timeout(function () {
 					self.scrollStoppedFn(evt);
-				});
+				}, defaults.scrollStoppedMs);
 			}
 		});
 
