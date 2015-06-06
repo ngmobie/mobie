@@ -20,39 +20,45 @@
       {% if doc.name.indexOf('mobie') == 0 -%}
       (This directive can be used as custom element, but be aware of <a href="guide/ie">IE restrictions</a>).
       {%- endif %}
-      {% code %}
-      <{$ doc.name | dashCase $}
-        {%- for param in doc.params %}
-        {$ directiveParam(param.alias or param.name, param.type, '="', '"') $}
-        {%- endfor %}>
-      ...
-      </{$ doc.name | dashCase $}>
-      {% endcode %}
+      <mb-highlight language="html">
+        {% code %}
+        <{$ doc.name | dashCase $}
+          {%- for param in doc.params %}
+          {$ directiveParam(param.alias or param.name, param.type, '="', '"') $}
+          {%- endfor %}>
+        ...
+        </{$ doc.name | dashCase $}>
+        {% endcode %}
+      </mb-highlight>
       </li>
     {% endif -%}
 
     {%- if doc.restrict.attribute -%}
       <li>as attribute:
-        {% code %}
-        <{$ doc.element $}
-          {%- for param in doc.params %}
-          {$ directiveParam(param.name, param.type, '="', '"') $}
-          {%- endfor %}>
-        ...
-        </{$ doc.element $}>
-        {% endcode %}
+        <mb-highlight language="html">
+          {% code %}
+          <{$ doc.element $}
+            {%- for param in doc.params %}
+            {$ directiveParam(param.name, param.type, '="', '"') $}
+            {%- endfor %}>
+          ...
+          </{$ doc.element $}>
+          {% endcode %}
+        </mb-highlight>
       </li>
     {% endif -%}
 
     {%- if doc.restrict.cssClass -%}
       <li>as CSS class:
-        {% code %}
-        {% set sep = joiner(' ') %}
-        <{$ doc.element $} class="
-        {%- for param in doc.params -%}
-          {$ sep() $}{$ directiveParam(param.name, param.type, ': ', ';') $}
-        {%- endfor %}"> ... </{$ doc.element $}>
-        {% endcode %}
+        <mb-highlight language="html">
+          {% code %}
+          {% set sep = joiner(' ') %}
+          <{$ doc.element $} class="
+          {%- for param in doc.params -%}
+            {$ sep() $}{$ directiveParam(param.name, param.type, ': ', ';') $}
+          {%- endfor %}"> ... </{$ doc.element $}>
+          {% endcode %}
+        </mb-highlight>
       </li>
     {% endif -%}
     
