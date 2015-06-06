@@ -1,6 +1,78 @@
 @import "variables";
 @import "../../../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
 
+/* arguments table */
+.variables-matrix {
+  border:1px solid #ddd;
+  width:100%;
+  margin:10px 0;
+
+  td,
+	th {
+	  padding:10px;
+	}
+
+	td {
+	  border-top:1px solid #eee;
+	}
+
+	td + td,
+	th + th {
+	  border-left:1px solid #eee;
+	}
+
+	tr:nth-child(even) td {
+	  background:#f5f5f5;
+	}
+
+	th {
+	  background:#f1f1f1;
+	}
+
+	td {
+	  vertical-align:top;
+	  padding:5px;
+	}
+}
+
+
+.mb-highlight {
+	transition: 300ms border-width ease-in-out;
+
+	border-style: solid;
+	border-color: #EBEBF2;
+	border-width: 0px;
+
+	&:hover {
+		border-left-width: 3px;
+	}
+}
+
+.runnable-example {
+	@include make-row();
+	.runnable-example-file {
+		@include make-md-column(7);
+		&:not(.mb-visible) {
+			// display: none;
+		}
+	}
+	.runnable-example-frame {
+		@include make-md-column(5);
+
+		iframe {
+		  border: 1px solid #E8E8E8;
+		  padding: 0px;
+		  border-radius: 4px;
+		  min-height: 450px;
+		}
+	}
+
+	.runnable-example-tabs {
+		margin-bottom: 5px;
+		@include make-md-column(12);
+	}
+}
+
 pre {
 	font-size: 85%;
 }
@@ -225,7 +297,22 @@ pre {
 	}
 }
 
-ul {
+.return-arguments,
+.return-arguments th,
+.return-arguments th + th,
+.return-arguments td,
+.return-arguments td + td {
+  border-radius:0;
+  border:0;
+}
+
+.return-arguments td:first-child {
+  width:100px;
+}
+
+.methods,
+.column-left ul,
+.usage ul {
 	list-style-type: none;
 	padding: 0px;
 }
@@ -234,25 +321,16 @@ ul {
 	@extend .label-default;
 }
 
+.type-hint-function {
+	@extend .label-primary;
+}
+
 .type-hint-object {
 	@extend .label-warning;
 }
 
 .type-hint-string {
 	@extend .label-success;
-}
-
-table.variables-matrix {
-	thead {
-		th {
-			padding: 8px 5px;
-		}
-	}
-	td {
-		display: block;
-  	float: left;
-  	margin-right: 8px;
-	}
 }
 
 .iframe-mobile-example {
