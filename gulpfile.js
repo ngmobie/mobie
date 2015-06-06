@@ -110,7 +110,7 @@ gulp.task('docs-watch', ['docs-livereload'], function () {
 	gulp.watch('docs/app/src/**/*.{html,jade}', ['docs-templates']);
 	gulp.watch('docs/config/**/*.{js,html}', ['docs-build']);
 
-	gulp.watch(paths.scripts, ['scripts']);
+	gulp.watch(paths.scripts, ['scripts', 'docs-build']);
 	gulp.watch(paths.templates, ['templates']);
 	gulp.watch(paths.stylesheets, ['stylesheets']);
 
