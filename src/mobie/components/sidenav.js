@@ -151,7 +151,7 @@ function SidenavDirective () {
 	return {
 		restrict: 'EA',
 		scope: {},
-		controller: '$mbSidenavController',
+		controller: 'MbSidenavController',
 		controllerAs: 'mbSidenavCtrl'
 	};
 }
@@ -164,6 +164,6 @@ angular.module('mobie.components.sidenav', [
 	'mobie.core.helpers'
 ])
 .directive('mbClose', CloseDirective)
-.controller('$mbSidenavController', $MbSidenavController)
+.controller('MbSidenavController', MbSidenavController)
 .provider('$mbSidenav', $MbSidenavProvider)
 .directive('mbSidenav', SidenavDirective);
