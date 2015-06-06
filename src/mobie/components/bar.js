@@ -2,6 +2,37 @@
  * @ngdoc directive
  * @name mbBarFixedTop
  * @restrict A
+ *
+ * @description
+ * Add the class `mb-fixed-top` which keep the bar
+ * fixed to the top of the body.
+ *
+ * When you scroll down the page, the bar hides. And
+ * when you scroll up the page, the bar shows.
+ *
+ * @example
+  <example module="barFixedTopExample">
+  	<file name="index.html">
+  		<div class="bar bar-primary bar-header" mb-bar-fixed-top>
+  			<h3 class="title">Bar Fixed Top</h3>
+  		</div>
+  		<div class="list" ng-controller="PersonsController">
+  			<div class="item" ng-repeat="person in persons track by $index">{{person.name}}</div>
+  		</div>
+  	</file>
+  	<file name="app.js">
+  		angular.module('barFixedTopExample', ['ngAnimate', 'mobie'])
+  		.controller('PersonsController', ['$scope', function ($scope) {
+				$scope.persons = [];
+				for(var i=0; i<10; i++) {
+					$scope.persons[i] = { name: faker.name.findName() };
+				}
+  		}]);
+  	</file>
+  	<file name="app.css">
+  	@import url(../../lib/mobie.css);
+  	</file>
+  </example>
  */
 function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent, Helpers) {
 	function postLink (scope, element, attrs) {
