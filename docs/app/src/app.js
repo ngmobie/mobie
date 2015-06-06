@@ -72,6 +72,76 @@ angular.module('docsApp', [
 	'docsApp.footer',
 	'docsApp.highlight'
 ])
+.directive('runnableExample', ['$templateCache', '$document', function($templateCache, $document) {
+  var exampleClassNameSelector = '.runnable-example-file';
+  var doc = $document[0];
+  var tpl =
+    '<nav class="runnable-example-tabs btn-group" ng-if="tabs">' +
+    '  <a ng-class="{active:$index==activeTabIndex}"' +
+         'ng-repeat="tab in tabs track by $index" ' +
+         'href="" ' +
+         'class="btn btn-default"' +
+         'ng-click="setTab($index)">' +
+    '    {{ tab }}' +
+    '  </a>' +
+    '</nav>';
+
+  return {
+    restrict: 'C',
+    scope : true,
+    controller : ['$scope', function($scope) {
+      $scope.setTab = function(index) {
+        var tab = $scope.tabs[index];
+        $scope.activeTabIndex = index;
+        $scope.$broadcast('tabChange', index, tab);
+      };
+    }],
+    compile : function(element) {
+      element.html(tpl + element.html());
+
+      return function(scope, element) {
+        var node = element[0];
+        var examples = node.querySelectorAll(exampleClassNameSelector);
+        var tabs = [], now = Date.now();
+        angular.forEach(examples, function(child, index) {
+          tabs.push(child.getAttribute('name'));
+        });
+
+        if(tabs.length > 0) {
+          scope.tabs = tabs;
+          scope.$on('tabChange', function(e, index, title) {
+            angular.forEach(examples, function(child) {
+              child.style.display = 'none';
+              child.classList.remove('active');
+            });
+            var selected = examples[index];
+            selected.style.display = 'block';
+            selected.classList.add('active');
+          });
+          scope.setTab(0);
+        }
+
+        var iframeNode = node.querySelector('iframe');
+
+        var setHeight = _.curry(function (offsetHeight) {
+		      iframeNode.style.height = offsetHeight + 'px';
+        });
+
+        scope.$watch(function () {
+        	return node.querySelector('.runnable-example-file.active').offsetHeight;
+        }, function (offsetHeight) {
+	        scope.$$postDigest(function () {
+	        	scope.$$postDigest(function () {
+		        	scope.$evalAsync(function () {
+		        		setHeight(offsetHeight);
+		        	});
+			    	});
+			    });
+			  });
+      }
+    }
+  };
+}])
 .directive('mbFirstView', function () {
 	return function (scope, element, attrs) {
 		var uiViewEl = element[0];
