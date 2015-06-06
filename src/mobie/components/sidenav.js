@@ -1,4 +1,8 @@
-function $MbSidenavController ($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
+/**
+ * @ngdoc type
+ * @name mbSidenav.MbSidenavController
+ */
+function MbSidenavController ($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
 	var bodyEl = angular.element($window.document.body),
 			backdropEl = $mbBackdrop.getElement(),
 			sidenavOptions = $mbSidenav.getOptions(),
