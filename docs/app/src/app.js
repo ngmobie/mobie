@@ -47,41 +47,15 @@ function ReadmeContentFactory ($http, $sce, $compile, $rootScope, $location) {
 	}).then(function (md) {
 		return marked.parse(md);
 	}).then(function (htmlCode) {
-		var el = angular.element('<div>'),
-				regexp = /(?:lang\-)([A-z]+)/;
-				
-		el.html(htmlCode);
+		var el = angular.element('<div>');
 
 		_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
 			el.style.display = 'none';
 		});
 
-		_.forEach(el[0].querySelectorAll('pre>code'), function (el) {
-			var highlightEl = angular.element('<mb-highlight>');
-			
-			_.forEach(el.classList, function (className) {
-				var match = regexp.exec(className);
-				if(match) {
-					var languageName = match[1];
+		el.append(htmlCode);
 
-					// check for possible names and adapt to highlight.js
-					if(languageName === 'js') {
-						languageName = 'javascript';
-					}
-					
-					highlightEl.attr('language', languageName);
-				}
-			});
-
-			highlightEl.html(el.innerHTML);
-
-			var parentEl = angular.element(el).parent();
-
-			$compile(highlightEl)(scope);
-
-			parentEl.after(highlightEl);
-			parentEl.remove();
-		});
+		$compile(el)(scope);
 
 		return el.html();
 	}).then(function (htmlCode) {
