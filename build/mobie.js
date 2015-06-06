@@ -49,9 +49,9 @@ function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent, Helper
         }
         function setVisibleState(visibleState) {
             return Helpers.safeDigest(scope, function() {
-                cancelTimeout(), animationPromise = $timeout(ms).then(function() {
+                cancelTimeout(), animationPromise = $timeout(function() {
                     return component[visibleState ? "show" : "hide"]();
-                });
+                }, ms);
             });
         }
         var animationPromise, ms = 60, component = new MbComponent(element), visibleState = !0;
@@ -205,7 +205,7 @@ function $MbPopupProvider() {
 var bodyEl = angular.element(document.body);
 
 angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.component", "mobie.components.backdrop" ]).provider("$mbPopup", $MbPopupProvider);
-function $MbSidenavController($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
+function MbSidenavController($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
     function digest(fn) {
         return Helpers.safeDigest($scope, fn);
     }
@@ -264,13 +264,13 @@ function SidenavDirective() {
     return {
         restrict: "EA",
         scope: {},
-        controller: "$mbSidenavController",
+        controller: "MbSidenavController",
         controllerAs: "mbSidenavCtrl"
     };
 }
 
-$MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "Helpers", "MbComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
-angular.module("mobie.components.sidenav", [ "mobie.components.animation", "mobie.components.backdrop", "mobie.core.registry", "mobie.core.component", "mobie.core.helpers" ]).directive("mbClose", CloseDirective).controller("$mbSidenavController", $MbSidenavController).provider("$mbSidenav", $MbSidenavProvider).directive("mbSidenav", SidenavDirective);
+MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "Helpers", "MbComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
+angular.module("mobie.components.sidenav", [ "mobie.components.animation", "mobie.components.backdrop", "mobie.core.registry", "mobie.core.component", "mobie.core.helpers" ]).directive("mbClose", CloseDirective).controller("MbSidenavController", MbSidenavController).provider("$mbSidenav", $MbSidenavProvider).directive("mbSidenav", SidenavDirective);
 function MbComponentFactory(MbComponentInterface, $animate) {
     var MbComponent = MbComponentInterface.extend({
         initialize: function(componentEl, id, options) {
@@ -552,7 +552,7 @@ function UtilFactory() {
 }
 
 HelpersFactory.$inject = [ "$rootScope", "$q", "EventEmitter" ], angular.module("mobie.core.helpers", [ "mobie.core.eventemitter" ]).factory("Helpers", HelpersFactory).factory("Util", UtilFactory);
-angular.module("mobie.core.registry", [ "mobie.core.helpers" ]).factory("$mbComponentRegistry", function() {
+function $MbComponentRegistryFactory() {
     var components = [], $mbComponentRegistry = {
         get: function(componentId) {
             var component;
@@ -572,7 +572,9 @@ angular.module("mobie.core.registry", [ "mobie.core.helpers" ]).factory("$mbComp
         }
     };
     return $mbComponentRegistry;
-});
+}
+
+angular.module("mobie.core.registry", [ "mobie.core.helpers" ]).factory("$mbComponentRegistry", $MbComponentRegistryFactory);
 function $MbScrollProvider() {
     function $MbScrollFactory($window, $timeout, Helpers) {
         var windowEl = angular.element($window), MbScroll = (windowEl[0].document.body, 
@@ -607,9 +609,9 @@ function $MbScrollProvider() {
                 var currentScrollY = window.scrollY, self = this;
                 $timeout.cancel(this.scrollStoppedPromise), 0 === currentScrollY && this.emit("scrollTop", evt), 
                 currentScrollY > this.lastScrollY ? this.emit("scrollDown", evt) : this.emit("scrollUp", evt), 
-                this.scrollStoppedPromise = $timeout(defaults.scrollStoppedMs).then(function() {
+                this.scrollStoppedPromise = $timeout(function() {
                     self.scrollStoppedFn(evt);
-                });
+                }, defaults.scrollStoppedMs);
             }
         }));
         return new MbScroll();
