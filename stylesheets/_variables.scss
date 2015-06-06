@@ -370,9 +370,9 @@ $bar-light-color: 								lighten($dark, 60%);
 
 $z-index-bar-title:					0 !default;
 $z-index-bar-button:				1 !default;
-$z-index-bar:               0 !default;
 $z-index-item:              0 !default;
 $z-index-backdrop:          9 !default;
+$z-index-bar:               10 !default;
 $z-index-popup:      	      10 !default;
 $z-index-sidenav:           10 !default;
 $z-index-modal:           	10 !default;
