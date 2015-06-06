@@ -1,7 +1,10 @@
 angular.module('pagesData', [])
 .provider('pagesData', function () {
 	var pages = this.pages = {$ doc.pages | json $}.map(function (page) {
-		page.stateName = page.partialPath.replace(/\./g, '_').replace(/\//g, '.');
+		if(_.isString(page.partialPath)) {
+			page.stateName = page.partialPath.replace(/\./g, '_').replace(/\//g, '.');
+		}
+		
 		return page;
 	});
 
