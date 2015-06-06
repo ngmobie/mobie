@@ -24,6 +24,14 @@
 	}
 }
 
+.sidenav-right {
+  &.mb-visible,
+	&.mb-visible-remove,
+	&.mb-visible-remove-active {
+		right: 0;
+	}
+}
+
 body.mb-sidenav-visible {
 	overflow: hidden;
 }
