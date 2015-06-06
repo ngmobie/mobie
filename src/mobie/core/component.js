@@ -48,7 +48,9 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		 * @ngdoc method
 		 * @name MbComponent#show
 		 * @kind function
+		 *
 		 * @description Show the component
+		 *
 		 * @return {Promise} the animation callback promise
 		 */
 		show: function () {
@@ -59,7 +61,9 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		 * @ngdoc method
 		 * @name MbComponent#hide
 		 * @kind function
+		 *
 		 * @description Hide the component
+		 *
 		 * @return {Promise} the animation callback promise
 		 */
 		hide: function () {
@@ -70,7 +74,9 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 		 * @ngdoc method
 		 * @name MbComponent#toggle
 		 * @kind function
+		 *
 		 * @description Toggle the component visible state
+		 *
 		 * @return {Promise} the animation callback promise
 		 */
 		toggle: function () {
@@ -220,14 +226,116 @@ function MbComponentInterface (Helpers) {
 	});
 }
 
+/*
+ * @ngdoc provider
+ * @name $mbComponentProvider
+ *
+ * @description
+ * Provider for the $mbComponent service
+ */
+
+/*
+ * @ngdoc type
+ * @name $mbComponent.Component
+ * @module mobie.core.component
+ *
+ * @description
+ * A component element will be compiled on the first time you ask for showing it
+ */
+
 /**
  * @ngdoc service
  * @name $mbComponent
+ * @module mobie.core.component
  * 
- * @description This service will be used to build
- *		components which will be reused just
- *		like this one, which will need to be
- *		recompiled before any action of showing
+ * @description
+ * Create a reusable component, which have a template and need to be compiled.
+ * It's the best shot if you want to create a custom component to reuse in your application.
+ *
+ * @param {object} options The options for this Component.
+ *
+ * - **template** - `{string}` - The string template of this component
+ * - **templateUrl** - `{string}` - The template path which will be requested using `$templateCache`
+ * - **scope** - `{Scope}` - The scope of the component, if no scope is provided, it will create and use a new $rootScope child.
+ *
+ * @example
+  <example module="mbComponentExample">
+  	<file name="index.html">
+  		<div class="bar bar-header">
+				<h3 class="title">Custom animation</h3>
+  		</div>
+  		<div class="list">
+  			<div class="item item-input">
+  				<input type="text" ng-model="msg" placeholder="Type a message here">
+  			</div>
+  		</div>
+  		<div class="padding">
+  			<p><div my-custom-component data-msg="{{msg}}"></div></p>
+  		</div>
+  	</file>
+  	<file name="app.js">
+  		angular.module('mbComponentExample', ['ngAnimate', 'mobie'])
+  		.directive('myCustomComponent', ['$mbComponent', function ($mbComponent) {
+				return {
+					template: '<button ng-click="myCtrl.show()" class="button button-block">Show me up</button>',
+					scope: {
+						msg: '@'
+					},
+					controllerAs: 'myCtrl',
+					controller: ['$scope', '$timeout', function ($scope, $timeout) {
+
+						// Your component
+						var myComponentTmp = '<div class="my-custom-component" mb-animation="zoom-in slide-out-left">' +
+							'<div class="bar bar-header bar-primary">' +
+								'<h3 class="title">My component</h3>' +
+							'</div>' +
+							'<div class="padding"><p>{{ msg || "Type a message in the next round" }}</p></div>' +
+						'</div>';
+
+						var component = $mbComponent({
+							template: myComponentTmp,
+							scope: $scope
+						});
+
+						this.show = function () {
+							return component.show().then(function () {
+								return $timeout(function () {
+									return component.hide();
+								}, 3000);
+							});
+						};
+					}]
+				};
+  		}]);
+  	</file>
+  	<file name="app.css">
+			@import url("../../lib/mobie.css");
+			.my-custom-component {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: #fff;
+				border-radius: 4px;
+				z-index: 10;
+			}
+			.my-custom-component.mb-hidden {
+				top: -9999px;
+				left: -9999px;
+			}
+			.my-custom-component.mb-visible,
+			.my-custom-component.mb-visible-add,
+			.my-custom-component.mb-visible-remove,
+			.my-custom-component.mb-hidden-add,
+			.my-custom-component.mb-hidden-remove {
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+			}
+  	</file>
+  </example>
+ *
+ * @returns {$mbComponent.Component} The new $mbComponent instance
  */
 function $MbComponentProvider () {
 	var defaults = this.defaults = {};
@@ -260,6 +368,32 @@ function $MbComponentProvider () {
 				el = undefined;
 			});
 
+			/*
+			 * @ngdoc method
+			 * @name $mbComponent.Component#show
+			 * @kind function
+			 *
+			 * @description
+			 * Show the component
+			 */
+
+			/*
+			 * @ngdoc method
+			 * @name $mbComponent.Component#toggle
+			 * @kind function
+			 *
+			 * @description
+			 * Toggle the component visible state
+			 */
+
+			/*
+			 * @ngdoc method
+			 * @name $mbComponent.Component#hide
+			 * @kind function
+			 *
+			 * @description
+			 * Hide the component
+			 */
 			angular.forEach(['show', 'hide', 'toggle'], function (key) {
 				$mbComponent[key] = function () {
 					return component[key]();
