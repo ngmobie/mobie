@@ -1,58 +1,61 @@
 function HighlightDirective () {
 	return {
-		restrict: 'E',
+		restrict: 'EA',
 		transclude: true,
 		scope: {
-			language: '@'
+			language: '@',
+			noStrip: '@mbHighlightNoStrip'
 		},
-		template: '<div class="highlight"><pre><code ng-transclude ng-class="classes"></code></pre></div>',
-		compile: function (element, attrs) {
-			var tagsToReplace = {
-		    '&': '&amp;',
-		    '<': '&lt;',
-		    '>': '&gt;'
-			};
+		controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+		}],
+		controllerAs: 'mbHighlightCtrl',
+		templateUrl: 'highlight.html',
+		link: function (scope, element, attrs) {
+			var classes = scope.classes,
+					language = scope.language;
 
-			function replaceTag(tag) {
-			  return tagsToReplace[tag] || tag;
+			if(!_.isObject(classes)) {
+				classes = {};
 			}
 
-			function safe_tags_replace(str) {
-			  return str.replace(/[&<>]/g, replaceTag);
+			// check for possible names and adapt to highlight.js
+			if(language === 'js') {
+				language = 'javascript';
+			} else if (language === 'html') {
+				language = 'html';
 			}
 
-			return function (scope, element, attrs) {
-				if(!_.isObject(scope.classes)) {
-					scope.classes = {};
+			if(_.isUndefined(language)) {
+				classes.javascript = true;
+			} else if (_.isString(language)) {
+				classes[language] = true;
+			}
+
+			var codeEl = element[0].querySelector('.highlight pre code');
+
+			if(!codeEl) {
+				return;
+			}
+
+			if(scope.noStrip) {
+				var innerHTML = codeEl.innerHTML;
+				codeEl.innerHTML = '';
+				codeEl.textContent = innerHTML;
+			}
+
+			if(/(jade|html)/.test(language)) {
+				codeEl.textContent = codeEl.textContent.replace(/<span>/g, '').replace(/<\/span>/g, '');
+			}
+
+			codeEl.textContent = codeEl.textContent.trim();
+
+			_.forEach(classes, function (value, key) {
+				if(value) {
+					codeEl.classList.add(key);
 				}
+			});
 
-				if(_.isUndefined(scope.language)) {
-					scope.classes.javascript = true;
-				} else if (_.isString(scope.language)) {
-					scope.classes[scope.language] = true;
-				}
-
-				var el = element[0].querySelector('.highlight pre code');
-
-				// Remove all 'ng-scope' classes from all elements (esthetic purposes)
-				_.forEach(element[0].querySelectorAll('.ng-scope'), function (el) {
-					el.classList.remove('ng-scope');
-					// And remove all the ugly empty attribute class (why is it there anyway?)
-					el.outerHTML = el.outerHTML.replace(/(class="")/g, '');
-				});
-				
-				if(/html/.test(scope.language)) {
-					el.innerHTML = safe_tags_replace(el.innerHTML);
-				}
-
-				if(/(jade|html)/.test(scope.language)) {
-					el.innerHTML = el.innerHTML.replace(/<span>/g, '').replace(/<\/span>/g, '');
-				}
-
-				el.innerHTML = el.innerHTML.trim();
-
-				hljs.highlightBlock(el);
-			};
+			hljs.highlightBlock(codeEl);
 		}
 	};
 }
@@ -60,8 +63,57 @@ function HighlightDirective () {
 angular.module('docsApp.highlight', [])
 .config(function () {
 	hljs.configure({
-		tabReplace: '\t',
-		languages: ['html', 'javascript']
+		tabReplace: '  ',
+		languages: ['html', 'javascript', 'css']
 	});
 })
+.directive('highlight', function () {
+	return {
+		restrict: 'C',
+		compile: function (element, attrs) {
+			attrs.$set('ngNonBindable', '');
+		}
+	}
+})
+.directive('pre', ['$compile', function ($compile) {
+	return {
+		require: '?^mbHighlight',
+		link: function (scope, element, attrs, mbHighlight) {
+			if(mbHighlight) {
+				return;
+			}
+
+			var node = element[0],
+					codeNode = node.querySelector('[class*="lang-"]'),
+					languageName;
+
+			if(!codeNode) {
+				return;
+			}
+
+			_.forEach(codeNode.classList, function (className) {
+				var match = /(?:lang\-)([A-z]+)/.exec(className);
+				if(match) {
+					languageName = match[1];
+				}
+			});
+
+			var mbHighlightEl = angular.element('<mb-highlight>');
+			
+			if(languageName) {
+				mbHighlightEl.attr('language', languageName);
+			}
+
+			var preEl = angular.element('<pre>');
+			preEl.html(node.innerHTML);
+
+			mbHighlightEl.append(preEl);
+
+			$compile(mbHighlightEl)(scope);
+
+			element.after(mbHighlightEl);
+			element.remove();
+		}
+	};
+}])
 .directive('mbHighlight', HighlightDirective);
