@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"{% if doc.example['ng-csp'] %} ng-csp{% endif %} {% if not doc.example['ng-app-included'] %} ng-app="{$ doc.example.module $}"{% endif %}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example - {$ doc.id $}</title>
+</head>
+<body>
+  {$ doc.fileContents $}
+
+  {% for stylesheet in doc.stylesheets %}<link href="{$ stylesheet.path $}" rel="stylesheet" type="text/css">
+  {% endfor %}
+
+  {% for script in doc.scripts %}<script src="{$ script.path $}"></script>
+  {% endfor %}
+  
+  {% if doc.example.fixBase -%}
+  <script type="text/javascript">
+    angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+  </script>
+  {%- endif %}
+</body>
+</html>
