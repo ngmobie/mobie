@@ -171,7 +171,8 @@ function $MbActionSheetProvider () {
 				setBackdrop(notTouchBackdrop),
 				setActiveBodyClass(false)
 			]).then(function () {
-				return unbindEvents();
+				unbindEvents();
+				return scheduleVisibleStateListener('visible');
 			});
 		}
 
@@ -190,6 +191,16 @@ function $MbActionSheetProvider () {
 			});
 		}
 
+		function scheduleVisibleStateListener(type) {
+			type = angular.isString(type) ? type : 'notVisible';
+
+			return $q(function (resolve) {
+				component.once(type, function () {
+					resolve();
+				});
+			});
+		}
+
 		/**
 		 * @ngdoc method
 		 * @name $mbActionSheet#show
@@ -198,6 +209,9 @@ function $MbActionSheetProvider () {
 		 * Create a new Action Sheet template
 		 *
 		 * @param {object} options Options of the action sheet
+		 *
+		 * @returns {Promise} Returns a promise which will be resolved
+		 *   when the element hides
 		 */
 		function show (options) {
 			// If the action sheet is visible
@@ -235,7 +249,9 @@ function $MbActionSheetProvider () {
 				setBackdrop(true),
 				setActiveBodyClass(true)
 			]).then(function () {
-				return bindEvents();
+				bindEvents();
+
+				return scheduleVisibleStateListener('notVisible');
 			});
 		}
 
