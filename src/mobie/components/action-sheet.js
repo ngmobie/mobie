@@ -165,6 +165,16 @@ function $MbActionSheetProvider () {
 			});
 		}
 
+		/**
+		 * @ngdoc method
+		 * @name $mbActionSheet#hide
+		 *
+		 * @description
+		 * Hide the actual action sheet
+		 *
+		 * @returns {Promise} Returns a promise which will be resolved
+		 *   when the element shows
+		 */
 		function hide (notTouchBackdrop) {
 			return $q.all([
 				setComponent(false),
