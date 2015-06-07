@@ -1,5 +1,111 @@
-(function (document, window, angular, undefined) { 'use strict';angular.module("mobie.components", [ "mobie.components.animation", "mobie.components.sidenav", "mobie.components.backdrop", "mobie.components.popup", "mobie.components.modal", "mobie.components.bar", "mobie.components.icon" ]), 
+(function (document, window, angular, undefined) { 'use strict';angular.module("mobie.components", [ "mobie.components.animation", "mobie.components.sidenav", "mobie.components.backdrop", "mobie.components.popup", "mobie.components.modal", "mobie.components.bar", "mobie.components.icon", "mobie.components.action-sheet" ]), 
 angular.module("mobie", [ "mobie.core", "mobie.components" ]), angular.module("mobie.core", [ "mobie.core.helpers", "mobie.core.registry", "mobie.core.eventemitter", "mobie.core.scroll", "mobie.core.component" ]);
+function $MbActionSheetProvider() {
+    function $MbActionSheetFactory($mbComponent, $rootScope, Helpers, $mbBackdrop, $animate, $q, $timeout, $document) {
+        function onKeyUpFn(event) {
+            27 == event.which && scope.close();
+        }
+        function onTabBackdropFn() {
+            return asyncDigest().then(function() {
+                return $mbActionSheet.hide();
+            });
+        }
+        function defaultOnTapFn() {
+            return asyncDigest().then(function() {
+                return $mbActionSheet.hide();
+            });
+        }
+        function safeDigest(fn) {
+            Helpers.safeDigest(scope, fn);
+        }
+        function asyncDigest() {
+            return $q(function(resolve) {
+                safeDigest(function(scope) {
+                    resolve(scope);
+                });
+            });
+        }
+        function unbindEvents() {
+            return asyncDigest().then(function() {
+                backdropEl.off("click", onTabBackdropFn), $document.off("keyup", onKeyUpFn);
+            });
+        }
+        function bindEvents() {
+            return asyncDigest().then(function() {
+                backdropEl.on("click", onTabBackdropFn), $document.on("keyup", onKeyUpFn);
+            });
+        }
+        function setActiveBodyClass(isActive) {
+            return asyncDigest().then(function() {
+                return $animate[isActive ? "addClass" : "removeClass"](bodyEl, options.activeBodyClass);
+            });
+        }
+        function setBackdrop(isActive) {
+            return asyncDigest().then(function() {
+                return $timeout(function() {
+                    return $mbBackdrop[isActive ? "show" : "hide"]();
+                }, 240);
+            });
+        }
+        function getVisibleState() {
+            return component.getVisibleState();
+        }
+        function setComponent(isActive) {
+            return asyncDigest().then(function() {
+                return component[isActive ? "show" : "hide"]();
+            });
+        }
+        function hide(notTouchBackdrop) {
+            return $q.all([ setComponent(!1), setBackdrop(notTouchBackdrop), setActiveBodyClass(!1) ]).then(function() {
+                return unbindEvents();
+            });
+        }
+        function scopeReset() {
+            scopeExtend({
+                text: "",
+                title: "",
+                template: "",
+                buttons: []
+            });
+        }
+        function scopeExtend(options) {
+            safeDigest(function(scope) {
+                angular.extend(scope, options);
+            });
+        }
+        function show(options) {
+            return getVisibleState() ? hide(!0).then(function() {
+                return show(options);
+            }) : (scopeReset(), scopeExtend(options), angular.forEach(scope.buttons, function(btn, i) {
+                if (angular.isFunction(btn.onTap) || (btn.onTap = defaultOnTapFn), angular.isArray(btn.classes)) {
+                    var classes = btn.classes;
+                    btn.classes = {}, angular.forEach(classes, function(value) {
+                        btn.classes[value] = !0;
+                    });
+                }
+            }), $q.all([ setComponent(!0), setBackdrop(!0), setActiveBodyClass(!0) ]).then(function() {
+                return bindEvents();
+            }));
+        }
+        var $mbActionSheet = {}, options = {
+            scope: $rootScope.$new()
+        };
+        options = angular.extend({}, defaults, options);
+        var mbComponent = $mbActionSheet.component = $mbComponent(options), component = mbComponent.component, backdropEl = (component.getElement(), 
+        $mbBackdrop.getElement()), scope = options.scope;
+        return $mbActionSheet.show = show, $mbActionSheet.hide = hide, scope.$$close = scope.close = function() {
+            return $mbActionSheet.hide();
+        }, scope.cancelTextButton = defaults.cancelTextButton, scope.scope = scope, $mbActionSheet;
+    }
+    var defaults = this.defaults = {
+        templateUrl: "mobie/components/action-sheet.html",
+        activeBodyClass: "mb-action-sheet-visible",
+        cancelTextButton: "Cancel"
+    };
+    this.$get = $MbActionSheetFactory, $MbActionSheetFactory.$inject = [ "$mbComponent", "$rootScope", "Helpers", "$mbBackdrop", "$animate", "$q", "$timeout", "$document" ];
+}
+
+angular.module("mobie.components.action-sheet", [ "mobie.components.backdrop", "mobie.core.component", "mobie.core.helpers" ]).provider("$mbActionSheet", $MbActionSheetProvider);
 function AnimationDirective() {
     return function(scope, element, attrs) {
         function resolveClassName(newClassName) {
@@ -117,6 +223,11 @@ function $MbModalProvider() {
 angular.module("mobie.components.modal", [ "mobie.core.component", "mobie.core.helpers", "mobie.components.backdrop" ]).provider("$mbModal", $MbModalProvider);
 function $MbPopupProvider() {
     function $MbPopupFactory($mbComponent, Helpers, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
+        function onTapContainerFn(event) {
+            return asyncDigest().then(function() {
+                return event.target === el[0] ? $mbPopup.hide() : void 0;
+            });
+        }
         function defaultOnTapFn() {
             return asyncDigest().then(function() {
                 return $mbPopup.hide();
@@ -134,12 +245,12 @@ function $MbPopupProvider() {
         }
         function unbindEvents() {
             return asyncDigest().then(function() {
-                el.off("click", defaultOnTapFn);
+                el.off("click", onTapContainerFn);
             });
         }
         function bindEvents() {
             return asyncDigest().then(function() {
-                el.on("click", defaultOnTapFn);
+                el.on("click", onTapContainerFn);
             });
         }
         function setActiveBodyClass(isActive) {
@@ -182,7 +293,12 @@ function $MbPopupProvider() {
             return getVisibleState() ? hide(!0).then(function() {
                 return show(options);
             }) : (scopeReset(), scopeExtend(options), angular.forEach(scope.buttons, function(btn, i) {
-                angular.isFunction(btn.onTap) || (scope.buttons[i].onTap = defaultOnTapFn);
+                if (angular.isFunction(btn.onTap) || (btn.onTap = defaultOnTapFn), angular.isArray(btn.classes)) {
+                    var classes = btn.classes;
+                    btn.classes = {}, angular.forEach(classes, function(value) {
+                        btn.classes[value] = !0;
+                    });
+                }
             }), $q.all([ setComponent(!0), setBackdrop(!0), setActiveBodyClass(!0) ]).then(function() {
                 return bindEvents();
             }));
@@ -196,7 +312,7 @@ function $MbPopupProvider() {
     }
     this.$get = $MbPopupFactory;
     var defaults = this.defaults = {
-        templateUrl: "mobie/components/popup/popup.html",
+        templateUrl: "mobie/components/popup.html",
         activeBodyClass: "mb-popup-visible"
     };
     $MbPopupFactory.$inject = [ "$mbComponent", "Helpers", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout" ];
