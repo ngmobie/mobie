@@ -57,7 +57,7 @@ function $MbActionSheetProvider() {
         }
         function hide(notTouchBackdrop) {
             return $q.all([ setComponent(!1), setBackdrop(notTouchBackdrop), setActiveBodyClass(!1) ]).then(function() {
-                return unbindEvents();
+                return unbindEvents(), scheduleVisibleStateListener("visible");
             });
         }
         function scopeReset() {
@@ -73,6 +73,13 @@ function $MbActionSheetProvider() {
                 angular.extend(scope, options);
             });
         }
+        function scheduleVisibleStateListener(type) {
+            return type = angular.isString(type) ? type : "notVisible", $q(function(resolve) {
+                component.once(type, function() {
+                    resolve();
+                });
+            });
+        }
         function show(options) {
             return getVisibleState() ? hide(!0).then(function() {
                 return show(options);
@@ -84,7 +91,7 @@ function $MbActionSheetProvider() {
                     });
                 }
             }), $q.all([ setComponent(!0), setBackdrop(!0), setActiveBodyClass(!0) ]).then(function() {
-                return bindEvents();
+                return bindEvents(), scheduleVisibleStateListener("notVisible");
             }));
         }
         var $mbActionSheet = {}, options = {
