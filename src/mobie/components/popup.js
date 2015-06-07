@@ -16,6 +16,10 @@ function $MbPopupProvider () {
 
 		options = angular.extend({}, defaults, options);
 
+		var mbComponent = $mbPopup.component = $mbComponent(options),
+				component = mbComponent.component,
+				el = component.getElement(),
+				scope = options.scope;
 		var mbComponent = $mbPopup.component = $mbComponent(options);
 		var component = mbComponent.component;
 		var el = component.getElement();
