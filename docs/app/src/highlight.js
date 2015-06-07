@@ -1,7 +1,6 @@
 function HighlightDirective () {
 	return {
 		restrict: 'EA',
-		transclude: true,
 		scope: {
 			language: '@',
 			noStrip: '@mbHighlightNoStrip'
@@ -9,7 +8,6 @@ function HighlightDirective () {
 		controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 		}],
 		controllerAs: 'mbHighlightCtrl',
-		templateUrl: 'highlight.html',
 		link: function (scope, element, attrs) {
 			var classes = scope.classes,
 					language = scope.language;
@@ -31,7 +29,7 @@ function HighlightDirective () {
 				classes[language] = true;
 			}
 
-			var codeEl = element[0].querySelector('.highlight pre code');
+			var codeEl = element[0].querySelector('pre code');
 
 			if(!codeEl) {
 				return;
@@ -55,7 +53,7 @@ function HighlightDirective () {
 				}
 			});
 
-			hljs.highlightBlock(codeEl);
+			hljs.highlightBlock(element[0]);
 		}
 	};
 }
@@ -105,14 +103,20 @@ angular.module('docsApp.highlight', [])
 			}
 
 			var preEl = angular.element('<pre>');
-			preEl.html(node.innerHTML);
+			preEl[0].innerHTML = node.innerHTML;
+
+			_.forEach(preEl[0].querySelectorAll('code[class*="lang-"]'), function (el) {
+				_.forEach(el.classList, function (className) {
+					el.classList.remove(className);
+				});
+			});
 
 			mbHighlightEl.append(preEl);
 
-			$compile(mbHighlightEl)(scope);
-
 			element.after(mbHighlightEl);
 			element.remove();
+
+			$compile(mbHighlightEl)(scope);
 		}
 	};
 }])

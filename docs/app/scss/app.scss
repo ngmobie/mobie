@@ -133,6 +133,8 @@ pre {
 
 	ul {
 		margin-bottom: 10px;
+		list-style-type: none;
+		padding: 0px;
 
 		> li {
 			&.mb-affix-active {

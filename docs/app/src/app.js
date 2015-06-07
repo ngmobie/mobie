@@ -49,11 +49,11 @@ function ReadmeContentFactory ($http, $sce, $compile, $rootScope, $location) {
 	}).then(function (htmlCode) {
 		var el = angular.element('<div>');
 
+		el.append(htmlCode);
+
 		_.forEach(el[0].querySelectorAll('#demo, #demo+p'), function (el) {
 			el.style.display = 'none';
 		});
-
-		el.append(htmlCode);
 
 		$compile(el)(scope);
 
