@@ -106,6 +106,18 @@ $tabs-light-border-color:					darken($tabs-light-bg, 30%);
 $tabs-light-color: 								lighten($dark, 60%);
 
 
+// Action Sheets
+// -------------------------------
+
+$sheet-margin:                    8px !default;
+$sheet-border-radius:             4px !default;
+
+$sheet-options-bg-color:          #f1f2f3 !default;
+$sheet-options-bg-active-color:   #e4e5e7 !default;
+$sheet-options-text-color:        #007aff !default;
+$sheet-options-border-color:      #d1d3d6 !default;
+
+
 // Item
 // -------------------------------
 
@@ -377,4 +389,5 @@ $z-index-popup:      	      10 !default;
 $z-index-sidenav:           10 !default;
 $z-index-modal:           	10 !default;
 $z-index-tabs:              10 !default;
+$z-index-action-sheet:			10 !default;
 $z-index-item-radio:				10 !default;
