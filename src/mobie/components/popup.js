@@ -5,7 +5,6 @@ function $MbPopupProvider () {
 
 	var defaults = this.defaults = {
 		templateUrl: 'mobie/components/popup.html',
-		templateUrl: 'mobie/components/popup/popup.html',
 		activeBodyClass: 'mb-popup-visible'
 	};
 
@@ -21,10 +20,7 @@ function $MbPopupProvider () {
 				component = mbComponent.component,
 				el = component.getElement(),
 				scope = options.scope;
-		var mbComponent = $mbPopup.component = $mbComponent(options);
-		var component = mbComponent.component;
-		var el = component.getElement();
-		var scope = options.scope;
+
 		function onTapContainerFn(event) {
 			return asyncDigest().then(function () {
 				if(event.target === el[0]) {
@@ -135,7 +131,8 @@ function $MbPopupProvider () {
 			scopeExtend(options);
 			angular.forEach(scope.buttons, function (btn, i) {
 				if(!angular.isFunction(btn.onTap)) {
-					scope.buttons[i].onTap = defaultOnTapFn;
+					btn.onTap = defaultOnTapFn;
+				}
 				if(angular.isArray(btn.classes)) {
 					var classes = btn.classes;
 					
