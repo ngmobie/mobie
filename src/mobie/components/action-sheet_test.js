@@ -42,16 +42,47 @@ describe('mobie.components.action-sheet', function () {
 			}).then(function () {
 				finished = true;
 			});
-			$animate.triggerCallbacks()
-			$timeout.flush()
 
-			assert.equal(false, finished);
-
-			$mbActionSheet.hide();			
 			$animate.triggerCallbacks()
 			$timeout.flush();
 
+			assert.equal(false, finished);
+
+			$mbActionSheet.hide();
+			$animate.triggerCallbacks();
+
 			assert.ok(finished);
+
+			var hasShowed = false;
+			$mbActionSheet.show({
+				buttons: [{
+					text: 'Btn 2'
+				}]
+			});
+
+			$animate.triggerCallbacks();
+
+			$mbActionSheet.hide().then(function () {
+				hasShowed = true;
+			});
+
+			$animate.triggerCallbacks();
+			$timeout.flush();
+
+			assert.equal(false, hasShowed);
+
+			$mbActionSheet.show({
+				buttons: [{
+					text: 'Btn 2'
+				}]
+			});
+			
+			assert.equal(false, hasShowed);
+
+			$animate.triggerCallbacks();
+			$timeout.flush();
+
+			assert.ok(hasShowed);
 		});
 	});
 });
