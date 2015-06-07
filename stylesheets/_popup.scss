@@ -1,3 +1,7 @@
+body.mb-popup-visible {
+  overflow: hidden;
+}
+
 .popup {
   width: 250px;
   max-width: 100%;
@@ -58,7 +62,7 @@
   }
 }
 .popup-container {
-	position: absolute;
+	position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
