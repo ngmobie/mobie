@@ -35,12 +35,24 @@
   		.controller('UserController', ['$scope', '$mbActionSheet', '$mbPopup', '$timeout', function ($scope, $mbActionSheet, $mbPopup, $timeout) {
   			$scope.users = users;
 
+  			$scope.showMessage = function (msg, title) {
+					return $mbPopup.show({
+						title: title ? title : 'Hey',
+						text: msg
+					});
+  			};
+
   			$scope.shareUser = function (user) {
 					$timeout(function () {
-						$mbPopup.show({
-							title: 'Hey',
-							text: "It's done. " + user.name + ', shared!'
-						});
+						$scope.showMessage("It's done. " + user.name + ', shared!');
+					}, 2000);
+  			};
+
+  			$scope.dropUser = function (user) {
+					var index = $scope.users.indexOf(user);
+					$scope.users.splice(index, 1);
+					$timeout(function () {
+						$scope.showMessage(user.name + ', deleted!');
 					}, 2000);
   			};
 
@@ -59,8 +71,7 @@
 								text: 'Delete',
 								classes: ['button-danger'],
 								onTap: function (scope) {
-									var index = $scope.users.indexOf(user);
-									$scope.users.splice(index, 1);
+									$scope.dropUser(user);
 									scope.close();
 								}
 							}
