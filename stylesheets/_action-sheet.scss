@@ -5,17 +5,20 @@
 
 .action-sheet-wrapper {
   transform: translate3d(0, 100%, 0);
-  transition: all cubic-bezier(.36, .66, .04, 1) 500ms;
-  position: absolute;
+  animation-timing-function: cubic-bezier(.36, .66, .04, 1);
+  animation-duration: 500ms;
+  
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
   max-width: 500px;
   margin: auto;
+  z-index: $z-index-action-sheet;
 }
 
-.action-sheet-up {
+.action-sheet-wrapper.mb-visible {
   transform: translate3d(0, 0, 0);
 }
 
@@ -28,7 +31,6 @@
 
   .button {
     display: block;
-    padding: 1px;
     width: 100%;
     border-radius: 0;
     border-color: $sheet-options-border-color;
@@ -152,4 +154,8 @@
 
   }
 
+}
+
+body.mb-action-sheet-visible {
+  overflow: hidden;
 }
