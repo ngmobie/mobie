@@ -135,6 +135,14 @@ function $MbPopupProvider () {
 			angular.forEach(scope.buttons, function (btn, i) {
 				if(!angular.isFunction(btn.onTap)) {
 					scope.buttons[i].onTap = defaultOnTapFn;
+				if(angular.isArray(btn.classes)) {
+					var classes = btn.classes;
+					
+					btn.classes = {};
+
+					angular.forEach(classes, function (value) {
+						btn.classes[value] = true;
+					});
 				}
 			});
 
