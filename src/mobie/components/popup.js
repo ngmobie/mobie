@@ -1,5 +1,9 @@
 var bodyEl = angular.element(document.body);
 
+/**
+ * @ngdoc provider
+ * @name $mbPopupProvider
+ */
 function $MbPopupProvider () {
 	this.$get = $MbPopupFactory;
 
@@ -8,6 +12,50 @@ function $MbPopupProvider () {
 		activeBodyClass: 'mb-popup-visible'
 	};
 
+	/**
+	 * @ngdoc service
+	 * @name $mbPopup
+	 *
+	 * @description
+	 * The popup is a component to show popup windows that require the
+	 * user to respond in order to continue.
+	 * 
+	 * For now, the popup service support only `show()` method, since the
+	 * you can do anything with this method. The others your be added in order
+	 * for convenience only.
+	 *
+	 * @example
+	  <example module="popupExampleApp">
+	  	<file name="index.html">
+	  		<div class="bar bar-header bar-primary">
+					<h3 class="title">Popup Example</h3>
+	  		</div>
+	  		<div class="padding" ng-controller="PopupController as popupCtrl">
+	  			<p>
+	  				<div class="button button-block" ng-click="popupCtrl.show()">Show popup</div>
+	  			</p>
+	  		</div>
+	  	</file>
+	  	<file name="app.js">
+	  		angular.module('popupExampleApp', ['ngAnimate', 'mobie'])
+	  		.controller('PopupController', ['$scope', '$mbPopup', function ($scope, $mbPopup) {
+					this.show = function () {
+						return $mbPopup.show({
+							title: 'Hey',
+							text: 'That was nice!',
+							buttons: [{
+								text: 'OK',
+								classes: ['button-primary']
+							}]
+						});
+					};
+	  		}]);
+	  	</file>
+	  	<file name="app.css">
+	  		@import "../../lib/mobie.css";
+	  	</file>
+	  </example>
+	 */
 	function $MbPopupFactory ($mbComponent, Helpers, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
 		var $mbPopup = {};
 		var options = {
