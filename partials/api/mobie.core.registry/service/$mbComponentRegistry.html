@@ -1,0 +1,60 @@
+<a href='https://github.com/ngmobie/mobie/edit/master/src/mobie/core/registry.js?message=docs($mbComponentRegistry)%3A%20describe%20your%20change...#L1' class='improve-docs btn btn-primary'><i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this Doc</a>
+
+
+
+<a href='https://github.com/ngmobie/mobie/tree/master/src/mobie/core/registry.js#L1' class='view-source pull-right btn btn-primary'>
+  <i class="glyphicon glyphicon-zoom-in">&nbsp;</i>View Source
+</a>
+
+
+<header class="api-profile-header">
+  <h1 class="api-profile-header-heading">$mbComponentRegistry</h1>
+  <ol class="api-profile-header-structure naked-list step-list">
+    
+  
+
+    <li class="ng-hide">
+      - service in module <a href="">mobie.core.registry</a>
+    </li>
+  </ol>
+</header>
+
+
+
+<div class="api-profile-description">
+  <p>Store components to provides them earlier</p>
+<pre><code class="lang-js">app.controller(&#39;MyComponentController&#39;, [&#39;$mbComponentRegistry&#39;, &#39;$attrs&#39;, &#39;MbComponent&#39;, function ($mbComponentRegistry, $attrs, MbComponent) {
+  var component = this.component = new MbComponent($element, {
+      id: $attrs.componentId
+  });
+
+  $mbComponentRegistry.register(this.component);
+}]).factory(&#39;$myComponentService&#39;, [&#39;$mbComponentRegistry&#39;, function ($mbComponentRegistry) {
+  return function (componentId) {
+    return $mbComponentRegistry.get(componentId);
+  };
+}]);
+</code></pre>
+
+</div>
+
+
+
+
+<div>
+  
+
+    
+
+  
+
+  
+  
+  
+
+
+
+  
+</div>
+
+

@@ -1,0 +1,19 @@
+{
+  "name": "node-browser",
+  "version": "1.0.24",
+  "homepage": "https://github.com/VictorQueiroz/node-browser",
+  "authors": [
+    "Victor Queiroz <victorcqueirozg@gmail.com>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

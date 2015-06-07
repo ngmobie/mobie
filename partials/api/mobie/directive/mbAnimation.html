@@ -1,0 +1,131 @@
+<a href='https://github.com/ngmobie/mobie/edit/master/src/mobie/components/animation.js?message=docs(mbAnimation)%3A%20describe%20your%20change...#L1' class='improve-docs btn btn-primary'><i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this Doc</a>
+
+
+
+<a href='https://github.com/ngmobie/mobie/tree/master/src/mobie/components/animation.js#L1' class='view-source pull-right btn btn-primary'>
+  <i class="glyphicon glyphicon-zoom-in">&nbsp;</i>View Source
+</a>
+
+
+<header class="api-profile-header">
+  <h1 class="api-profile-header-heading">mbAnimation</h1>
+  <ol class="api-profile-header-structure naked-list step-list">
+    
+    <li class="ng-hide">
+      - directive in module <a href="">mobie</a>
+    </li>
+  </ol>
+</header>
+
+
+
+<div class="api-profile-description">
+  <p>Add to the element which will be animated when <code>mb-visible</code> and
+<code>mb-hidden</code> class is removed and added animation classes.</p>
+<h2 id="mixin-classes">Mixin classes</h2>
+<p>All the components could be animateds or not. You can mix them, however you want.
+So if you need that an component get animated on it&#39;s <code>visible</code> and not animated on
+it&#39;s <code>hidden</code>, sure you can do it</p>
+
+</div>
+
+
+
+
+<div>
+  
+
+  
+  <h2>Directive Info</h2>
+  <ul>
+    
+    <li>This directive executes at priority level 0.</li>
+  </ul>
+
+  
+  <h2 id="usage">Usage</h2>
+  <div class="usage">
+  
+    <ul>
+    <li>as attribute:
+        <mb-highlight language="html">
+          <pre><code>&lt;ANY&gt;&#10;...&#10;&lt;/ANY&gt;</code></pre>
+        </mb-highlight>
+      </li>
+    
+  </div>
+  
+  
+
+
+  
+  <h2 id="example">Example</h2><p>
+
+
+<div class="runnable-example"
+    path="examples/example-example1"
+    module="customAnimationExample">
+
+ 
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="index.html"
+    language="html"
+    type="html">
+    <pre><code>&lt;div class=&quot;bar bar-header&quot;&gt;&#10;&lt;h3 class=&quot;title&quot;&gt;Custom animation&lt;/h3&gt;&#10;&lt;/div&gt;&#10;&lt;div class=&quot;list&quot;&gt;&#10;&#9;&lt;div class=&quot;item item-input&quot;&gt;&#10;&#9;&#9;&lt;input type=&quot;text&quot; ng-model=&quot;msg&quot; placeholder=&quot;Type a message here&quot;&gt;&#10;&#9;&lt;/div&gt;&#10;&lt;/div&gt;&#10;&lt;div class=&quot;padding&quot;&gt;&#10;&#9;&lt;p&gt;&lt;div my-custom-component data-msg=&quot;{{msg}}&quot;&gt;&lt;/div&gt;&lt;/p&gt;&#10;&lt;/div&gt;</code></pre>
+  </div>
+
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="app.js"
+    language="js"
+    type="js">
+    <pre><code>angular.module(&#39;customAnimationExample&#39;, [&#39;ngAnimate&#39;, &#39;mobie&#39;])&#10;.directive(&#39;myCustomComponent&#39;, [&#39;$mbComponent&#39;, function ($mbComponent) {&#10;return {&#10;&#9;template: &#39;&lt;button ng-click=&quot;myCtrl.show()&quot; class=&quot;button button-block&quot;&gt;Show me up&lt;/button&gt;&#39;,&#10;&#9;scope: {&#10;&#9;&#9;msg: &#39;@&#39;&#10;&#9;},&#10;&#9;controllerAs: &#39;myCtrl&#39;,&#10;&#9;controller: [&#39;$scope&#39;, &#39;$timeout&#39;, function ($scope, $timeout) {&#10;&#10;&#9;&#9;// Your component&#10;&#9;&#9;var myComponentTmp = &#39;&lt;div class=&quot;my-custom-component&quot; mb-animation=&quot;zoom-in slide-out-left&quot;&gt;&#39; +&#10;&#9;&#9;&#9;&#39;&lt;div class=&quot;bar bar-header bar-primary&quot;&gt;&#39; +&#10;&#9;&#9;&#9;&#9;&#39;&lt;h3 class=&quot;title&quot;&gt;My component&lt;/h3&gt;&#39; +&#10;&#9;&#9;&#9;&#39;&lt;/div&gt;&#39; +&#10;&#9;&#9;&#9;&#39;&lt;div class=&quot;padding&quot;&gt;&lt;p&gt;{{ msg || &quot;Type a message in the next round&quot; }}&lt;/p&gt;&lt;/div&gt;&#39; +&#10;&#9;&#9;&#39;&lt;/div&gt;&#39;;&#10;&#10;&#9;&#9;var component = $mbComponent({&#10;&#9;&#9;&#9;template: myComponentTmp,&#10;&#9;&#9;&#9;scope: $scope&#10;&#9;&#9;});&#10;&#10;&#9;&#9;this.show = function () {&#10;&#9;&#9;&#9;return component.show().then(function () {&#10;&#9;&#9;&#9;&#9;return $timeout(function () {&#10;&#9;&#9;&#9;&#9;&#9;return component.hide();&#10;&#9;&#9;&#9;&#9;}, 3000);&#10;&#9;&#9;&#9;});&#10;&#9;&#9;};&#10;&#9;}]&#10;};&#10;}]);</code></pre>
+  </div>
+
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="app.css"
+    language="css"
+    type="css">
+    <pre><code>@import url(&quot;../../lib/mobie.css&quot;);&#10;.my-custom-component {&#10;&#9;position: absolute;&#10;&#9;width: 100%;&#10;&#9;height: 100%;&#10;&#9;background-color: #fff;&#10;&#9;border-radius: 4px;&#10;&#9;z-index: 10;&#10;}&#10;.my-custom-component.mb-hidden {&#10;&#9;top: -9999px;&#10;&#9;left: -9999px;&#10;}&#10;.my-custom-component.mb-visible,&#10;.my-custom-component.mb-visible-add,&#10;.my-custom-component.mb-visible-remove,&#10;.my-custom-component.mb-hidden-add,&#10;.my-custom-component.mb-hidden-remove {&#10;&#9;top: 0;&#10;&#9;left: 0;&#10;&#9;bottom: 0;&#10;&#9;right: 0;&#10;}</code></pre>
+  </div>
+
+
+  <div class="runnable-example-frame">
+    <iframe src="examples/example-example1/index.html" name="example-example1"></iframe>
+  </div>
+</div>
+
+
+</p>
+<p>All the animation names inside the <code>mb-animation</code> attribute, takes the <code>mb-</code>
+prefixes, and are all added as a class in the element. So, if you have:</p>
+<pre><code class="lang-html">&lt;div mb-animation=&quot;my-animation&quot;&gt;&lt;/div&gt;
+</code></pre>
+<p>The compiled element will be: </p>
+<pre><code class="lang-html">&lt;div mb-animation=&quot;my-animation&quot; class=&quot;mb-my-animation&quot;&gt;&lt;/div&gt;
+</code></pre>
+<h2 id="animation-names">Animation names</h2>
+<p>There are many animations that can be used in many elements:</p>
+<h3 id="visible-animations-mb-visible-">Visible animations (<code>mb-visible</code>)</h3>
+<p>Animations executed when the component is being showed up.</p>
+<ul>
+<li>slide-in-right</li>
+<li>slide-in-left</li>
+<li>slide-in-up</li>
+<li>slide-in-down</li>
+<li>zoom-in</li>
+</ul>
+<h3 id="hidden-animations-mb-hidden-">Hidden animations (<code>mb-hidden</code>)</h3>
+<p>Animations executed when the component is being hidded.</p>
+<ul>
+<li>slide-out-right</li>
+<li>slide-out-left</li>
+<li>slide-out-up</li>
+<li>slide-out-down</li>
+<li>zoom-out</li>
+</ul>
+<p>Each animation are a implementation of <a href="https://daneden.github.io/animate.css/">Animate.css</a>
+animation, adapted to AngularJS Animations.</p>
+
+</div>
+
+

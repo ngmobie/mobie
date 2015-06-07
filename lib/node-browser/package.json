@@ -1,0 +1,38 @@
+{
+  "name": "node-browser",
+  "version": "1.0.24",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorQueiroz/node-browser.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VictorQueiroz/node-browser/issues"
+  },
+  "homepage": "https://github.com/VictorQueiroz/node-browser#readme",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-gzip": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.4",
+    "gulp-wrapper": "^0.1.5",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.8",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-ie-launcher": "^0.1.5",
+    "karma-mocha": "^0.1.10",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-should": "0.0.1",
+    "lodash": "^3.8.0",
+    "mocha": "^2.2.4",
+    "should": "^6.0.1"
+  }
+}

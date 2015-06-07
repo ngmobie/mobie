@@ -1,0 +1,7 @@
+@import url("../../lib/mobie.css");
+@import url("../../lib/ionicons/css/ionicons.min.css");
+.sidenav-whatever.mb-visible,
+.sidenav-whatever.mb-visible-remove,
+.sidenav-whatever.mb-visible-remove-active {
+  bottom: 0;
+}

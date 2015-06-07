@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"  ng-app="customAnimationExample">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example - example-example1</title>
+</head>
+<body>
+  <div class="bar bar-header">
+<h3 class="title">Custom animation</h3>
+</div>
+<div class="list">
+	<div class="item item-input">
+		<input type="text" ng-model="msg" placeholder="Type a message here">
+	</div>
+</div>
+<div class="padding">
+	<p><div my-custom-component data-msg="{{msg}}"></div></p>
+</div>
+
+  <link href="app.css" rel="stylesheet" type="text/css">
+  
+
+  <script src="../../lib/Faker/build/build/faker.min.js"></script>
+  <script src="../../lib/jquery/dist/jquery.min.js"></script>
+  <script src="../../lib/lodash/lodash.min.js"></script>
+  <script src="../../lib/angular/angular.min.js"></script>
+  <script src="../../lib/angular-animate/angular-animate.min.js"></script>
+  <script src="../../lib/mobie.js"></script>
+  <script src="../../lib/mobie.tpl.js"></script>
+  <script src="app.js"></script>
+  
+  
+  
+</body>
+</html>

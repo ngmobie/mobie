@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"  ng-app="exampleApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example - example-example4</title>
+</head>
+<body>
+  <div class="sidenav" mb-sidenav data-component-id="sidenav-left" mb-animation="slide-in-left slide-out-left">
+	<div class="bar bar-header">
+		<h3 class="title">Sidenav Left</h3>
+	</div>
+</div>
+
+<div class="sidenav sidenav-right" mb-sidenav data-component-id="sidenav-right" mb-animation="slide-in-right slide-out-right">
+	<div class="bar bar-header">
+		<h3 class="title">Sidenav Right</h3>
+	</div>
+</div>
+
+<div class="sidenav sidenav-top" mb-sidenav data-component-id="sidenav-top" mb-animation="slide-in-up slide-out-down">
+	<div class="bar bar-header">
+		<h3 class="title">"Sidenav" Top</h3>
+	</div>
+</div>
+
+	<div ng-controller="BarController as barCtrl">
+	<div class="bar bar-header">
+		<button class="button button-clear icon ion-navicon" ng-click="barCtrl.toggle()"></button>
+		<h3 class="title">Content bar</h3>
+		<button class="button button-clear icon ion-navicon" ng-click="barCtrl.toggleSecond()"></button>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<p>That is my content</p>
+
+			<p>
+				<button class="button button-block" ng-click="barCtrl.toggleTop()">Toggle Sidenav Top</button>
+			<p>
+		</div>
+	</div>
+</div>
+
+  <link href="app.css" rel="stylesheet" type="text/css">
+  
+
+  <script src="../../lib/Faker/build/build/faker.min.js"></script>
+  <script src="../../lib/jquery/dist/jquery.min.js"></script>
+  <script src="../../lib/lodash/lodash.min.js"></script>
+  <script src="../../lib/angular/angular.min.js"></script>
+  <script src="../../lib/angular-animate/angular-animate.min.js"></script>
+  <script src="../../lib/mobie.js"></script>
+  <script src="../../lib/mobie.tpl.js"></script>
+  <script src="app.js"></script>
+  
+  
+  
+</body>
+</html>

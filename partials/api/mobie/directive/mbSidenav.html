@@ -1,0 +1,97 @@
+<a href='https://github.com/ngmobie/mobie/edit/master/src/mobie/components/sidenav.js?message=docs(mbSidenav)%3A%20describe%20your%20change...#L85' class='improve-docs btn btn-primary'><i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this Doc</a>
+
+
+
+<a href='https://github.com/ngmobie/mobie/tree/master/src/mobie/components/sidenav.js#L85' class='view-source pull-right btn btn-primary'>
+  <i class="glyphicon glyphicon-zoom-in">&nbsp;</i>View Source
+</a>
+
+
+<header class="api-profile-header">
+  <h1 class="api-profile-header-heading">mbSidenav</h1>
+  <ol class="api-profile-header-structure naked-list step-list">
+    
+    <li class="ng-hide">
+      - directive in module <a href="">mobie</a>
+    </li>
+  </ol>
+</header>
+
+
+
+<div class="api-profile-description">
+  
+</div>
+
+
+
+
+<div>
+  
+
+  
+  <h2>Directive Info</h2>
+  <ul>
+    
+    <li>This directive executes at priority level 0.</li>
+  </ul>
+
+  
+  <h2 id="usage">Usage</h2>
+  <div class="usage">
+  
+    <ul>
+    <li>as attribute:
+        <mb-highlight language="html">
+          <pre><code>&lt;ANY&gt;&#10;...&#10;&lt;/ANY&gt;</code></pre>
+        </mb-highlight>
+      </li>
+    
+  </div>
+  
+  
+
+
+  
+  <h2 id="example">Example</h2><p>In this example you can see a active and fully working sidenav strategy, a sidenav is married to the <code>$componentRegistry</code> and you can have how many sidenavs you want to. As long as you define the <code>componentId</code> attribute in the sidenav element.
+  
+
+
+<div class="runnable-example"
+    path="examples/example-example4"
+    module="exampleApp">
+
+ 
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="index.html"
+    language="html"
+    type="html">
+    <pre><code>&lt;div class=&quot;sidenav&quot; mb-sidenav data-component-id=&quot;sidenav-left&quot; mb-animation=&quot;slide-in-left slide-out-left&quot;&gt;&#10;&#9;&lt;div class=&quot;bar bar-header&quot;&gt;&#10;&#9;&#9;&lt;h3 class=&quot;title&quot;&gt;Sidenav Left&lt;/h3&gt;&#10;&#9;&lt;/div&gt;&#10;&lt;/div&gt;&#10;&#10;&lt;div class=&quot;sidenav sidenav-right&quot; mb-sidenav data-component-id=&quot;sidenav-right&quot; mb-animation=&quot;slide-in-right slide-out-right&quot;&gt;&#10;&#9;&lt;div class=&quot;bar bar-header&quot;&gt;&#10;&#9;&#9;&lt;h3 class=&quot;title&quot;&gt;Sidenav Right&lt;/h3&gt;&#10;&#9;&lt;/div&gt;&#10;&lt;/div&gt;&#10;&#10;&lt;div class=&quot;sidenav sidenav-top&quot; mb-sidenav data-component-id=&quot;sidenav-top&quot; mb-animation=&quot;slide-in-up slide-out-down&quot;&gt;&#10;&#9;&lt;div class=&quot;bar bar-header&quot;&gt;&#10;&#9;&#9;&lt;h3 class=&quot;title&quot;&gt;&quot;Sidenav&quot; Top&lt;/h3&gt;&#10;&#9;&lt;/div&gt;&#10;&lt;/div&gt;&#10;&#10;&#9;&lt;div ng-controller=&quot;BarController as barCtrl&quot;&gt;&#10;&#9;&lt;div class=&quot;bar bar-header&quot;&gt;&#10;&#9;&#9;&lt;button class=&quot;button button-clear icon ion-navicon&quot; ng-click=&quot;barCtrl.toggle()&quot;&gt;&lt;/button&gt;&#10;&#9;&#9;&lt;h3 class=&quot;title&quot;&gt;Content bar&lt;/h3&gt;&#10;&#9;&#9;&lt;button class=&quot;button button-clear icon ion-navicon&quot; ng-click=&quot;barCtrl.toggleSecond()&quot;&gt;&lt;/button&gt;&#10;&#9;&lt;/div&gt;&#10;&#10;&#9;&lt;div class=&quot;row&quot;&gt;&#10;&#9;&#9;&lt;div class=&quot;col&quot;&gt;&#10;&#9;&#9;&#9;&lt;p&gt;That is my content&lt;/p&gt;&#10;&#10;&#9;&#9;&#9;&lt;p&gt;&#10;&#9;&#9;&#9;&#9;&lt;button class=&quot;button button-block&quot; ng-click=&quot;barCtrl.toggleTop()&quot;&gt;Toggle Sidenav Top&lt;/button&gt;&#10;&#9;&#9;&#9;&lt;p&gt;&#10;&#9;&#9;&lt;/div&gt;&#10;&#9;&lt;/div&gt;&#10;&lt;/div&gt;</code></pre>
+  </div>
+
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="app.js"
+    language="js"
+    type="js">
+    <pre><code>angular.module(&#39;exampleApp&#39;, [&#39;mobie&#39;, &#39;ngAnimate&#39;])&#10;.controller(&#39;BarController&#39;, [&#39;$mbSidenav&#39;, function ($mbSidenav) {&#10;this.toggle = function () {&#10;&#9;return $mbSidenav(&#39;sidenav-left&#39;).toggle();&#10;};&#10;this.toggleSecond = function () {&#10;&#9;return $mbSidenav(&#39;sidenav-right&#39;).toggle();&#10;};&#10;this.toggleTop = function () {&#10;&#9;return $mbSidenav(&#39;sidenav-top&#39;).toggle();&#10;};&#10;}]);</code></pre>
+  </div>
+
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="app.css"
+    language="css"
+    type="css">
+    <pre><code>@import url(&quot;../../lib/mobie.css&quot;);&#10;@import url(&quot;../../lib/ionicons/css/ionicons.min.css&quot;);&#10;.sidenav-whatever.mb-visible,&#10;.sidenav-whatever.mb-visible-remove,&#10;.sidenav-whatever.mb-visible-remove-active {&#10;  bottom: 0;&#10;}</code></pre>
+  </div>
+
+
+  <div class="runnable-example-frame">
+    <iframe src="examples/example-example4/index.html" name="example-example4"></iframe>
+  </div>
+</div>
+
+
+</p>
+
+</div>
+
+

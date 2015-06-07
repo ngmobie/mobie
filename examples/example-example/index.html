@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"  ng-app="actionSheetExampleApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example - example-example</title>
+</head>
+<body>
+  <div class="bar bar-header bar-primary">
+	<h3 class="title">Action Sheet Bar</h3>
+</div>
+<ul class="list" ng-controller="UserController as userCtrl">
+	<a class="item" ng-repeat="user in users track by $index" ng-click="showOptions(user)">
+		<div class="item-content">
+			{{user.name}}
+		</div>
+	</a>
+</ul>
+
+  <link href="app.css" rel="stylesheet" type="text/css">
+  
+
+  <script src="../../lib/Faker/build/build/faker.min.js"></script>
+  <script src="../../lib/jquery/dist/jquery.min.js"></script>
+  <script src="../../lib/lodash/lodash.min.js"></script>
+  <script src="../../lib/angular/angular.min.js"></script>
+  <script src="../../lib/angular-animate/angular-animate.min.js"></script>
+  <script src="../../lib/mobie.js"></script>
+  <script src="../../lib/mobie.tpl.js"></script>
+  <script src="app.js"></script>
+  
+  
+  
+</body>
+</html>

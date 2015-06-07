@@ -1,0 +1,269 @@
+<a href='https://github.com/ngmobie/mobie/edit/master/src/mobie/core/component.js?message=docs(MbComponent)%3A%20describe%20your%20change...#L1' class='improve-docs btn btn-primary'><i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this Doc</a>
+
+
+
+<a href='https://github.com/ngmobie/mobie/tree/master/src/mobie/core/component.js#L1' class='view-source pull-right btn btn-primary'>
+  <i class="glyphicon glyphicon-zoom-in">&nbsp;</i>View Source
+</a>
+
+
+<header class="api-profile-header">
+  <h1 class="api-profile-header-heading">MbComponent</h1>
+  <ol class="api-profile-header-structure naked-list step-list">
+    
+    <li class="ng-hide">
+      - object in module <a href="">mobie</a>
+    </li>
+  </ol>
+</header>
+
+
+
+<div class="api-profile-description">
+  <p>Create a new instance of MbComponent</p>
+
+</div>
+
+
+
+
+<div>
+  
+
+    
+
+  <h2 id="usage">Usage</h2>
+    
+      <p><code>MbComponent(componentEl, id, options);</code></p>
+
+
+    
+
+    
+<section class="api-section">
+  <h3>Arguments</h3>
+
+<table class="variables-matrix input-arguments">
+  <thead>
+    <tr>
+      <th>Param</th>
+      <th>Type</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <tr>
+      <td>
+        componentEl
+        
+        
+      </td>
+      <td>
+        <a href="" class="label type-hint type-hint-domelement">DOMElement</a>
+      </td>
+      <td>
+        <p>the component element, which will be showed and hidded</p>
+
+        
+      </td>
+    </tr>
+    
+    <tr>
+      <td>
+        id
+        
+        
+      </td>
+      <td>
+        <a href="" class="label type-hint type-hint-string">string</a>
+      </td>
+      <td>
+        <p>the component id</p>
+
+        
+      </td>
+    </tr>
+    
+    <tr>
+      <td>
+        options
+        
+        
+      </td>
+      <td>
+        <a href="" class="label type-hint type-hint-object">object</a>
+      </td>
+      <td>
+        <p>the component options</p>
+
+        
+      </td>
+    </tr>
+    
+  </tbody>
+</table>
+
+</section>
+    
+    
+
+  
+<h2>Methods</h2>
+<ul class="methods">
+  <li id="show">
+    <h3><p><code>show();</code></p>
+
+</h3>
+    <div><p>Show the component</p>
+</div>
+
+    
+
+    
+    
+    
+    <h4>Returns</h4>
+    <table class="variables-matrix return-arguments">
+  <tr>
+    <td><a href="" class="label type-hint type-hint-promise">Promise</a></td>
+    <td><p>the animation callback promise</p>
+</td>
+  </tr>
+</table>
+    
+
+  </li>
+  
+  <li id="hide">
+    <h3><p><code>hide();</code></p>
+
+</h3>
+    <div><p>Hide the component</p>
+</div>
+
+    
+
+    
+    
+    
+    <h4>Returns</h4>
+    <table class="variables-matrix return-arguments">
+  <tr>
+    <td><a href="" class="label type-hint type-hint-promise">Promise</a></td>
+    <td><p>the animation callback promise</p>
+</td>
+  </tr>
+</table>
+    
+
+  </li>
+  
+  <li id="toggle">
+    <h3><p><code>toggle();</code></p>
+
+</h3>
+    <div><p>Toggle the component visible state</p>
+</div>
+
+    
+
+    
+    
+    
+    <h4>Returns</h4>
+    <table class="variables-matrix return-arguments">
+  <tr>
+    <td><a href="" class="label type-hint type-hint-promise">Promise</a></td>
+    <td><p>the animation callback promise</p>
+</td>
+  </tr>
+</table>
+    
+
+  </li>
+  
+  <li id="setVisibleState">
+    <h3><p><code>setVisibleState(visibleState);</code></p>
+
+</h3>
+    <div><p>Emit <code>visibleStateChangeStart</code> event before do anything,
+        then add the visible class and/or remove the hidden, according
+        to the setted visible state param and emit the final event
+    <code>visibleStateChangeSuccess</code> or <code>visibleStateChangeError</code> if we
+    got an error.</p>
+</div>
+
+    
+    <h4>Parameters</h4>
+    
+<table class="variables-matrix input-arguments">
+  <thead>
+    <tr>
+      <th>Param</th>
+      <th>Type</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <tr>
+      <td>
+        visibleState
+        
+        
+      </td>
+      <td>
+        <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+      </td>
+      <td>
+        <p>the visible state to set</p>
+
+        
+      </td>
+    </tr>
+    
+  </tbody>
+</table>
+
+    
+
+    
+    
+    
+    <h4>Returns</h4>
+    <table class="variables-matrix return-arguments">
+  <tr>
+    <td><a href="" class="label type-hint type-hint-promise">Promise</a></td>
+    <td><p>the animation callback promise</p>
+</td>
+  </tr>
+</table>
+    
+
+  </li>
+  
+  <li id="destroy">
+    <h3><p><code>destroy();</code></p>
+
+</h3>
+    <div><p>Destroys the element permanently</p>
+</div>
+
+    
+
+    
+    
+    
+
+  </li>
+  </ul>
+  
+  
+
+
+
+  
+</div>
+
+

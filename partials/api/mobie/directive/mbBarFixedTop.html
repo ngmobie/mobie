@@ -1,0 +1,100 @@
+<a href='https://github.com/ngmobie/mobie/edit/master/src/mobie/components/bar.js?message=docs(mbBarFixedTop)%3A%20describe%20your%20change...#L1' class='improve-docs btn btn-primary'><i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this Doc</a>
+
+
+
+<a href='https://github.com/ngmobie/mobie/tree/master/src/mobie/components/bar.js#L1' class='view-source pull-right btn btn-primary'>
+  <i class="glyphicon glyphicon-zoom-in">&nbsp;</i>View Source
+</a>
+
+
+<header class="api-profile-header">
+  <h1 class="api-profile-header-heading">mbBarFixedTop</h1>
+  <ol class="api-profile-header-structure naked-list step-list">
+    
+    <li class="ng-hide">
+      - directive in module <a href="">mobie</a>
+    </li>
+  </ol>
+</header>
+
+
+
+<div class="api-profile-description">
+  <p>Add the class <code>mb-fixed-top</code> which keep the bar
+fixed to the top of the body.</p>
+<p>When you scroll down the page, the bar hides. And
+when you scroll up the page, the bar shows.</p>
+
+</div>
+
+
+
+
+<div>
+  
+
+  
+  <h2>Directive Info</h2>
+  <ul>
+    
+    <li>This directive executes at priority level 0.</li>
+  </ul>
+
+  
+  <h2 id="usage">Usage</h2>
+  <div class="usage">
+  
+    <ul>
+    <li>as attribute:
+        <mb-highlight language="html">
+          <pre><code>&lt;ANY&gt;&#10;...&#10;&lt;/ANY&gt;</code></pre>
+        </mb-highlight>
+      </li>
+    
+  </div>
+  
+  
+
+
+  
+  <h2 id="example">Example</h2><p>
+
+
+<div class="runnable-example"
+    path="examples/example-example2"
+    module="barFixedTopExample">
+
+ 
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="index.html"
+    language="html"
+    type="html">
+    <pre><code>&lt;div class=&quot;bar bar-primary bar-header&quot; mb-bar-fixed-top&gt;&#10;&#9;&lt;h3 class=&quot;title&quot;&gt;Bar Fixed Top&lt;/h3&gt;&#10;&lt;/div&gt;&#10;&lt;div class=&quot;list&quot; ng-controller=&quot;PersonsController&quot;&gt;&#10;&#9;&lt;div class=&quot;item&quot; ng-repeat=&quot;person in persons track by $index&quot;&gt;{{person.name}}&lt;/div&gt;&#10;&lt;/div&gt;</code></pre>
+  </div>
+
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="app.js"
+    language="js"
+    type="js">
+    <pre><code>angular.module(&#39;barFixedTopExample&#39;, [&#39;ngAnimate&#39;, &#39;mobie&#39;])&#10;.controller(&#39;PersonsController&#39;, [&#39;$scope&#39;, function ($scope) {&#10;$scope.persons = [];&#10;for(var i=0; i&lt;10; i++) {&#10;&#9;$scope.persons[i] = { name: faker.name.findName() };&#10;}&#10;}]);</code></pre>
+  </div>
+
+  <div mb-highlight mb-highlight-no-strip class="runnable-example-file" 
+    name="app.css"
+    language="css"
+    type="css">
+    <pre><code>@import url(../../lib/mobie.css);</code></pre>
+  </div>
+
+
+  <div class="runnable-example-frame">
+    <iframe src="examples/example-example2/index.html" name="example-example2"></iframe>
+  </div>
+</div>
+
+
+</p>
+
+</div>
+
+
