@@ -20,6 +20,13 @@ function $MbPopupProvider () {
 		var component = mbComponent.component;
 		var el = component.getElement();
 		var scope = options.scope;
+		function onTapContainerFn(event) {
+			return asyncDigest().then(function () {
+				if(event.target === el[0]) {
+					return $mbPopup.hide();
+				}
+			});
+		}
 
 		function defaultOnTapFn () {
 			return asyncDigest().then(function () {
@@ -41,13 +48,13 @@ function $MbPopupProvider () {
 
 		function unbindEvents () {
 			return asyncDigest().then(function () {
-				el.off('click', defaultOnTapFn);
+				el.off('click', onTapContainerFn);
 			});
 		}
 
 		function bindEvents () {
 			return asyncDigest().then(function () {
-				el.on('click', defaultOnTapFn);
+				el.on('click', onTapContainerFn);
 			});
 		}
 
