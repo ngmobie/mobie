@@ -1,0 +1,31 @@
+/**
+ * Spinners
+ * --------------------------------------------------
+ */
+
+.spinner {
+  svg {
+    width: $spinner-width;
+    height: $spinner-height;
+  }
+
+  stroke: $spinner-default-stroke;
+  fill: $spinner-default-fill;
+}
+
+
+.spinner-android {
+  stroke: #4b8bf4;
+}
+
+.spinner-ios,
+.spinner-ios-small {
+  stroke: #69717d;
+}
+
+.spinner-spiral {
+  .stop1 {
+    stop-color: $light;
+    stop-opacity: 0;
+  }
+}

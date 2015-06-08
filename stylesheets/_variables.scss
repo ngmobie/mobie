@@ -331,6 +331,16 @@ $button-light-border-color:				darken($button-light-bg, 30%);
 $button-light-color: 							lighten($dark, 60%);
 
 
+// Spinners
+// -------------------------------
+
+$spinner-width:                   28px !default;
+$spinner-height:                  28px !default;
+
+$spinner-default-stroke:          $dark !default;
+$spinner-default-fill:            $dark !default;
+
+
 // Bar
 // -------------------------------
 
