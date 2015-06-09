@@ -1096,25 +1096,4 @@ function $MbScrollProvider() {
     $MbScrollFactory.$inject = [ "$window", "$timeout", "Helpers" ];
 }
 
-angular.module("mobie.core.scroll", [ "mobie.core.helpers" ]).directive("list", [ "$mbScroll", function($mbScroll) {
-    return {
-        restrict: "C",
-        link: function(scope, element, attrs) {
-            function setTranslateY(value) {
-                element.css("transform", "translateY(" + value + "%)");
-            }
-            var node = element[0];
-            node.addEventListener("touchstart", function() {});
-            var elementY = 0, lastY = 0;
-            $mbScroll.on("scrollDown", function() {
-                setTranslateY(0);
-            }), node.addEventListener("touchmove", function(event) {
-                if (!($mbScroll.isScrolling() || window.scrollY > 0)) {
-                    var currentY = event.touches[0].clientY;
-                    currentY > lastY ? elementY += 1 : lastY > currentY && (elementY -= 1), setTranslateY(elementY), 
-                    lastY = currentY;
-                }
-            }), node.addEventListener("touchcancel", function() {});
-        }
-    };
-} ]).provider("$mbScroll", $MbScrollProvider);}(document, window, angular, undefined))
+angular.module("mobie.core.scroll", [ "mobie.core.helpers" ]).provider("$mbScroll", $MbScrollProvider);}(document, window, angular, undefined))
