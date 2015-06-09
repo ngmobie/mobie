@@ -1,4 +1,4 @@
-(function (document, window, angular, undefined) { 'use strict';angular.module("mobie.components", [ "mobie.components.animation", "mobie.components.sidenav", "mobie.components.backdrop", "mobie.components.popup", "mobie.components.modal", "mobie.components.bar", "mobie.components.icon", "mobie.components.action-sheet" ]), 
+(function (document, window, angular, undefined) { 'use strict';angular.module("mobie.components", [ "mobie.components.animation", "mobie.components.sidenav", "mobie.components.backdrop", "mobie.components.popup", "mobie.components.modal", "mobie.components.bar", "mobie.components.icon", "mobie.components.action-sheet", "mobie.components.spinner" ]), 
 angular.module("mobie", [ "mobie.core", "mobie.components" ]), angular.module("mobie.core", [ "mobie.core.helpers", "mobie.core.registry", "mobie.core.eventemitter", "mobie.core.scroll", "mobie.core.component" ]);
 function $MbActionSheetProvider() {
     function $MbActionSheetFactory($mbComponent, $rootScope, Helpers, $mbBackdrop, $animate, $q, $timeout, $document) {
@@ -394,6 +394,350 @@ function SidenavDirective() {
 
 MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "Helpers", "MbComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
 angular.module("mobie.components.sidenav", [ "mobie.components.animation", "mobie.components.backdrop", "mobie.core.registry", "mobie.core.component", "mobie.core.helpers" ]).directive("mbClose", CloseDirective).controller("MbSidenavController", MbSidenavController).provider("$mbSidenav", $MbSidenavProvider).directive("mbSidenav", SidenavDirective);
+function $MbSpinnerProvider() {
+    function createSvgElement(tagName, data, parent, spinnerName) {
+        var k, x, y, ele = document.createElement(SHORTCUTS[tagName] || tagName);
+        for (k in data) if (angular.isArray(data[k])) for (x = 0; x < data[k].length; x++) if (data[k][x].fn) for (y = 0; y < data[k][x].t; y++) createSvgElement(k, data[k][x].fn(y, spinnerName), ele, spinnerName); else createSvgElement(k, data[k][x], ele, spinnerName); else setSvgAttribute(ele, k, data[k]);
+        parent.appendChild(ele);
+    }
+    function setSvgAttribute(ele, k, v) {
+        ele.setAttribute(SHORTCUTS[k] || k, v);
+    }
+    function animationValues(strValues, i) {
+        var values = strValues.split(";"), back = values.slice(i), front = values.slice(0, values.length - back.length);
+        return values = back.concat(front).reverse(), values.join(";") + ";" + values[0];
+    }
+    function easeInOutCubic(t, c) {
+        return t /= c / 2, 1 > t ? .5 * t * t * t : (t -= 2, .5 * (t * t * t + 2));
+    }
+    function $MbSpinnerFactory() {
+        function startAnimation(element, spinnerName) {
+            defaults.animations[spinnerName] && defaults.animations[spinnerName](element)();
+        }
+        function getSpinnerClass(iconName) {
+            return iconName = iconName.toLowerCase(), "spinner-" + iconName;
+        }
+        var $mbSpinner = {};
+        return $mbSpinner.create = function(element, iconName) {
+            var spinnerName, spinner;
+            spinnerName = iconName, spinner = spinners[spinnerName], spinner || (spinnerName = "ios", 
+            spinner = spinners.ios);
+            var container = document.createElement("div");
+            return createSvgElement("svg", {
+                viewBox: "0 0 64 64",
+                g: [ spinners[spinnerName] ]
+            }, container, spinnerName), element.html(container.innerHTML), element.addClass(getSpinnerClass(iconName)), 
+            startAnimation(element[0], spinnerName), spinnerName;
+        }, $mbSpinner.getSpinners = function() {
+            return Object.keys(defaults.spinners);
+        }, $mbSpinner;
+    }
+    var defaults = this.defaults = {}, TRANSLATE32 = "translate(32,32)", STROKE_OPACITY = "stroke-opacity", ROUND = "round", INDEFINITE = "indefinite", DURATION = "750ms", NONE = "none", SHORTCUTS = defaults.SHORTCUTS = {
+        a: "animate",
+        an: "attributeName",
+        at: "animateTransform",
+        c: "circle",
+        da: "stroke-dasharray",
+        os: "stroke-dashoffset",
+        f: "fill",
+        lc: "stroke-linecap",
+        rc: "repeatCount",
+        sw: "stroke-width",
+        t: "transform",
+        v: "values"
+    }, SPIN_ANIMATION = defaults.SPIN_ANIMATION = {
+        v: "0,32,32;360,32,32",
+        an: "transform",
+        type: "rotate",
+        rc: INDEFINITE,
+        dur: DURATION
+    }, IOS_SPINNER = {
+        sw: 4,
+        lc: ROUND,
+        line: [ {
+            fn: function(i, spinnerName) {
+                return {
+                    y1: "ios" == spinnerName ? 17 : 12,
+                    y2: "ios" == spinnerName ? 29 : 20,
+                    t: TRANSLATE32 + " rotate(" + (30 * i + (6 > i ? 180 : -180)) + ")",
+                    a: [ {
+                        fn: function() {
+                            return {
+                                an: STROKE_OPACITY,
+                                dur: DURATION,
+                                v: animationValues("0;.1;.15;.25;.35;.45;.55;.65;.7;.85;1", i),
+                                rc: INDEFINITE
+                            };
+                        },
+                        t: 1
+                    } ]
+                };
+            },
+            t: 12
+        } ]
+    }, spinners = {
+        android: {
+            c: [ {
+                sw: 6,
+                da: 128,
+                os: 82,
+                r: 26,
+                cx: 32,
+                cy: 32,
+                f: NONE
+            } ]
+        },
+        ios: IOS_SPINNER,
+        "ios-small": IOS_SPINNER,
+        bubbles: {
+            sw: 0,
+            c: [ {
+                fn: function(i) {
+                    return {
+                        cx: 24 * Math.cos(2 * Math.PI * i / 8),
+                        cy: 24 * Math.sin(2 * Math.PI * i / 8),
+                        t: TRANSLATE32,
+                        a: [ {
+                            fn: function() {
+                                return {
+                                    an: "r",
+                                    dur: DURATION,
+                                    v: animationValues("1;2;3;4;5;6;7;8", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        } ]
+                    };
+                },
+                t: 8
+            } ]
+        },
+        circles: {
+            c: [ {
+                fn: function(i) {
+                    return {
+                        r: 5,
+                        cx: 24 * Math.cos(2 * Math.PI * i / 8),
+                        cy: 24 * Math.sin(2 * Math.PI * i / 8),
+                        t: TRANSLATE32,
+                        sw: 0,
+                        a: [ {
+                            fn: function() {
+                                return {
+                                    an: "fill-opacity",
+                                    dur: DURATION,
+                                    v: animationValues(".3;.3;.3;.4;.7;.85;.9;1", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        } ]
+                    };
+                },
+                t: 8
+            } ]
+        },
+        crescent: {
+            c: [ {
+                sw: 4,
+                da: 128,
+                os: 82,
+                r: 26,
+                cx: 32,
+                cy: 32,
+                f: NONE,
+                at: [ SPIN_ANIMATION ]
+            } ]
+        },
+        dots: {
+            c: [ {
+                fn: function(i) {
+                    return {
+                        cx: 16 + 16 * i,
+                        cy: 32,
+                        sw: 0,
+                        a: [ {
+                            fn: function() {
+                                return {
+                                    an: "fill-opacity",
+                                    dur: DURATION,
+                                    v: animationValues(".5;.6;.8;1;.8;.6;.5", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        }, {
+                            fn: function() {
+                                return {
+                                    an: "r",
+                                    dur: DURATION,
+                                    v: animationValues("4;5;6;5;4;3;3", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        } ]
+                    };
+                },
+                t: 3
+            } ]
+        },
+        lines: {
+            sw: 7,
+            lc: ROUND,
+            line: [ {
+                fn: function(i) {
+                    return {
+                        x1: 10 + 14 * i,
+                        x2: 10 + 14 * i,
+                        a: [ {
+                            fn: function() {
+                                return {
+                                    an: "y1",
+                                    dur: DURATION,
+                                    v: animationValues("16;18;28;18;16", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        }, {
+                            fn: function() {
+                                return {
+                                    an: "y2",
+                                    dur: DURATION,
+                                    v: animationValues("48;44;36;46;48", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        }, {
+                            fn: function() {
+                                return {
+                                    an: STROKE_OPACITY,
+                                    dur: DURATION,
+                                    v: animationValues("1;.8;.5;.4;1", i),
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        } ]
+                    };
+                },
+                t: 4
+            } ]
+        },
+        ripple: {
+            f: NONE,
+            "fill-rule": "evenodd",
+            sw: 3,
+            circle: [ {
+                fn: function(i) {
+                    return {
+                        cx: 32,
+                        cy: 32,
+                        a: [ {
+                            fn: function() {
+                                return {
+                                    an: "r",
+                                    begin: -1 * i + "s",
+                                    dur: "2s",
+                                    v: "0;24",
+                                    keyTimes: "0;1",
+                                    keySplines: "0.1,0.2,0.3,1",
+                                    calcMode: "spline",
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        }, {
+                            fn: function() {
+                                return {
+                                    an: STROKE_OPACITY,
+                                    begin: -1 * i + "s",
+                                    dur: "2s",
+                                    v: ".2;1;.2;0",
+                                    rc: INDEFINITE
+                                };
+                            },
+                            t: 1
+                        } ]
+                    };
+                },
+                t: 2
+            } ]
+        },
+        spiral: {
+            defs: [ {
+                linearGradient: [ {
+                    id: "sGD",
+                    gradientUnits: "userSpaceOnUse",
+                    x1: 55,
+                    y1: 46,
+                    x2: 2,
+                    y2: 46,
+                    stop: [ {
+                        offset: .1,
+                        "class": "stop1"
+                    }, {
+                        offset: 1,
+                        "class": "stop2"
+                    } ]
+                } ]
+            } ],
+            g: [ {
+                sw: 4,
+                lc: ROUND,
+                f: NONE,
+                path: [ {
+                    stroke: "url(#sGD)",
+                    d: "M4,32 c0,15,12,28,28,28c8,0,16-4,21-9"
+                }, {
+                    d: "M60,32 C60,16,47.464,4,32,4S4,16,4,32"
+                } ],
+                at: [ SPIN_ANIMATION ]
+            } ]
+        }
+    };
+    angular.extend(defaults, {
+        spinners: spinners,
+        SPIN_ANIMATION: SPIN_ANIMATION,
+        animations: {
+            android: function(ele) {
+                function run() {
+                    var v = easeInOutCubic(Date.now() - startTime, 650), scaleX = 1, translateX = 0, dasharray = 188 - 58 * v, dashoffset = 182 - 182 * v;
+                    rIndex % 2 && (scaleX = -1, translateX = -64, dasharray = 128 - -58 * v, dashoffset = 182 * v);
+                    var rotateLine = [ 0, -101, -90, -11, -180, 79, -270, -191 ][rIndex];
+                    setSvgAttribute(circleEle, "da", Math.max(Math.min(dasharray, 188), 128)), setSvgAttribute(circleEle, "os", Math.max(Math.min(dashoffset, 182), 0)), 
+                    setSvgAttribute(circleEle, "t", "scale(" + scaleX + ",1) translate(" + translateX + ",0) rotate(" + rotateLine + ",32,32)"), 
+                    rotateCircle += 4.1, rotateCircle > 359 && (rotateCircle = 0), setSvgAttribute(svgEle, "t", "rotate(" + rotateCircle + ",32,32)"), 
+                    v >= 1 && (rIndex++, rIndex > 7 && (rIndex = 0), startTime = Date.now()), window.requestAnimationFrame(run);
+                }
+                var startTime, rIndex = 0, rotateCircle = 0, svgEle = ele.querySelector("g"), circleEle = ele.querySelector("circle");
+                return function() {
+                    startTime = Date.now(), run();
+                };
+            }
+        }
+    }), this.$get = $MbSpinnerFactory;
+}
+
+function SpinnerDirective($mbSpinner) {
+    function postLink(scope, element, attrs) {
+        $mbSpinner.create(element, scope.icon);
+    }
+    return {
+        restrict: "E",
+        scope: {
+            icon: "@"
+        },
+        compile: function(element) {
+            return element.addClass("spinner"), postLink;
+        }
+    };
+}
+
+SpinnerDirective.$inject = [ "$mbSpinner" ], angular.module("mobie.components.spinner", []).directive("mbSpinner", SpinnerDirective).provider("$mbSpinner", $MbSpinnerProvider);
 function MbComponentFactory(MbComponentInterface, $animate) {
     var MbComponent = MbComponentInterface.extend({
         initialize: function(componentEl, id, options) {
@@ -726,11 +1070,17 @@ function $MbScrollProvider() {
                 return windowEl.prop("scrollY");
             },
             onScrollStop: function() {
-                this.setLastScrollY(this.getScrollY());
+                this.setLastScrollY(this.getScrollY()), this.setScrollingState(!1);
+            },
+            setScrollingState: function(value) {
+                this.scrollingState = value;
+            },
+            isScrolling: function() {
+                return this.scrollingState;
             },
             onScroll: function(evt) {
                 var currentScrollY = window.scrollY, self = this;
-                $timeout.cancel(this.scrollStoppedPromise), 0 === currentScrollY && this.emit("scrollTop", evt), 
+                this.setScrollingState(!0), $timeout.cancel(this.scrollStoppedPromise), 0 === currentScrollY && this.emit("scrollTop", evt), 
                 currentScrollY > this.lastScrollY ? this.emit("scrollDown", evt) : this.emit("scrollUp", evt), 
                 this.scrollStoppedPromise = $timeout(function() {
                     self.scrollStoppedFn(evt);
@@ -746,4 +1096,25 @@ function $MbScrollProvider() {
     $MbScrollFactory.$inject = [ "$window", "$timeout", "Helpers" ];
 }
 
-angular.module("mobie.core.scroll", [ "mobie.core.helpers" ]).provider("$mbScroll", $MbScrollProvider);}(document, window, angular, undefined))
+angular.module("mobie.core.scroll", [ "mobie.core.helpers" ]).directive("list", [ "$mbScroll", function($mbScroll) {
+    return {
+        restrict: "C",
+        link: function(scope, element, attrs) {
+            function setTranslateY(value) {
+                element.css("transform", "translateY(" + value + "%)");
+            }
+            var node = element[0];
+            node.addEventListener("touchstart", function() {});
+            var elementY = 0, lastY = 0;
+            $mbScroll.on("scrollDown", function() {
+                setTranslateY(0);
+            }), node.addEventListener("touchmove", function(event) {
+                if (!($mbScroll.isScrolling() || window.scrollY > 0)) {
+                    var currentY = event.touches[0].clientY;
+                    currentY > lastY ? elementY += 1 : lastY > currentY && (elementY -= 1), setTranslateY(elementY), 
+                    lastY = currentY;
+                }
+            }), node.addEventListener("touchcancel", function() {});
+        }
+    };
+} ]).provider("$mbScroll", $MbScrollProvider);}(document, window, angular, undefined))
