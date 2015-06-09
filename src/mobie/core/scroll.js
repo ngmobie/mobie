@@ -63,11 +63,22 @@ function $MbScrollProvider () {
 
 			onScrollStop: function () {
 				this.setLastScrollY(this.getScrollY());
+				this.setScrollingState(false);
+			},
+
+			setScrollingState: function (value) {
+				this.scrollingState = value;
+			},
+
+			isScrolling: function () {
+				return this.scrollingState;
 			},
 			
 			onScroll: function (evt) {
 				var currentScrollY = window.scrollY;
 				var self = this;
+
+				this.setScrollingState(true);
 
 				$timeout.cancel(this.scrollStoppedPromise);
 

@@ -6,7 +6,8 @@ angular.module('mobie.components', [
 	'mobie.components.modal',
 	'mobie.components.bar',
 	'mobie.components.icon',
-	'mobie.components.action-sheet'
+	'mobie.components.action-sheet',
+	'mobie.components.spinner'
 ]);
 
 angular.module('mobie', [
