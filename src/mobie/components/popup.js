@@ -56,7 +56,7 @@ function $MbPopupProvider () {
 	  	</file>
 	  </example>
 	 */
-	function $MbPopupFactory ($mbComponent, Helpers, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
+	function $MbPopupFactory ($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
 		var $mbPopup = {};
 		var options = {
 			scope: $rootScope.$new()
@@ -83,13 +83,13 @@ function $MbPopupProvider () {
 			});
 		}
 
-		function safeDigest(fn) {
-			Helpers.safeDigest(scope, fn);
+		function apply(fn) {
+			digest(scope, fn);
 		}
 
 		function asyncDigest () {
 			return $q(function (resolve) {
-				safeDigest(function (scope) {
+				apply(function (scope) {
 					resolve(scope);
 				});
 			});
@@ -155,7 +155,7 @@ function $MbPopupProvider () {
 
 		// Extend the popup scope
 		function scopeExtend(options) {
-			safeDigest(function (scope) {
+			apply(function (scope) {
 				angular.extend(scope, options);
 			});
 		}

@@ -7,43 +7,47 @@
  * @param {string} id the component id
  * @param {object} options the component options
  */
-function MbComponentFactory (MbComponentInterface, $animate) {
-	var MbComponent = MbComponentInterface.extend({
-		initialize: function (componentEl, id, options) {
-			// defaults
-			this.isVisible = false;
+function MbComponentFactory ($animate, EventEmitter) {
+	function MbComponent (componentEl, id, options) {
+		EventEmitter.call(this);
 
-			if(angular.isObject(id)) {
-				options = id;
-				id = undefined;
-				angular.extend(this, options);
+		// defaults
+		this.isVisible = false;
+
+		if(angular.isObject(id)) {
+			options = id;
+			id = undefined;
+			angular.extend(this, options);
+		}
+
+		if(angular.isDefined(componentEl)) {
+			this.setElement(componentEl);
+		}
+
+		if(angular.isDefined(id)) {
+			this.setId(id);
+		}
+
+		this.on('visibleStateChangeSuccess', function () {
+			if(this.getVisibleState()) {
+				this.emit('visible');
+			} else {
+				this.emit('notVisible');
 			}
+		});
 
-			if(angular.isDefined(componentEl)) {
-				this.setElement(componentEl);
+		this.on('visibleStateChangeStart', function (visibleState) {
+			if(visibleState) {
+				this.emit('visibleChangeStart');
+			} else {
+				this.emit('notVisibleChangeStart');
 			}
+		});
+	}
 
-			if(angular.isDefined(id)) {
-				this.setId(id);
-			}
+	inherits(MbComponent, EventEmitter);
 
-			this.on('visibleStateChangeSuccess', function () {
-				if(this.getVisibleState()) {
-					this.emit('visible');
-				} else {
-					this.emit('notVisible');
-				}
-			});
-
-			this.on('visibleStateChangeStart', function (visibleState) {
-				if(visibleState) {
-					this.emit('visibleChangeStart');
-				} else {
-					this.emit('notVisibleChangeStart');
-				}
-			});
-		},
-
+	angular.extend(MbComponent.prototype, {
 		/**
 		 * @ngdoc method
 		 * @name MbComponent#show
@@ -211,21 +215,6 @@ function MbComponentFactory (MbComponentInterface, $animate) {
 	return MbComponent;
 }
 
-function MbComponentInterface (Helpers) {
-	return Helpers.createClass({
-		show: Helpers.notImplemented('show'),
-		hide: Helpers.notImplemented('hide'),
-		toggle: Helpers.notImplemented('toggle'),
-		setElement: Helpers.notImplemented('setElement'),
-		getElement: Helpers.notImplemented('getElement'),
-		setId: Helpers.notImplemented('setId'),
-		getId: Helpers.notImplemented('getId'),
-		destroy: Helpers.notImplemented('destroy'),
-		getVisibleState: Helpers.notImplemented('getVisibleState'),
-		setVisibleState: Helpers.notImplemented('setVisibleState')
-	});
-}
-
 /*
  * @ngdoc provider
  * @name $mbComponentProvider
@@ -362,6 +351,9 @@ function $MbComponentProvider () {
 
 			var scope = options.scope = $mbComponent.scope = options.scope.$new();
 			var component = options.component = $mbComponent.component = new MbComponent();
+			var apply = function (fn) {
+				digest(scope, fn);
+			};
 
 			scope.$on('$destroy', function () {
 				component.destroy();
@@ -394,15 +386,33 @@ function $MbComponentProvider () {
 			 * @description
 			 * Hide the component
 			 */
+
+			/*
+			 * @ngdoc method
+			 * @name $mbComponent.Component#locals
+			 * @kind function
+			 *
+			 * @description
+			 * Update the component scope
+			 */
+			$mbComponent.locals = function (object) {
+				apply(function () {
+					angular.extend(scope, object);
+				});
+
+				return $mbComponent;
+			};
+
 			angular.forEach(['show', 'hide', 'toggle'], function (key) {
 				$mbComponent[key] = function () {
 					return component[key]();
 				};
 			});
 
-			// Create the element
-			// using provided
-			// template/templateUrl
+			/**
+			 * Create the element using provided
+			 * template/templateUrl
+			 */
 			if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
 				template = options.template = $templateCache.get(options.templateUrl);
 			}
@@ -415,10 +425,10 @@ function $MbComponentProvider () {
 
 			var componentLink = $mbComponent.componentLink = $compile(el);
 
-			// Compile the component
-			// for the first time
-			// before it gets showed
-			// up
+			/**
+			 * Compile the component for the first time
+			 * before it gets showed up
+			 */
 			component.once('visibleChangeStart', function () {
 				componentLink(scope);
 			});
@@ -440,6 +450,5 @@ angular.module('mobie.core.component', [
 	'mobie.core.helpers',
 	'mobie.components.animation'
 ])
-.factory('MbComponentInterface', MbComponentInterface)
 .factory('MbComponent', MbComponentFactory)
 .provider('$mbComponent', $MbComponentProvider);

@@ -34,7 +34,7 @@
   	</file>
   </example>
  */
-function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent, Helpers) {
+function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent) {
 	function postLink (scope, element, attrs) {
 		var ms = 60,
 				component = new MbComponent(element),
@@ -46,7 +46,7 @@ function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent, Helpe
 		}
 
 		function setVisibleState (visibleState) {
-			return Helpers.safeDigest(scope, function () {
+			return digest(scope, function () {
 				cancelTimeout();
 				animationPromise = $timeout(function () {
 					return component[visibleState ? 'show' : 'hide']();

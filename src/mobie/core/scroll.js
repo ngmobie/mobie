@@ -16,30 +16,33 @@ function $MbScrollProvider () {
 		scrollStoppedMs: 100
 	};
 
-	function $MbScrollFactory ($window, $timeout, Helpers) {
+	function $MbScrollFactory ($window, $timeout, EventEmitter) {
 		var windowEl = angular.element($window);
 		var bodyEl = windowEl[0].document.body;
 
-		var MbScroll = Helpers.createClass({
+		function MbScroll () {
+			EventEmitter.call(this);
+
+			var self = this;
+
+			windowEl.on('scroll', function (evt) {
+				self.emit('scroll', evt);
+			});
+			
+			this.on('scroll', this.onScroll);
+			this.on('scrollStop', this.onScrollStop);
+
+			Object.defineProperty(this, 'scrollY', {
+				get: function () {
+					return this.getScrollY();
+				}
+			});
+		}
+		inherits(MbScroll, EventEmitter);
+
+		angular.extend(MbScroll.prototype, {
 			scrollStoppedFn: function (evt) {
 				this.emit('scrollStop', evt);
-			},
-
-			initialize: function () {
-				var self = this;
-
-				windowEl.on('scroll', function (evt) {
-					self.emit('scroll', evt);
-				});
-				
-				this.on('scroll', this.onScroll);
-				this.on('scrollStop', this.onScrollStop);
-
-				Object.defineProperty(this, 'scrollY', {
-					get: function () {
-						return this.getScrollY();
-					}
-				});
 			},
 
 			/**

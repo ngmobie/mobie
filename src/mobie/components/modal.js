@@ -4,7 +4,7 @@ function $MbModalProvider () {
 		activeBodyClass: 'mb-modal-visible'
 	};
 
-	function $MbModalFactory ($mbComponent, $animate, $mbBackdrop, Helpers, $timeout) {
+	function $MbModalFactory ($mbComponent, $animate, $mbBackdrop, $timeout) {
 		var bodyEl = angular.element(document.body);
 
 		return function (options) {
@@ -19,7 +19,7 @@ function $MbModalProvider () {
 			});
 
 			component.on('notVisible', function () {
-				Helpers.safeDigest(scope, function () {
+				digest(scope, function () {
 					$timeout(function () {
 						$mbBackdrop.hide();
 					}, 250);

@@ -11,6 +11,30 @@ describe('mobie.core.component', function () {
 	}))
 
 	describe('$mbComponent', function () {
+		it('should update component scope', function () {
+			var template = '<div>oh my {{value}}</div>';
+
+			var comp2 = $mbComponent(template);
+
+			comp2.scope.value = 'god';
+
+			var el = comp2.element;
+
+			assert.equal('oh my {{value}}', el.text());
+
+			comp2.show();
+
+			$rootScope.$digest();
+
+			assert.equal('oh my god', el.text());
+
+			comp2.locals({
+				value: 'awesome feature'
+			});
+
+			assert.equal('oh my awesome feature', el.text());
+		});
+
 		it('should automatically use $rootScope if you don\'t provide one', function () {
 			var template = '<mb-my-component>' +
 				'<div>' +

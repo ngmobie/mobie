@@ -94,7 +94,7 @@ function $MbActionSheetProvider () {
 
 	this.$get = $MbActionSheetFactory;
 
-	function $MbActionSheetFactory ($mbComponent, $rootScope, Helpers, $mbBackdrop, $animate, $q, $timeout, $document) {
+	function $MbActionSheetFactory ($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout, $document) {
 		var $mbActionSheet = {};
 		var options = {
 			scope: $rootScope.$new()
@@ -126,13 +126,13 @@ function $MbActionSheetProvider () {
 			});
 		}
 
-		function safeDigest(fn) {
-			Helpers.safeDigest(scope, fn);
+		function apply(fn) {
+			digest(scope, fn);
 		}
 
 		function asyncDigest () {
 			return $q(function (resolve) {
-				safeDigest(function (scope) {
+				apply(function (scope) {
 					resolve(scope);
 				});
 			});
@@ -207,7 +207,7 @@ function $MbActionSheetProvider () {
 		}
 
 		function scopeExtend(options) {
-			safeDigest(function (scope) {
+			apply(function (scope) {
 				angular.extend(scope, options);
 			});
 		}

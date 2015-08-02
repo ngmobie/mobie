@@ -2,18 +2,18 @@
  * @ngdoc type
  * @name mbSidenav.MbSidenavController
  */
-function MbSidenavController ($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
+function MbSidenavController ($scope, $element, $attrs, $transclude, $animate, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
 	var bodyEl = angular.element($window.document.body),
 			backdropEl = $mbBackdrop.getElement(),
 			sidenavOptions = $mbSidenav.getOptions(),
 			activeBodyClass = sidenavOptions.activeBodyClass;
 
-	function digest(fn) {
-		return Helpers.safeDigest($scope, fn);
+	function apply(fn) {
+		return digest($scope, fn);
 	}
 
 	function setVisibleState (visibleState) {
-		digest(function () {
+		apply(function () {
 			$mbBackdrop[visibleState ? 'show' : 'hide']();
 
 			if(angular.isString(activeBodyClass)) {
@@ -23,7 +23,7 @@ function MbSidenavController ($scope, $element, $attrs, $transclude, $animate, H
 	}
 
 	function onClickListener(evt) {
-		digest(function () {
+		apply(function () {
 			component.hide();
 		});
 	}
