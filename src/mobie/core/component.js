@@ -357,7 +357,7 @@ function $MbComponentProvider () {
 			$mbComponent.options = options = angular.extend({}, defaults, options);
 
 			if(angular.isUndefined(options.scope)) {
-				options.scope = $rootScope.$new();
+				options.scope = $rootScope;
 			}
 
 			var scope = options.scope = $mbComponent.scope = options.scope.$new();
