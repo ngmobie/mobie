@@ -1,7 +1,7 @@
 (function (document, window, angular, undefined) { 'use strict';angular.module("mobie.components", [ "mobie.components.animation", "mobie.components.sidenav", "mobie.components.backdrop", "mobie.components.popup", "mobie.components.modal", "mobie.components.bar", "mobie.components.icon", "mobie.components.action-sheet", "mobie.components.spinner" ]), 
 angular.module("mobie", [ "mobie.core", "mobie.components" ]), angular.module("mobie.core", [ "mobie.core.helpers", "mobie.core.registry", "mobie.core.eventemitter", "mobie.core.scroll", "mobie.core.component" ]);
 function $MbActionSheetProvider() {
-    function $MbActionSheetFactory($mbComponent, $rootScope, Helpers, $mbBackdrop, $animate, $q, $timeout, $document) {
+    function $MbActionSheetFactory($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout, $document) {
         function onKeyUpFn(event) {
             27 == event.which && scope.close();
         }
@@ -15,12 +15,12 @@ function $MbActionSheetProvider() {
                 return $mbActionSheet.hide();
             });
         }
-        function safeDigest(fn) {
-            Helpers.safeDigest(scope, fn);
+        function apply(fn) {
+            digest(scope, fn);
         }
         function asyncDigest() {
             return $q(function(resolve) {
-                safeDigest(function(scope) {
+                apply(function(scope) {
                     resolve(scope);
                 });
             });
@@ -69,7 +69,7 @@ function $MbActionSheetProvider() {
             });
         }
         function scopeExtend(options) {
-            safeDigest(function(scope) {
+            apply(function(scope) {
                 angular.extend(scope, options);
             });
         }
@@ -109,7 +109,7 @@ function $MbActionSheetProvider() {
         activeBodyClass: "mb-action-sheet-visible",
         cancelTextButton: "Cancel"
     };
-    this.$get = $MbActionSheetFactory, $MbActionSheetFactory.$inject = [ "$mbComponent", "$rootScope", "Helpers", "$mbBackdrop", "$animate", "$q", "$timeout", "$document" ];
+    this.$get = $MbActionSheetFactory, $MbActionSheetFactory.$inject = [ "$mbComponent", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout", "$document" ];
 }
 
 angular.module("mobie.components.action-sheet", [ "mobie.components.backdrop", "mobie.core.component", "mobie.core.helpers" ]).provider("$mbActionSheet", $MbActionSheetProvider);
@@ -155,13 +155,13 @@ function BackdropFactory($animate, MbComponent) {
 }
 
 BackdropFactory.$inject = [ "$animate", "MbComponent" ], angular.module("mobie.components.backdrop", [ "mobie.core.component" ]).factory("$mbBackdrop", BackdropFactory);
-function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent, Helpers) {
+function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent) {
     function postLink(scope, element, attrs) {
         function cancelTimeout() {
             return $timeout.cancel(animationPromise);
         }
         function setVisibleState(visibleState) {
-            return Helpers.safeDigest(scope, function() {
+            return digest(scope, function() {
                 cancelTimeout(), animationPromise = $timeout(function() {
                     return component[visibleState ? "show" : "hide"]();
                 }, ms);
@@ -184,7 +184,7 @@ function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent, Helper
     };
 }
 
-BarFixedTopDirective.$inject = [ "$mbScroll", "$animate", "$timeout", "MbComponent", "Helpers" ], 
+BarFixedTopDirective.$inject = [ "$mbScroll", "$animate", "$timeout", "MbComponent" ], 
 angular.module("mobie.components.bar", [ "mobie.core.scroll" ]).directive("mbBarFixedTop", BarFixedTopDirective);
 angular.module("mobie.components.icon", []).directive("mbIcon", function() {
     return {
@@ -203,7 +203,7 @@ angular.module("mobie.components.icon", []).directive("mbIcon", function() {
     };
 });
 function $MbModalProvider() {
-    function $MbModalFactory($mbComponent, $animate, $mbBackdrop, Helpers, $timeout) {
+    function $MbModalFactory($mbComponent, $animate, $mbBackdrop, $timeout) {
         var bodyEl = angular.element(document.body);
         return function(options) {
             options = angular.extend({}, defaults, options);
@@ -211,7 +211,7 @@ function $MbModalProvider() {
             return component.on("visibleChangeStart", function() {
                 $mbBackdrop.show(), $animate.addClass(bodyEl, options.activeBodyClass);
             }), component.on("notVisible", function() {
-                Helpers.safeDigest(scope, function() {
+                digest(scope, function() {
                     $timeout(function() {
                         $mbBackdrop.hide();
                     }, 250), $animate.removeClass(bodyEl, options.activeBodyClass);
@@ -223,13 +223,13 @@ function $MbModalProvider() {
         templateUrl: "components/modal/modal.html",
         activeBodyClass: "mb-modal-visible"
     };
-    $MbModalFactory.$inject = [ "$mbComponent", "$animate", "$mbBackdrop", "Helpers", "$timeout" ], 
+    $MbModalFactory.$inject = [ "$mbComponent", "$animate", "$mbBackdrop", "$timeout" ], 
     this.$get = $MbModalFactory;
 }
 
 angular.module("mobie.components.modal", [ "mobie.core.component", "mobie.core.helpers", "mobie.components.backdrop" ]).provider("$mbModal", $MbModalProvider);
 function $MbPopupProvider() {
-    function $MbPopupFactory($mbComponent, Helpers, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
+    function $MbPopupFactory($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
         function onTapContainerFn(event) {
             return asyncDigest().then(function() {
                 return event.target === el[0] ? $mbPopup.hide() : void 0;
@@ -240,12 +240,12 @@ function $MbPopupProvider() {
                 return $mbPopup.hide();
             });
         }
-        function safeDigest(fn) {
-            Helpers.safeDigest(scope, fn);
+        function apply(fn) {
+            digest(scope, fn);
         }
         function asyncDigest() {
             return $q(function(resolve) {
-                safeDigest(function(scope) {
+                apply(function(scope) {
                     resolve(scope);
                 });
             });
@@ -292,7 +292,7 @@ function $MbPopupProvider() {
             });
         }
         function scopeExtend(options) {
-            safeDigest(function(scope) {
+            apply(function(scope) {
                 angular.extend(scope, options);
             });
         }
@@ -322,23 +322,23 @@ function $MbPopupProvider() {
         templateUrl: "mobie/components/popup.html",
         activeBodyClass: "mb-popup-visible"
     };
-    $MbPopupFactory.$inject = [ "$mbComponent", "Helpers", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout" ];
+    $MbPopupFactory.$inject = [ "$mbComponent", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout" ];
 }
 
 var bodyEl = angular.element(document.body);
 
 angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.component", "mobie.components.backdrop" ]).provider("$mbPopup", $MbPopupProvider);
-function MbSidenavController($scope, $element, $attrs, $transclude, $animate, Helpers, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
-    function digest(fn) {
-        return Helpers.safeDigest($scope, fn);
+function MbSidenavController($scope, $element, $attrs, $transclude, $animate, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
+    function apply(fn) {
+        return digest($scope, fn);
     }
     function setVisibleState(visibleState) {
-        digest(function() {
+        apply(function() {
             $mbBackdrop[visibleState ? "show" : "hide"](), angular.isString(activeBodyClass) && $animate[visibleState ? "addClass" : "removeClass"](bodyEl, activeBodyClass);
         });
     }
     function onClickListener(evt) {
-        digest(function() {
+        apply(function() {
             component.hide();
         });
     }
@@ -392,7 +392,7 @@ function SidenavDirective() {
     };
 }
 
-MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "Helpers", "MbComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
+MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "MbComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
 angular.module("mobie.components.sidenav", [ "mobie.components.animation", "mobie.components.backdrop", "mobie.core.registry", "mobie.core.component", "mobie.core.helpers" ]).directive("mbClose", CloseDirective).controller("MbSidenavController", MbSidenavController).provider("$mbSidenav", $MbSidenavProvider).directive("mbSidenav", SidenavDirective);
 function $MbSpinnerProvider() {
     function createSvgElement(tagName, data, parent, spinnerName) {
@@ -738,17 +738,17 @@ function SpinnerDirective($mbSpinner) {
 }
 
 SpinnerDirective.$inject = [ "$mbSpinner" ], angular.module("mobie.components.spinner", []).directive("mbSpinner", SpinnerDirective).provider("$mbSpinner", $MbSpinnerProvider);
-function MbComponentFactory(MbComponentInterface, $animate) {
-    var MbComponent = MbComponentInterface.extend({
-        initialize: function(componentEl, id, options) {
-            this.isVisible = !1, angular.isObject(id) && (options = id, id = void 0, angular.extend(this, options)), 
-            angular.isDefined(componentEl) && this.setElement(componentEl), angular.isDefined(id) && this.setId(id), 
-            this.on("visibleStateChangeSuccess", function() {
-                this.emit(this.getVisibleState() ? "visible" : "notVisible");
-            }), this.on("visibleStateChangeStart", function(visibleState) {
-                this.emit(visibleState ? "visibleChangeStart" : "notVisibleChangeStart");
-            });
-        },
+function MbComponentFactory($animate, EventEmitter) {
+    function MbComponent(componentEl, id, options) {
+        EventEmitter.call(this), this.isVisible = !1, angular.isObject(id) && (options = id, 
+        id = void 0, angular.extend(this, options)), angular.isDefined(componentEl) && this.setElement(componentEl), 
+        angular.isDefined(id) && this.setId(id), this.on("visibleStateChangeSuccess", function() {
+            this.emit(this.getVisibleState() ? "visible" : "notVisible");
+        }), this.on("visibleStateChangeStart", function(visibleState) {
+            this.emit(visibleState ? "visibleChangeStart" : "notVisibleChangeStart");
+        });
+    }
+    return inherits(MbComponent, EventEmitter), angular.extend(MbComponent.prototype, {
         show: function() {
             return this.setVisibleState(!0);
         },
@@ -812,23 +812,7 @@ function MbComponentFactory(MbComponentInterface, $animate) {
         destroy: function() {
             this.removeElement();
         }
-    });
-    return MbComponent;
-}
-
-function MbComponentInterface(Helpers) {
-    return Helpers.createClass({
-        show: Helpers.notImplemented("show"),
-        hide: Helpers.notImplemented("hide"),
-        toggle: Helpers.notImplemented("toggle"),
-        setElement: Helpers.notImplemented("setElement"),
-        getElement: Helpers.notImplemented("getElement"),
-        setId: Helpers.notImplemented("setId"),
-        getId: Helpers.notImplemented("getId"),
-        destroy: Helpers.notImplemented("destroy"),
-        getVisibleState: Helpers.notImplemented("getVisibleState"),
-        setVisibleState: Helpers.notImplemented("setVisibleState")
-    });
+    }), MbComponent;
 }
 
 function $MbComponentProvider() {
@@ -837,11 +821,17 @@ function $MbComponentProvider() {
         return function(options) {
             var el, template, $mbComponent = {};
             angular.isString(options) && (template = options, options = {}, options.template = template), 
-            $mbComponent.options = options = angular.extend({}, defaults, options), angular.isUndefined(options.scope) && (options.scope = $rootScope.$new());
-            var scope = options.scope = $mbComponent.scope = options.scope.$new(), component = options.component = $mbComponent.component = new MbComponent();
+            $mbComponent.options = options = angular.extend({}, defaults, options), angular.isUndefined(options.scope) && (options.scope = $rootScope);
+            var scope = options.scope = $mbComponent.scope = options.scope.$new(), component = options.component = $mbComponent.component = new MbComponent(), apply = function(fn) {
+                digest(scope, fn);
+            };
             if (scope.$on("$destroy", function() {
                 component.destroy(), el = void 0;
-            }), angular.forEach([ "show", "hide", "toggle" ], function(key) {
+            }), $mbComponent.locals = function(object) {
+                return apply(function() {
+                    angular.extend(scope, object);
+                }), $mbComponent;
+            }, angular.forEach([ "show", "hide", "toggle" ], function(key) {
                 $mbComponent[key] = function() {
                     return component[key]();
                 };
@@ -861,8 +851,7 @@ function $MbComponentProvider() {
     this.$get = $MbComponentFactory;
 }
 
-MbComponentFactory.$inject = [ "MbComponentInterface", "$animate" ], MbComponentInterface.$inject = [ "Helpers" ], 
-angular.module("mobie.core.component", [ "mobie.core.helpers", "mobie.components.animation" ]).factory("MbComponentInterface", MbComponentInterface).factory("MbComponent", MbComponentFactory).provider("$mbComponent", $MbComponentProvider);
+MbComponentFactory.$inject = [ "$animate", "EventEmitter" ], angular.module("mobie.core.component", [ "mobie.core.helpers", "mobie.components.animation" ]).factory("MbComponent", MbComponentFactory).provider("$mbComponent", $MbComponentProvider);
 function EventEmitter() {
     EventEmitter.init.call(this);
 }
@@ -963,19 +952,6 @@ EventEmitter.defaultMaxListeners = 10, EventEmitter.init = function() {
     var ret;
     return ret = emitter._events && emitter._events[type] ? angular.isFunction(emitter._events[type]) ? 1 : emitter._events[type].length : 0;
 }, angular.module("mobie.core.eventemitter", []).factory("EventEmitter", EventEmitterFactory);
-function extend(protoProps, staticProps) {
-    var child, parent = this;
-    child = protoProps && angular.hasOwnProperty(protoProps, "constructor") ? protoProps.constructor : function() {
-        return parent.apply(this, arguments);
-    }, angular.extend(child, parent, staticProps);
-    var Surrogate = function() {
-        this.constructor = child;
-    };
-    return Surrogate.prototype = parent.prototype, child.prototype = new Surrogate(), 
-    protoProps && angular.extend(child.prototype, protoProps), child.__super__ = parent.prototype, 
-    child;
-}
-
 function inherits(ctor, superCtor) {
     ctor.super_ = superCtor, ctor.prototype = Object.create(superCtor.prototype, {
         constructor: {
@@ -987,38 +963,17 @@ function inherits(ctor, superCtor) {
     });
 }
 
-function DefaultClass() {
-    angular.isFunction(this.initialize) && this.initialize.apply(this, arguments);
+function nextId() {
+    return id++, id;
 }
 
-function createClass(protoProps, staticProps) {
-    return DefaultClass.extend(protoProps, staticProps);
+function digest(scope, fn) {
+    scope && (angular.isUndefined(fn) && (fn = function() {}), scope.$$phase || scope.$root && scope.$root.$$phase ? fn(scope) : scope.$apply(fn));
 }
 
-function HelpersFactory($rootScope, $q, EventEmitter) {
-    function notImplemented(methodName) {
-        return $q.reject(new Error("The method " + methodName + " is not implemented"));
-    }
-    function safeDigest(scope, fn) {
-        angular.isFunction(scope) && (fn = scope, scope = $rootScope), angular.isUndefined(fn) && (fn = function() {}), 
-        scope.$$phase || scope.$root && scope.$root.$$phase ? fn(scope) : scope.$apply(fn);
-    }
-    function nextId() {
-        return id++, id;
-    }
-    var Helpers = {};
-    DefaultClass.extend = extend, inherits(DefaultClass, EventEmitter), Helpers.createClass = createClass, 
-    Helpers.notImplemented = notImplemented, Helpers.safeDigest = safeDigest;
-    var id = 0;
-    return Helpers.nextId = nextId, Helpers;
-}
+var id = 0;
 
-function UtilFactory() {
-    var Util = {};
-    return Util.inherits = inherits, Util;
-}
-
-HelpersFactory.$inject = [ "$rootScope", "$q", "EventEmitter" ], angular.module("mobie.core.helpers", [ "mobie.core.eventemitter" ]).factory("Helpers", HelpersFactory).factory("Util", UtilFactory);
+angular.module("mobie.core.helpers", [ "mobie.core.eventemitter" ]);
 function $MbComponentRegistryFactory() {
     var components = [], $mbComponentRegistry = {
         get: function(componentId) {
@@ -1043,22 +998,26 @@ function $MbComponentRegistryFactory() {
 
 angular.module("mobie.core.registry", [ "mobie.core.helpers" ]).factory("$mbComponentRegistry", $MbComponentRegistryFactory);
 function $MbScrollProvider() {
-    function $MbScrollFactory($window, $timeout, Helpers) {
-        var windowEl = angular.element($window), MbScroll = (windowEl[0].document.body, 
-        Helpers.createClass({
+    function $MbScrollFactory($window, $timeout, EventEmitter) {
+        function MbScroll() {
+            EventEmitter.call(this);
+            var self = this;
+            windowEl.on("scroll", function(evt) {
+                self.emit("scroll", evt);
+            }), this.on("scroll", this.onScroll), this.on("scrollStop", this.onScrollStop), 
+            Object.defineProperty(this, "scrollY", {
+                get: function() {
+                    return this.getScrollY();
+                }
+            });
+        }
+        {
+            var windowEl = angular.element($window);
+            windowEl[0].document.body;
+        }
+        return inherits(MbScroll, EventEmitter), angular.extend(MbScroll.prototype, {
             scrollStoppedFn: function(evt) {
                 this.emit("scrollStop", evt);
-            },
-            initialize: function() {
-                var self = this;
-                windowEl.on("scroll", function(evt) {
-                    self.emit("scroll", evt);
-                }), this.on("scroll", this.onScroll), this.on("scrollStop", this.onScrollStop), 
-                Object.defineProperty(this, "scrollY", {
-                    get: function() {
-                        return this.getScrollY();
-                    }
-                });
             },
             getLastScrollY: function() {
                 return this.lastScrollY;
@@ -1086,14 +1045,13 @@ function $MbScrollProvider() {
                     self.scrollStoppedFn(evt);
                 }, defaults.scrollStoppedMs);
             }
-        }));
-        return new MbScroll();
+        }), new MbScroll();
     }
     this.$get = $MbScrollFactory;
     var defaults = this.defaults = {
         scrollStoppedMs: 100
     };
-    $MbScrollFactory.$inject = [ "$window", "$timeout", "Helpers" ];
+    $MbScrollFactory.$inject = [ "$window", "$timeout", "EventEmitter" ];
 }
 
 angular.module("mobie.core.scroll", [ "mobie.core.helpers" ]).provider("$mbScroll", $MbScrollProvider);}(document, window, angular, undefined))
