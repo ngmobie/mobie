@@ -319,14 +319,15 @@ angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.com
             return angular.isUndefined(item) ? $q.reject(new Error("popup id does not exists")) : this.show(item, id);
         },
         show: function(options, id) {
-            return angular.isNumber(options) ? this.showById(options) : options ? (this.id = id || nextId(), 
-            this.options = options, this.emit("show", options, this.id), this.getVisibleState() ? this.hide(!0).then(function() {
-                return this.show(options);
-            }.bind(this)) : (this.scopeReset(), this.scopeExtend(options), this.digest(function() {
+            return this.getVisibleState() ? this.hide().then(function() {
+                return this.show(options, id);
+            }.bind(this)) : angular.isNumber(options) ? this.showById(options) : options ? (this.id = id || nextId(), 
+            this.options = options, this.emit("show", options, this.id), this.scopeReset(), 
+            this.scopeExtend(options), this.digest(function() {
                 this.configureScope(this.scope);
             }), this.setComponent(!0).then(function() {
                 return this.bindEvents();
-            }.bind(this)))) : this.show(this.lastId);
+            }.bind(this))) : this.show(this.lastId);
         },
         configureOnTapEvent: function(onTap) {
             var fn = function(event) {
@@ -796,10 +797,19 @@ function MbSimpleComponentFactory($animate, EventEmitter) {
         getVisibleState: function() {
             return !!this.isVisible;
         },
+        getClassReceiverElement: function() {
+            return this.classReceiverElement ? this.classReceiverElement : this.getElement();
+        },
+        setClassReceiverElement: function(classReceiverElement) {
+            return this.classReceiverElement = classReceiverElement, this;
+        },
+        removeElement: function() {
+            return this.getElement().remove(), this;
+        },
         setVisibleState: function(visibleState) {
-            var addClass, removeClass, self = this, el = this.getElement(), hiddenClass = this.getHiddenClass(), visibleClass = this.getVisibleClass();
+            var addClass, removeClass, self = this, classReceiverElement = this.getClassReceiverElement(), hiddenClass = this.getHiddenClass(), visibleClass = this.getVisibleClass();
             return this.emit("visibleStateChangeStart", visibleState), addClass = visibleState ? visibleClass : hiddenClass, 
-            removeClass = visibleState ? hiddenClass : visibleClass, $animate.setClass(el, addClass, removeClass).then(function() {
+            removeClass = visibleState ? hiddenClass : visibleClass, $animate.setClass(classReceiverElement, addClass, removeClass).then(function() {
                 self.isVisible = visibleState, self.emit("visibleStateChangeSuccess");
             }, function(err) {
                 self.emit("visibleStateChangeError", err);
@@ -817,7 +827,8 @@ function MbSimpleComponentFactory($animate, EventEmitter) {
         },
         setElement: function(element) {
             if (!element) throw new Error("invalid element");
-            var el = this.element = angular.element(element), isVisible = this.getVisibleState(), hiddenClass = this.getHiddenClass();
+            this.element = angular.element(element);
+            var isVisible = this.getVisibleState(), hiddenClass = this.getHiddenClass(), el = this.getClassReceiverElement();
             return el.hasClass(hiddenClass) || isVisible || el.addClass(hiddenClass), this;
         },
         getElement: function() {
