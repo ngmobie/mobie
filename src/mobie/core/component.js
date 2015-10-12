@@ -478,6 +478,8 @@ function $MbComponentProvider () {
 			destroy: function () {
 				var _this = this;
 
+				this.emit('destroy');
+
 				return this
 				.hide()
 				.then(function () {
@@ -488,6 +490,9 @@ function $MbComponentProvider () {
 				})
 				.then(function () {
 					return _this.removeElement();
+				})
+				.then(function() {
+					_this.emit('destroyed');
 				});
 			}
 		});

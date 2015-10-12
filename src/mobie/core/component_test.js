@@ -11,6 +11,20 @@ describe('mobie.core.component', function () {
 	}))
 
 	describe('MbComponent', function () {
+		it('should emit an event when it gets destroyed', function(){
+			var component = new MbComponent();
+
+			var called = false;
+
+			component.on('destroy', function() {
+				called = true;
+			});
+
+			component.destroy();
+
+			assert.ok(called);
+		});
+
 		it('should support options in the first parameter', inject(function($templateCache) {
 			var template = '<div id="component-1"></div>';
 
