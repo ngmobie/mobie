@@ -9,6 +9,10 @@ describe('mobie.components.modal', function () {
 	}))
 
 	describe('$mbModal factory', function () {
+		it('should auto create its prototype when not initialized with "new"', function () {
+			var modal = $mbModal('<div>{{ value }}</div>');
+		});
+
 		it('should append mb-modal-visible class to body when is visible', function () {
 			var scope = $rootScope.$new();
 
@@ -25,7 +29,7 @@ describe('mobie.components.modal', function () {
 				'<div>'+
 			'</mb-my-component>';
 
-			var modal = $mbModal({
+			var modal = new $mbModal({
 				template: template,
 				scope: scope
 			});
@@ -71,7 +75,7 @@ describe('mobie.components.modal', function () {
 				'<div>'+
 			'</mb-my-component>';
 
-			var modal = $mbModal({
+			var modal = new $mbModal({
 				template: template,
 				scope: scope
 			});

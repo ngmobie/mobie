@@ -29,7 +29,7 @@
   	</file>
   	<file name="app.js">
   		angular.module('customAnimationExample', ['ngAnimate', 'mobie'])
-  		.directive('myCustomComponent', ['$mbComponent', function ($mbComponent) {
+  		.directive('myCustomComponent', ['MbComponent', function (MbComponent) {
 				return {
 					template: '<button ng-click="myCtrl.show()" class="button button-block">Show me up</button>',
 					scope: {
@@ -46,7 +46,7 @@
 							'<div class="padding"><p>{{ msg || "Type a message in the next round" }}</p></div>' +
 						'</div>';
 
-						var component = $mbComponent({
+						var component = new MbComponent({
 							template: myComponentTmp,
 							scope: $scope
 						});

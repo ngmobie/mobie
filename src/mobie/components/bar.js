@@ -34,10 +34,10 @@
   	</file>
   </example>
  */
-function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbComponent) {
+function BarFixedTopDirective ($mbScroll, $animate, $timeout, MbSimpleComponent) {
 	function postLink (scope, element, attrs) {
 		var ms = 60,
-				component = new MbComponent(element),
+				component = new MbSimpleComponent(element),
 				animationPromise,
 				visibleState = true;
 

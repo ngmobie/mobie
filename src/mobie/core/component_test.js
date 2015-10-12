@@ -1,20 +1,20 @@
 describe('mobie.core.component', function () {
-	var $rootScope, $mbComponent, $animate;
+	var $rootScope, MbComponent, $animate;
 
 	beforeEach(module('ngAnimateMock'));
 	beforeEach(module('mobie.core.component'))
 
-	beforeEach(inject(function (_$rootScope_, _$mbComponent_, _$animate_) {
+	beforeEach(inject(function (_$rootScope_, _MbComponent_, _$animate_) {
 		$rootScope = _$rootScope_
-		$mbComponent = _$mbComponent_
+		MbComponent = _MbComponent_
 		$animate = _$animate_
 	}))
 
-	describe('$mbComponent', function () {
+	describe('MbComponent', function () {
 		it('should update component scope', function () {
 			var template = '<div>oh my {{value}}</div>';
 
-			var comp2 = $mbComponent(template);
+			var comp2 = new MbComponent(template);
 
 			comp2.scope.value = 'god';
 
@@ -44,14 +44,14 @@ describe('mobie.core.component', function () {
 				'<div>'+
 			'</mb-my-component>';
 
-			var myComp = $mbComponent({
+			var myComp = new MbComponent({
 				template: template
 			});
 
 			var scope = myComp.options.scope;
 			assert.ok(scope.$new);
 
-			var el = myComp.component.getElement();
+			var el = myComp.getElement();
 
 			myComp.show();
 
@@ -68,7 +68,7 @@ describe('mobie.core.component', function () {
 		it('should accept template as the first argument', function () {
 			var template = '<div>oh my {{value}}</div>';
 
-			var comp2 = $mbComponent(template);
+			var comp2 = new MbComponent(template);
 
 			comp2.scope.value = 'god';
 
@@ -99,7 +99,7 @@ describe('mobie.core.component', function () {
 				'<div>'+
 			'</mb-my-component>';
 
-			var modal = $mbComponent({
+			var modal = new MbComponent({
 				template: template,
 				scope: scope
 			});
@@ -131,7 +131,7 @@ describe('mobie.core.component', function () {
 			var scope = $rootScope.$new();
 			var template = '<mb-component2>{{mycomponentvalue}}</mb-component2>';
 
-			var modal = $mbComponent({
+			var modal = new MbComponent({
 				template: template,
 				scope: scope
 			});
@@ -153,7 +153,7 @@ describe('mobie.core.component', function () {
 			var scope = $rootScope.$new();
 			var template = '<mb-component2></mb-component2>';
 
-			var modal = $mbComponent({
+			var modal = new MbComponent({
 				template: template,
 				scope: scope
 			});
@@ -189,7 +189,7 @@ describe('mobie.core.component', function () {
 				'<div>'+
 			'</mb-my-component1>';
 
-			var modal = $mbComponent({
+			var modal = new MbComponent({
 				template: template,
 				scope: scope
 			});
@@ -203,11 +203,16 @@ describe('mobie.core.component', function () {
 			$rootScope.$digest();
 			$animate.triggerCallbacks();
 
-			assert.ok(modal.component.getElement());
+			assert.ok(modal.getElement());
 
 			scope.$destroy();
 
-			assert.equal(undefined, modal.component.getElement());
+			$rootScope.$digest();
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+			$animate.triggerCallbacks();
+
+			assert.equal(undefined, modal.getElement());
 		})
 
 		it('should support mb-animation directive', function () {
@@ -226,7 +231,7 @@ describe('mobie.core.component', function () {
 				'<div>'+
 			'</mb-my-component>';
 
-			var modal = $mbComponent({
+			var modal = new MbComponent({
 				template: template,
 				scope: scope
 			});
@@ -272,7 +277,7 @@ describe('mobie.core.component', function () {
 				'<div>'+
 			'</mb-my-component>';
 
-			var modal = $mbComponent({
+			var modal = new MbComponent({
 				template: template,
 				scope: scope
 			});
@@ -284,7 +289,7 @@ describe('mobie.core.component', function () {
 			modal.show();
 
 			var called = false;
-			modal.component.on('enter', function () {
+			modal.on('enter', function () {
 				called = true;
 			});
 
@@ -295,114 +300,6 @@ describe('mobie.core.component', function () {
 
 			assert.ok(called);
 		});
-	});
-
-	describe('MbComponent', function () {
-		var MbComponent;
-		beforeEach(inject(function (_MbComponent_) {
-			MbComponent = _MbComponent_;
-			var el = angular.element('<div>')
-			component = new MbComponent(el)
-		}))
-
-		it('should prevent already showed/hidden components', function () {
-			var called = false;
-
-			var el = angular.element('<div>')
-			var component = new MbComponent(el);
-			
-			component.on('visibleChangeStart', function () {
-				called = !called;
-			})
-
-			component.show();
-
-			$animate.triggerCallbacks()
-			$rootScope.$digest()
-
-			assert.ok(component.getElement().hasClass('mb-visible'))
-			assert.ok(called);
-
-			component.show();
-
-			// $animate.triggerCallbacks()
-			// $rootScope.$digest()
-
-			// assert.ok(called)
-		});
-
-		it('should instantiate a new component', function () {
-			assert.equal(MbComponent, component.constructor);
-		})
-
-		it('should set a component id', function () {
-			var el = angular.element('<div>')
-			var component = new MbComponent(el, 'my-component-id-here');
-			assert.equal('my-component-id-here', component.id);
-		})
-
-		it('should emit an event when is visible', function () {
-			component.on('visible', function () {
-				this.fnCalled = true;
-			})
-
-			component.show()
-
-			$rootScope.$digest()
-			$animate.triggerCallbacks();
-
-			assert.ok(component.fnCalled)
-		})
-
-		it('should emit an event when is not visible', function () {
-			component.on('notVisible', function () {
-				this.fnCalled = true;
-			})
-			
-			component.hide()
-
-			$rootScope.$digest()
-			$animate.triggerCallbacks();
-
-			assert.ok(component.fnCalled)
-		})
-
-		it('should return a promise', function (done) {
-			var isVisible = false;
-			var eventHasPassed = false;
-			var el = angular.element('<my-component></my-component>');
-			var component = new MbComponent(el)
-			component.setId('my-component-id-here-3');
-			component.on('visibleChangeStart', function () {
-				eventHasPassed = true;
-			})
-			component.on('visible', function () {
-				isVisible = true
-			})
-			component.show().then(function () {
-				assert.ok(eventHasPassed);
-				assert.ok(isVisible);
-				done();
-			});
-
-			$rootScope.$digest()
-			$animate.triggerCallbacks()
-		});
-
-		it('should not have an id key by default', function () {
-			var component = new MbComponent();
-			assert.ok('undefined', typeof component.getId())
-		})
-
-		it('should define a component id once', function () {
-			var component = new MbComponent();
-			component.setId('my-comp01');
-			assert.equal('my-comp01', component.id);
-
-			assert.throws(function () {
-				component.setId('my-comp02')
-			})
-		})
 
 		it('should enter the element', function () {
 			var myel = angular.element('<div class="my-el"></div>')
@@ -506,7 +403,7 @@ describe('mobie.core.component', function () {
 			component.on('leaveElementStart', function () {
 				leaveStartEvtCalled = true;
 			})
-			component.on('leaveElementSuccess', function () {
+			component.on('leave', function () {
 				leaveSuccessEvtCalled = true
 			})
 
@@ -519,7 +416,116 @@ describe('mobie.core.component', function () {
 			assert.equal(null, myel[0]);
 
 			assert.ok(leaveStartEvtCalled)
-			assert.ok(leaveSuccessEvtCalled, '\'leaveElementSuccess\' event not called')
+			assert.ok(leaveSuccessEvtCalled, '\'leave\' event not called')
 		}))
-	})
-})
+	});
+
+	describe('MbSimpleComponent', function () {
+		var MbSimpleComponent, component;
+
+		beforeEach(inject(function (_MbSimpleComponent_) {
+			MbSimpleComponent = _MbSimpleComponent_;
+			var el = angular.element('<div>')
+			component = new MbSimpleComponent(el);
+		}));
+
+		it('should prevent already showed/hidden components', function () {
+			var called = false;
+
+			var el = angular.element('<div>')
+			var component = new MbSimpleComponent(el, '100');
+			
+			component.on('visibleChangeStart', function () {
+				called = !called;
+			});
+
+			component.show();
+
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			assert.ok(component.getElement().hasClass('mb-visible'));
+			assert.ok(called);
+
+			component.show();
+
+			// $animate.triggerCallbacks()
+			// $rootScope.$digest()
+
+			// assert.ok(called)
+		});
+
+		it('should instantiate a new component', function () {
+			assert.equal(MbSimpleComponent, component.constructor);
+		})
+
+		it('should set a component id', function () {
+			var el = angular.element('<div>')
+			var component = new MbSimpleComponent(el, 'my-component-id-here');
+			assert.equal('my-component-id-here', component.id);
+		})
+
+		it('should emit an event when is visible', function () {
+			component.on('visible', function () {
+				this.fnCalled = true;
+			})
+
+			component.show()
+
+			$rootScope.$digest()
+			$animate.triggerCallbacks();
+
+			assert.ok(component.fnCalled)
+		})
+
+		it('should emit an event when is not visible', function () {
+			component.on('notVisible', function () {
+				this.fnCalled = true;
+			})
+			
+			component.hide()
+
+			$rootScope.$digest()
+			$animate.triggerCallbacks();
+
+			assert.ok(component.fnCalled)
+		})
+
+		it('should return a promise', function (done) {
+			var isVisible = false;
+			var eventHasPassed = false;
+			var el = angular.element('<my-component></my-component>');
+			var component = new MbSimpleComponent(el)
+			component.setId('my-component-id-here-3');
+			component.on('visibleChangeStart', function () {
+				eventHasPassed = true;
+			})
+			component.on('visible', function () {
+				isVisible = true
+			})
+			component.show().then(function () {
+				assert.ok(eventHasPassed);
+				assert.ok(isVisible);
+				done();
+			});
+
+			$rootScope.$digest()
+			$animate.triggerCallbacks()
+		});
+
+		it('should not have an id key by default', function () {
+			var component = new MbSimpleComponent();
+			assert.ok('undefined', typeof component.getId())
+		})
+
+		it('should define a component id once', function () {
+			var component = new MbSimpleComponent();
+			component.setId('my-comp01');
+			assert.equal('my-comp01', component.id);
+
+			assert.throws(function () {
+				component.setId('my-comp02')
+			})
+		});
+	});
+});

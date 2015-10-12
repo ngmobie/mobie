@@ -17,72 +17,10 @@ describe('mobie.components.action-sheet', function () {
 					text: 'Button 1'
 				}]
 			});
+			$rootScope.$digest();
 
 			assert.ok(angular.element(document.querySelector('.action-sheet-wrapper')).hasClass('mb-visible'));
 			assert.equal('Button 1', document.querySelector('.action-sheet-wrapper .button').textContent);
-		});
-
-		it('should support several shows', function () {
-			for(var i=0; i<10; i++) {
-				$mbActionSheet.show({
-					buttons: [{
-						text: 'Button ' + i
-					}]
-				});
-				assert.equal('Button ' + i, document.querySelector('.action-sheet-wrapper .button').textContent);
-			}
-		});
-
-		it('should return a promise which will be resolved when the user closes the component', function () {
-			var finished = false;
-			$mbActionSheet.show({
-				buttons: [{
-					text: 'Btn 1'
-				}]
-			}).then(function () {
-				finished = true;
-			});
-
-			$animate.triggerCallbacks()
-			$timeout.flush();
-
-			assert.equal(false, finished);
-
-			$mbActionSheet.hide();
-			$animate.triggerCallbacks();
-
-			assert.ok(finished);
-
-			var hasShowed = false;
-			$mbActionSheet.show({
-				buttons: [{
-					text: 'Btn 2'
-				}]
-			});
-
-			$animate.triggerCallbacks();
-
-			$mbActionSheet.hide().then(function () {
-				hasShowed = true;
-			});
-
-			$animate.triggerCallbacks();
-			$timeout.flush();
-
-			assert.equal(false, hasShowed);
-
-			$mbActionSheet.show({
-				buttons: [{
-					text: 'Btn 2'
-				}]
-			});
-			
-			assert.equal(false, hasShowed);
-
-			$animate.triggerCallbacks();
-			$timeout.flush();
-
-			assert.ok(hasShowed);
 		});
 	});
 });

@@ -1,118 +1,65 @@
 (function (document, window, angular, undefined) { 'use strict';angular.module("mobie.components", [ "mobie.components.animation", "mobie.components.sidenav", "mobie.components.backdrop", "mobie.components.popup", "mobie.components.modal", "mobie.components.bar", "mobie.components.icon", "mobie.components.action-sheet", "mobie.components.spinner" ]), 
 angular.module("mobie", [ "mobie.core", "mobie.components" ]), angular.module("mobie.core", [ "mobie.core.helpers", "mobie.core.registry", "mobie.core.eventemitter", "mobie.core.scroll", "mobie.core.component" ]);
 function $MbActionSheetProvider() {
-    function $MbActionSheetFactory($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout, $document) {
-        function onKeyUpFn(event) {
-            27 == event.which && scope.close();
+    function $MbActionSheetFactory(MbActionSheet) {
+        function _MbActionSheet() {
+            MbActionSheet.call(this);
+            var scope = this.scope;
+            scope.cancelTextButton = defaults.cancelTextButton, scope.$$close = scope.close = function() {
+                return this.hide();
+            }.bind(this);
         }
-        function onTabBackdropFn() {
-            return asyncDigest().then(function() {
-                return $mbActionSheet.hide();
-            });
-        }
-        function defaultOnTapFn() {
-            return asyncDigest().then(function() {
-                return $mbActionSheet.hide();
-            });
-        }
-        function apply(fn) {
-            digest(scope, fn);
-        }
-        function asyncDigest() {
-            return $q(function(resolve) {
-                apply(function(scope) {
-                    resolve(scope);
-                });
-            });
-        }
-        function unbindEvents() {
-            return asyncDigest().then(function() {
-                backdropEl.off("click", onTabBackdropFn), $document.off("keyup", onKeyUpFn);
-            });
-        }
-        function bindEvents() {
-            return asyncDigest().then(function() {
-                backdropEl.on("click", onTabBackdropFn), $document.on("keyup", onKeyUpFn);
-            });
-        }
-        function setActiveBodyClass(isActive) {
-            return asyncDigest().then(function() {
-                return $animate[isActive ? "addClass" : "removeClass"](bodyEl, options.activeBodyClass);
-            });
-        }
-        function setBackdrop(isActive) {
-            return asyncDigest().then(function() {
-                return $timeout(function() {
-                    return $mbBackdrop[isActive ? "show" : "hide"]();
-                }, 240);
-            });
-        }
-        function getVisibleState() {
-            return component.getVisibleState();
-        }
-        function setComponent(isActive) {
-            return asyncDigest().then(function() {
-                return component[isActive ? "show" : "hide"]();
-            });
-        }
-        function hide(notTouchBackdrop) {
-            return $q.all([ setComponent(!1), setBackdrop(notTouchBackdrop), setActiveBodyClass(!1) ]).then(function() {
-                return unbindEvents(), scheduleVisibleStateListener("visible");
-            });
-        }
-        function scopeReset() {
-            scopeExtend({
-                text: "",
-                title: "",
-                template: "",
-                buttons: []
-            });
-        }
-        function scopeExtend(options) {
-            apply(function(scope) {
-                angular.extend(scope, options);
-            });
-        }
-        function scheduleVisibleStateListener(type) {
-            return type = angular.isString(type) ? type : "notVisible", $q(function(resolve) {
-                component.once(type, function() {
-                    resolve();
-                });
-            });
-        }
-        function show(options) {
-            return getVisibleState() ? hide(!0).then(function() {
-                return show(options);
-            }) : (scopeReset(), scopeExtend(options), angular.forEach(scope.buttons, function(btn, i) {
-                if (angular.isFunction(btn.onTap) || (btn.onTap = defaultOnTapFn), angular.isArray(btn.classes)) {
-                    var classes = btn.classes;
-                    btn.classes = {}, angular.forEach(classes, function(value) {
-                        btn.classes[value] = !0;
-                    });
-                }
-            }), $q.all([ setComponent(!0), setBackdrop(!0), setActiveBodyClass(!0) ]).then(function() {
-                return bindEvents(), scheduleVisibleStateListener("notVisible");
-            }));
-        }
-        var $mbActionSheet = {}, options = {
-            scope: $rootScope.$new()
-        };
-        options = angular.extend({}, defaults, options);
-        var mbComponent = $mbActionSheet.component = $mbComponent(options), component = mbComponent.component, backdropEl = (component.getElement(), 
-        $mbBackdrop.getElement()), scope = options.scope;
-        return $mbActionSheet.show = show, $mbActionSheet.hide = hide, scope.$$close = scope.close = function() {
-            return $mbActionSheet.hide();
-        }, scope.cancelTextButton = defaults.cancelTextButton, scope.scope = scope, $mbActionSheet;
+        return inherits(_MbActionSheet, MbActionSheet, {
+            defaults: defaults
+        }), new _MbActionSheet();
     }
     var defaults = this.defaults = {
         templateUrl: "mobie/components/action-sheet.html",
         activeBodyClass: "mb-action-sheet-visible",
         cancelTextButton: "Cancel"
     };
-    this.$get = $MbActionSheetFactory, $MbActionSheetFactory.$inject = [ "$mbComponent", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout", "$document" ];
+    this.$get = $MbActionSheetFactory, $MbActionSheetFactory.$inject = [ "MbActionSheet" ];
 }
 
-angular.module("mobie.components.action-sheet", [ "mobie.components.backdrop", "mobie.core.component", "mobie.core.helpers" ]).provider("$mbActionSheet", $MbActionSheetProvider);
+angular.module("mobie.components.action-sheet", [ "mobie.components.backdrop", "mobie.core.component", "mobie.core.helpers" ]).factory("MbActionSheet", [ "$mbBackdrop", "MbPopup", function($mbBackdrop, MbPopup) {
+    function MbActionSheet() {
+        MbPopup.call(this);
+        var node = $mbBackdrop.element[0], ON_CLICK = function(e) {
+            e.target == node && this._close();
+        }.bind(this), ON_KEYDOWN = function(e) {
+            27 === e.keyCode && this._close();
+        }.bind(this);
+        this.on("notVisibleChangeStart", function() {
+            $mbBackdrop.hide();
+        }).on("visibleChangeStart", function() {
+            $mbBackdrop.show();
+        }).on("bindEvents", function() {
+            this.scope.backdropEvents && node.addEventListener("click", ON_CLICK), this.scope.escapeKey && node.addEventListener("keydown", ON_KEYDOWN);
+        }).on("unbindEvents", function() {
+            node.removeEventListener("click", ON_CLICK);
+        }), this.defaultScopeAttrs.groups = [], this.defaultScopeAttrs.noCancelButton = !1;
+    }
+    return inherits(MbActionSheet, MbPopup, {
+        _close: function() {
+            this.digest(function() {
+                this.hide();
+            });
+        },
+        configureScope: function(scope) {
+            var groups = scope.groups, buttons = scope.buttons;
+            groups.length < 1 && buttons && this.noGroupApproach(scope, buttons), angular.forEach(groups, function(group) {
+                this.configureButtons(group.buttons);
+            }.bind(this));
+        },
+        noGroupApproach: function(scope, buttons) {
+            var title = scope.title, groups = scope.groups, group = {
+                title: title,
+                buttons: buttons
+            };
+            groups.push(group);
+        }
+    }), MbActionSheet;
+} ]).provider("$mbActionSheet", $MbActionSheetProvider);
 function AnimationDirective() {
     return function(scope, element, attrs) {
         function resolveClassName(newClassName) {
@@ -147,15 +94,15 @@ angular.module("mobie.components.animation", []).directive("mbAnimationDuration"
         });
     };
 }).directive("mbAnimation", AnimationDirective);
-function BackdropFactory($animate, MbComponent) {
+function BackdropFactory($animate, MbSimpleComponent) {
     var bodyEl = angular.element(document.body), el = angular.element("<div>");
     el.addClass("backdrop mb-backdrop"), $animate.enter(el, bodyEl);
-    var $mbBackdrop = new MbComponent(el, "default-backdrop");
+    var $mbBackdrop = new MbSimpleComponent(el, "default-backdrop");
     return $mbBackdrop;
 }
 
-BackdropFactory.$inject = [ "$animate", "MbComponent" ], angular.module("mobie.components.backdrop", [ "mobie.core.component" ]).factory("$mbBackdrop", BackdropFactory);
-function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent) {
+BackdropFactory.$inject = [ "$animate", "MbSimpleComponent" ], angular.module("mobie.components.backdrop", [ "mobie.core.component" ]).factory("$mbBackdrop", BackdropFactory);
+function BarFixedTopDirective($mbScroll, $animate, $timeout, MbSimpleComponent) {
     function postLink(scope, element, attrs) {
         function cancelTimeout() {
             return $timeout.cancel(animationPromise);
@@ -167,7 +114,7 @@ function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent) {
                 }, ms);
             });
         }
-        var animationPromise, ms = 60, component = new MbComponent(element), visibleState = !0;
+        var animationPromise, ms = 60, component = new MbSimpleComponent(element), visibleState = !0;
         $mbScroll.on("scrollTop", function() {
             setVisibleState(!0);
         }), $mbScroll.on("scrollDown", function(evt) {
@@ -184,7 +131,7 @@ function BarFixedTopDirective($mbScroll, $animate, $timeout, MbComponent) {
     };
 }
 
-BarFixedTopDirective.$inject = [ "$mbScroll", "$animate", "$timeout", "MbComponent" ], 
+BarFixedTopDirective.$inject = [ "$mbScroll", "$animate", "$timeout", "MbSimpleComponent" ], 
 angular.module("mobie.components.bar", [ "mobie.core.scroll" ]).directive("mbBarFixedTop", BarFixedTopDirective);
 angular.module("mobie.components.icon", []).directive("mbIcon", function() {
     return {
@@ -203,132 +150,214 @@ angular.module("mobie.components.icon", []).directive("mbIcon", function() {
     };
 });
 function $MbModalProvider() {
-    function $MbModalFactory($mbComponent, $animate, $mbBackdrop, $timeout) {
-        var bodyEl = angular.element(document.body);
-        return function(options) {
-            options = angular.extend({}, defaults, options);
-            var $mbModal = $mbComponent(options), scope = options.scope, component = $mbModal.component;
-            return component.on("visibleChangeStart", function() {
-                $mbBackdrop.show(), $animate.addClass(bodyEl, options.activeBodyClass);
-            }), component.on("notVisible", function() {
+    function $MbModalFactory(MbComponent, $animate, $mbBackdrop, $timeout) {
+        function MbModal(options) {
+            angular.isUndefined(options) && (options = {});
+            var options = angular.defaults(options, defaults);
+            MbComponent.call(this, options);
+            var _this = this, scope = this.scope;
+            this.scope.$hide = function() {
+                _this.scope.$$postDigest(function() {
+                    return _this.hide();
+                });
+            }, this.on("visibleChangeStart", function() {
+                $mbBackdrop.show(), $animate.addClass(bodyElement, options.activeBodyClass);
+            }), this.on("notVisible", function() {
                 digest(scope, function() {
                     $timeout(function() {
                         $mbBackdrop.hide();
-                    }, 250), $animate.removeClass(bodyEl, options.activeBodyClass);
+                    }), $animate.removeClass(bodyElement, options.activeBodyClass);
                 });
-            }), $mbModal;
-        };
+            });
+        }
+        var bodyElement = angular.element(document.body);
+        return inherits(MbModal, MbComponent), angular.extend(function(options) {
+            return new MbModal(options);
+        }, {
+            MbModal: MbModal
+        });
     }
     var defaults = this.defaults = {
         templateUrl: "components/modal/modal.html",
         activeBodyClass: "mb-modal-visible"
     };
-    $MbModalFactory.$inject = [ "$mbComponent", "$animate", "$mbBackdrop", "$timeout" ], 
+    $MbModalFactory.$inject = [ "MbComponent", "$animate", "$mbBackdrop", "$timeout" ], 
     this.$get = $MbModalFactory;
 }
 
 angular.module("mobie.components.modal", [ "mobie.core.component", "mobie.core.helpers", "mobie.components.backdrop" ]).provider("$mbModal", $MbModalProvider);
 function $MbPopupProvider() {
-    function $MbPopupFactory($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
-        function onTapContainerFn(event) {
-            return asyncDigest().then(function() {
-                return event.target === el[0] ? $mbPopup.hide() : void 0;
-            });
-        }
-        function defaultOnTapFn() {
-            return asyncDigest().then(function() {
-                return $mbPopup.hide();
-            });
-        }
-        function apply(fn) {
-            digest(scope, fn);
-        }
-        function asyncDigest() {
-            return $q(function(resolve) {
-                apply(function(scope) {
-                    resolve(scope);
+    function $MbPopupFactory(MbPopup, $mbBackdrop) {
+        function _MbPopup() {
+            MbPopup.call(this);
+            var element = this.component.getElement(), node = element[0], ON_CLICK = function(e) {
+                e.target == node && this.digest(function() {
+                    this.hide();
                 });
+            }.bind(this);
+            this.on("bindEvents", function() {
+                node.addEventListener("click", ON_CLICK);
+            }).on("unbindEvents", function() {
+                node.removeEventListener("click", ON_CLICK);
             });
         }
-        function unbindEvents() {
-            return asyncDigest().then(function() {
-                el.off("click", onTapContainerFn);
-            });
-        }
-        function bindEvents() {
-            return asyncDigest().then(function() {
-                el.on("click", onTapContainerFn);
-            });
-        }
-        function setActiveBodyClass(isActive) {
-            return asyncDigest().then(function() {
-                return $animate[isActive ? "addClass" : "removeClass"](bodyEl, options.activeBodyClass);
-            });
-        }
-        function setBackdrop(isActive) {
-            return asyncDigest().then(function() {
-                return $mbBackdrop[isActive ? "show" : "hide"]();
-            });
-        }
-        function getVisibleState() {
-            return component.getVisibleState();
-        }
-        function setComponent(isActive) {
-            return asyncDigest().then(function() {
-                return component[isActive ? "show" : "hide"]();
-            });
-        }
-        function hide(notTouchBackdrop) {
-            return $q.all([ setComponent(!1), setBackdrop(notTouchBackdrop), setActiveBodyClass(!1) ]).then(function() {
-                return unbindEvents();
-            });
-        }
-        function scopeReset() {
-            scopeExtend({
-                text: "",
-                title: "",
-                template: "",
-                buttons: []
-            });
-        }
-        function scopeExtend(options) {
-            apply(function(scope) {
-                angular.extend(scope, options);
-            });
-        }
-        function show(options) {
-            return getVisibleState() ? hide(!0).then(function() {
-                return show(options);
-            }) : (scopeReset(), scopeExtend(options), angular.forEach(scope.buttons, function(btn, i) {
-                if (angular.isFunction(btn.onTap) || (btn.onTap = defaultOnTapFn), angular.isArray(btn.classes)) {
-                    var classes = btn.classes;
-                    btn.classes = {}, angular.forEach(classes, function(value) {
-                        btn.classes[value] = !0;
-                    });
-                }
-            }), $q.all([ setComponent(!0), setBackdrop(!0), setActiveBodyClass(!0) ]).then(function() {
-                return bindEvents();
-            }));
-        }
-        var $mbPopup = {}, options = {
-            scope: $rootScope.$new()
-        };
-        options = angular.extend({}, defaults, options);
-        var mbComponent = $mbPopup.component = $mbComponent(options), component = mbComponent.component, el = component.getElement(), scope = options.scope;
-        return $mbPopup.show = show, $mbPopup.hide = hide, $mbPopup;
+        return inherits(_MbPopup, MbPopup, {
+            defaults: defaults
+        }), new _MbPopup();
     }
     this.$get = $MbPopupFactory;
     var defaults = this.defaults = {
         templateUrl: "mobie/components/popup.html",
         activeBodyClass: "mb-popup-visible"
     };
-    $MbPopupFactory.$inject = [ "$mbComponent", "$rootScope", "$mbBackdrop", "$animate", "$q", "$timeout" ];
+    $MbPopupFactory.$inject = [ "MbPopup", "$mbBackdrop" ];
 }
 
 var bodyEl = angular.element(document.body);
 
-angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.component", "mobie.components.backdrop" ]).provider("$mbPopup", $MbPopupProvider);
-function MbSidenavController($scope, $element, $attrs, $transclude, $animate, MbComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
+angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.component", "mobie.components.backdrop" ]).factory("MbPopup", [ "$rootScope", "MbComponent", "$q", "$animate", function($rootScope, MbComponent, $q, $animate) {
+    function MbPopup(options) {
+        EventEmitter.call(this), this.on("scope", function(scope) {
+            scope.close = function() {
+                this.scope.$$postDigest(function() {
+                    this.hide();
+                }.bind(this));
+            }.bind(this);
+        }), this.options = {}, angular.isObject(options) && angular.extend(this.options, options);
+        var scope = this.options.scope = this.scope = $rootScope.$new();
+        this.applyDefaults(), this.history = {}, this.component = new MbComponent(this.options), 
+        this.el = this.component.getElement(), this.node = this.el[0], this.bodyElement = angular.element(document.body), 
+        Object.defineProperty(this, "lastId", {
+            get: function() {
+                var keys = Object.keys(this.history);
+                return keys.length < 1 ? 0 : parseInt(keys[keys.length - 1]);
+            }
+        }), this.emit("scope", scope), angular.forEach(this.replicateEvents, function(e) {
+            this.component.on(e, function() {
+                this.emit(e);
+            }.bind(this));
+        }.bind(this)), this.on("hide", function(options, id) {
+            this.history[id] = options;
+        });
+    }
+    return inherits(MbPopup, EventEmitter, {
+        replicateEvents: [ "visible", "notVisible", "visibleChangeStart", "notVisibleChangeStart" ],
+        getOptions: function() {
+            return this.options;
+        },
+        createScope: function() {
+            return this.options.scope = this.scope = $rootScope.$new(), this.scope;
+        },
+        applyDefaults: function() {
+            return angular.defaults(this.options, this.defaults), this;
+        },
+        digest: function(fn) {
+            return digest(this.scope, fn, this);
+        },
+        asyncDigest: function() {
+            return $q(function(resolve) {
+                this.digest(function(scope) {
+                    resolve(scope);
+                });
+            }.bind(this));
+        },
+        unbindEvents: function() {
+            return this.asyncDigest().then(function() {
+                this.emit("unbindEvents");
+            }.bind(this));
+        },
+        bindEvents: function() {
+            return this.asyncDigest().then(function() {
+                this.emit("bindEvents");
+            }.bind(this));
+        },
+        setActiveBodyClass: function(isActive) {
+            return this.asyncDigest().then(function() {
+                return $animate[isActive ? "addClass" : "removeClass"](this.bodyElement, this.options.activeBodyClass);
+            }.bind(this));
+        },
+        setBackdrop: function(isActive) {
+            return this.asyncDigest().then(function() {
+                return $mbBackdrop[isActive ? "show" : "hide"]();
+            });
+        },
+        getVisibleState: function() {
+            return this.component.getVisibleState();
+        },
+        setComponent: function(isActive) {
+            return this.asyncDigest().then(function() {
+                return this.component[isActive ? "show" : "hide"]();
+            }.bind(this));
+        },
+        hide: function() {
+            return this.setComponent(!1).then(function() {
+                return this.unbindEvents();
+            }.bind(this)).then(function() {
+                this.emit("hide", this.options, this.id);
+            }.bind(this));
+        },
+        defaultScopeAttrs: {
+            text: "",
+            title: "",
+            template: "",
+            buttons: [ {
+                text: "OK",
+                classes: [ "button-stable" ]
+            } ],
+            backdropEvents: !0
+        },
+        scopeReset: function() {
+            this.scopeExtend(this.defaultScopeAttrs), this.emit("reset");
+        },
+        scopeExtend: function(options) {
+            return this.digest(function(scope) {
+                angular.extend(scope, options), this.emit("updated");
+            }.bind(this)), this;
+        },
+        showById: function(id) {
+            var item = this.history[id];
+            return angular.isUndefined(item) ? $q.reject(new Error("popup id does not exists")) : this.show(item, id);
+        },
+        show: function(options, id) {
+            return angular.isNumber(options) ? this.showById(options) : options ? (this.id = id || nextId(), 
+            this.options = options, this.emit("show", options, this.id), this.getVisibleState() ? this.hide(!0).then(function() {
+                return this.show(options);
+            }.bind(this)) : (this.scopeReset(), this.scopeExtend(options), this.digest(function() {
+                this.configureScope(this.scope);
+            }), this.setComponent(!0).then(function() {
+                return this.bindEvents();
+            }.bind(this)))) : this.show(this.lastId);
+        },
+        configureOnTapEvent: function(onTap) {
+            var fn = function(event) {
+                return this.emit("onTap", this.id, this.scope, event), onTap.call(this, this.scope, event);
+            };
+            return fn.bind(this);
+        },
+        configureButtonClasses: function(btn) {
+            var classes = btn.classes;
+            btn.classes = {}, angular.forEach(classes, function(value) {
+                btn.classes[value] = !0;
+            });
+        },
+        configureButtons: function(buttons) {
+            angular.forEach(buttons, function(btn, i) {
+                angular.isFunction(btn.onTap) || (btn.onTap = this.defaultOnTapFn), angular.isArray(btn.classes) && this.configureButtonClasses(btn);
+                btn.onTap;
+                btn.onTap = this.configureOnTapEvent(btn.onTap);
+            }.bind(this));
+        },
+        configureScope: function(scope) {
+            this.configureButtons(scope.buttons);
+        },
+        defaultOnTapFn: function() {
+            return this.asyncDigest().then(function() {
+                return this.hide();
+            }.bind(this));
+        }
+    }), MbPopup;
+} ]).provider("$mbPopup", $MbPopupProvider);
+function MbSidenavController($scope, $element, $attrs, $transclude, $animate, MbSimpleComponent, $mbComponentRegistry, $mbBackdrop, $mbSidenav, $window) {
     function apply(fn) {
         return digest($scope, fn);
     }
@@ -342,7 +371,7 @@ function MbSidenavController($scope, $element, $attrs, $transclude, $animate, Mb
             component.hide();
         });
     }
-    var bodyEl = angular.element($window.document.body), backdropEl = $mbBackdrop.getElement(), sidenavOptions = $mbSidenav.getOptions(), activeBodyClass = sidenavOptions.activeBodyClass, component = this.component = new MbComponent($element, {
+    var bodyEl = angular.element($window.document.body), backdropEl = $mbBackdrop.getElement(), sidenavOptions = $mbSidenav.getOptions(), activeBodyClass = sidenavOptions.activeBodyClass, component = this.component = new MbSimpleComponent($element, {
         id: $attrs.componentId
     });
     $mbComponentRegistry.register(this.component), component.on("visibleChangeStart", function() {
@@ -392,7 +421,7 @@ function SidenavDirective() {
     };
 }
 
-MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "MbComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
+MbSidenavController.$inject = [ "$scope", "$element", "$attrs", "$transclude", "$animate", "MbSimpleComponent", "$mbComponentRegistry", "$mbBackdrop", "$mbSidenav", "$window" ], 
 angular.module("mobie.components.sidenav", [ "mobie.components.animation", "mobie.components.backdrop", "mobie.core.registry", "mobie.core.component", "mobie.core.helpers" ]).directive("mbClose", CloseDirective).controller("MbSidenavController", MbSidenavController).provider("$mbSidenav", $MbSidenavProvider).directive("mbSidenav", SidenavDirective);
 function $MbSpinnerProvider() {
     function createSvgElement(tagName, data, parent, spinnerName) {
@@ -738,8 +767,8 @@ function SpinnerDirective($mbSpinner) {
 }
 
 SpinnerDirective.$inject = [ "$mbSpinner" ], angular.module("mobie.components.spinner", []).directive("mbSpinner", SpinnerDirective).provider("$mbSpinner", $MbSpinnerProvider);
-function MbComponentFactory($animate, EventEmitter) {
-    function MbComponent(componentEl, id, options) {
+function MbSimpleComponentFactory($animate, EventEmitter) {
+    function MbSimpleComponent(componentEl, id, options) {
         EventEmitter.call(this), this.isVisible = !1, angular.isObject(id) && (options = id, 
         id = void 0, angular.extend(this, options)), angular.isDefined(componentEl) && this.setElement(componentEl), 
         angular.isDefined(id) && this.setId(id), this.on("visibleStateChangeSuccess", function() {
@@ -748,7 +777,7 @@ function MbComponentFactory($animate, EventEmitter) {
             this.emit(visibleState ? "visibleChangeStart" : "notVisibleChangeStart");
         });
     }
-    return inherits(MbComponent, EventEmitter), angular.extend(MbComponent.prototype, {
+    return inherits(MbSimpleComponent, EventEmitter, {
         show: function() {
             return this.setVisibleState(!0);
         },
@@ -786,72 +815,130 @@ function MbComponentFactory($animate, EventEmitter) {
         getId: function() {
             return this.id;
         },
-        setElement: function(componentEl) {
-            var el = this.componentEl = componentEl, isVisible = this.getVisibleState(), hiddenClass = this.getHiddenClass();
+        setElement: function(element) {
+            if (!element) throw new Error("invalid element");
+            var el = this.element = angular.element(element), isVisible = this.getVisibleState(), hiddenClass = this.getHiddenClass();
             return el.hasClass(hiddenClass) || isVisible || el.addClass(hiddenClass), this;
         },
         getElement: function() {
-            return this.componentEl;
-        },
-        enterElement: function(parent, after) {
-            var self = this;
-            return angular.isUndefined(parent) && (parent = angular.element(document.body)), 
-            this.emit("enterElementStart"), $animate.enter(this.getElement(), parent, after).then(function() {
-                self.emit("enterElementSuccess");
-            });
-        },
-        removeElement: function() {
-            return this.getElement().remove(), this.componentEl = void 0, this;
-        },
-        leaveElement: function() {
-            var self = this;
-            return this.emit("leaveElementStart"), $animate.leave(this.getElement()).then(function() {
-                self.emit("leaveElementSuccess");
-            });
-        },
-        destroy: function() {
-            this.removeElement();
+            return this.element;
         }
-    }), MbComponent;
+    }), MbSimpleComponent;
 }
 
 function $MbComponentProvider() {
-    function $MbComponentFactory(MbComponent, $compile, $templateCache, $animate, $rootScope) {
-        var bodyEl = angular.element(document.body);
-        return function(options) {
-            var el, template, $mbComponent = {};
-            angular.isString(options) && (template = options, options = {}, options.template = template), 
-            $mbComponent.options = options = angular.extend({}, defaults, options), angular.isUndefined(options.scope) && (options.scope = $rootScope);
-            var scope = options.scope = $mbComponent.scope = options.scope.$new(), component = options.component = $mbComponent.component = new MbComponent(), apply = function(fn) {
-                digest(scope, fn);
-            };
-            if (scope.$on("$destroy", function() {
-                component.destroy(), el = void 0;
-            }), $mbComponent.locals = function(object) {
-                return apply(function() {
-                    angular.extend(scope, object);
-                }), $mbComponent;
-            }, angular.forEach([ "show", "hide", "toggle" ], function(key) {
-                $mbComponent[key] = function() {
-                    return component[key]();
-                };
-            }), angular.isUndefined(options.template) && angular.isDefined(options.templateUrl) && (template = options.template = $templateCache.get(options.templateUrl)), 
-            angular.isUndefined(options.template)) throw new Error("template must have something");
-            el = options.el = $mbComponent.element = angular.element(options.template);
-            var componentLink = $mbComponent.componentLink = $compile(el);
-            return component.once("visibleChangeStart", function() {
-                componentLink(scope);
-            }), $animate.enter(el, bodyEl).then(function() {
-                component.emit("enter");
-            }), component.setElement(el), $mbComponent;
-        };
+    function $MbComponentFactory(MbSimpleComponent, $controller, $compile, $templateCache, $animate, $rootScope) {
+        function MbComponent(componentEl, id, options) {
+            var _this = this;
+            MbSimpleComponent.call(this), angular.isObject(componentEl) && (options = componentEl, 
+            componentEl = null), angular.isUndefined(options) && (options = {}), angular.isString(componentEl) && (options.template = componentEl, 
+            componentEl = void 0), this.options = options = angular.defaults(options, defaults), 
+            id && this.setId(id), this.on("scope", function(scope) {
+                var options = this.options;
+                options.controller && this.appendController(options.controller, options.controllerAs);
+            }), angular.isUndefined(options.scope) && (options.scope = $rootScope.$new());
+            var scope = options.scope = this.scope = options.scope.$new();
+            this.emit("scope", this.scope), scope.$on("$destroy", function() {
+                _this.destroy(), el = void 0;
+            }), this.on("visibleStateChangeSuccess", function() {
+                this.digest();
+            }), this.prepareComponent();
+        }
+        var bodyElement = angular.element(document.body);
+        return inherits(MbComponent, MbSimpleComponent, {
+            prepareComponent: function() {
+                var scope = this.scope, options = this.options;
+                angular.isUndefined(options.template) && angular.isDefined(options.templateUrl) && (this.options.template = $templateCache.get(options.templateUrl));
+                var el = options.el = angular.element(options.template), componentLink = this.componentLink = $compile(el);
+                this.once("visibleChangeStart", function() {
+                    componentLink(scope);
+                }), this.setElement(el), this.enterElement();
+            },
+            locals: function(locals) {
+                this.digest(function(scope) {
+                    angular.extend(scope, locals);
+                });
+            },
+            appendController: function(controller, controllerAs) {
+                var scope = this.scope, options = this.options;
+                return this.controller = $controller(options.controller, {
+                    $scope: scope,
+                    $component: this
+                }), angular.isString(controllerAs) && ($scope[controllerAs] = this.controller), 
+                this;
+            },
+            digest: function(fn) {
+                var scope = this.scope;
+                return fn || (fn = angular.noop), scope && scope.$root ? (scope.$$phase || scope.$root.$$phase ? fn && scope.$applyAsync(fn) : scope.$apply(fn), 
+                this) : (fn(scope), this);
+            },
+            enterElement: function() {
+                var self = this;
+                return angular.isUndefined(this.parentElement) && (this.parentElement = bodyElement), 
+                this.emit("enterElementStart"), $animate.enter(this.getElement(), this.parentElement).then(function() {
+                    self.emit("enter");
+                });
+            },
+            removeElement: function() {
+                return this.getElement().remove(), this.element = void 0, this;
+            },
+            leaveElement: function() {
+                var _this = this;
+                return this.emit("leaveElementStart"), $animate.leave(this.getElement()).then(function() {
+                    return _this.emit("leave"), _this;
+                });
+            },
+            destroy: function() {
+                var _this = this;
+                return this.hide().then(function() {
+                    return _this.leaveElement();
+                }).then(function() {
+                    return _this.removeAllListeners();
+                }).then(function() {
+                    return _this.removeElement();
+                });
+            }
+        }), MbComponent;
     }
     var defaults = this.defaults = {};
-    $MbComponentFactory.$inject = [ "MbComponent", "$compile", "$templateCache", "$animate", "$rootScope" ], 
+    $MbComponentFactory.$inject = [ "MbSimpleComponent", "$controller", "$compile", "$templateCache", "$animate", "$rootScope" ], 
     this.$get = $MbComponentFactory;
 }
 
-MbComponentFactory.$inject = [ "$animate", "EventEmitter" ], angular.module("mobie.core.component", [ "mobie.core.helpers", "mobie.components.animation" ]).factory("MbComponent", MbComponentFactory).provider("$mbComponent", $MbComponentProvider);
+MbSimpleComponentFactory.$inject = [ "$animate", "EventEmitter" ], angular.module("mobie.core.component", [ "mobie.core.helpers", "mobie.components.animation" ]).factory("MbSimpleComponent", MbSimpleComponentFactory).provider("MbComponent", $MbComponentProvider);
+function tryFunctionObject(value) {
+    try {
+        return fnToStr.call(value), !0;
+    } catch (e) {
+        return !1;
+    }
+}
+
+function isCallable(value) {
+    if ("function" != typeof value) return !1;
+    if (hasToStringTag) return tryFunctionObject(value);
+    var strClass = to_string.call(value);
+    return strClass === fnClass || strClass === genClass;
+}
+
+var Empty = function() {}, array_push = Array.prototype.push, max = Math.max, array_slice = Array.prototype.slice, fnClass = "[object Function]", to_string = Object.prototype.toString, array_concat = Array.prototype.concat, hasToStringTag = "function" == typeof Symbol && "symbol" == typeof Symbol.toStringTag;
+
+angular.extend(Function.prototype, {
+    bind: function(that) {
+        var target = this;
+        if (!isCallable(target)) throw new TypeError("Function.prototype.bind called on incompatible " + target);
+        for (var bound, args = array_slice.call(arguments, 1), binder = function() {
+            if (this instanceof bound) {
+                var result = target.apply(this, array_concat.call(args, array_slice.call(arguments)));
+                return $Object(result) === result ? result : this;
+            }
+            return target.apply(that, array_concat.call(args, array_slice.call(arguments)));
+        }, boundLength = max(0, target.length - args.length), boundArgs = [], i = 0; boundLength > i; i++) array_push.call(boundArgs, "$" + i);
+        return bound = Function("binder", "return function (" + boundArgs.join(",") + "){ return binder.apply(this, arguments); }")(binder), 
+        target.prototype && (Empty.prototype = target.prototype, bound.prototype = new Empty(), 
+        Empty.prototype = null), bound;
+    }
+});
 function EventEmitter() {
     EventEmitter.init.call(this);
 }
@@ -952,7 +1039,7 @@ EventEmitter.defaultMaxListeners = 10, EventEmitter.init = function() {
     var ret;
     return ret = emitter._events && emitter._events[type] ? angular.isFunction(emitter._events[type]) ? 1 : emitter._events[type].length : 0;
 }, angular.module("mobie.core.eventemitter", []).factory("EventEmitter", EventEmitterFactory);
-function inherits(ctor, superCtor) {
+function inherits(ctor, superCtor, attrs) {
     ctor.super_ = superCtor, ctor.prototype = Object.create(superCtor.prototype, {
         constructor: {
             value: ctor,
@@ -960,16 +1047,21 @@ function inherits(ctor, superCtor) {
             writable: !0,
             configurable: !0
         }
-    });
+    }), attrs && angular.extend(ctor.prototype, attrs);
 }
 
 function nextId() {
     return id++, id;
 }
 
-function digest(scope, fn) {
-    scope && (angular.isUndefined(fn) && (fn = function() {}), scope.$$phase || scope.$root && scope.$root.$$phase ? fn(scope) : scope.$apply(fn));
+function digest(scope, fn, context) {
+    scope && (angular.isUndefined(fn) && (fn = function() {}), scope.$$phase || scope.$root && scope.$root.$$phase ? scope.$applyAsync(fn.bind(context)) : scope.$apply(fn.bind(context)));
 }
+
+angular.defaults = function(target, defaults) {
+    var _defaults = angular.copy(defaults);
+    return angular.isObject(target) && angular.isObject(_defaults) ? angular.extend(target, _defaults) : target;
+};
 
 var id = 0;
 

@@ -61,6 +61,7 @@ body.mb-popup-visible {
     }
   }
 }
+
 .popup-container {
 	position: fixed;
   top: 0;
@@ -75,36 +76,64 @@ body.mb-popup-visible {
 	justify-content: center;
 	flex-align: center;
 	align-items: center;
+  
+  &.mb-visible-add {
+    background-color: rgba(0, 0, 0, 0);
+
+    &.mb-visible-add-active {
+      background-color: rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &.mb-visible-remove {
+    background-color: rgba(0, 0, 0, 0.15);
+
+    &.mb-visible-remove-active {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
 
   &.mb-hidden {
     display: none;
   }
 
+  &.mb-visible {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+
   &.mb-visible-add {
-    animation-play-state: paused;
-    &.mb-visible-add-active {
-      animation-play-state: running;
+    .popup {
+      transform: scale(0.8);
+      opacity: 0.3;
+    }
+
+    &.mb-visible-add-active .popup {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 
   &.mb-visible-remove {
-    animation-play-state: paused;
-    &.mb-visible-remove-active {
-      animation-play-state: running;
+    .popup {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    &.mb-visible-remove-active .popup {
+      transform: scale(0.8);
+      opacity: 0.3;
     }
   }
+  
 
-  &.mb-visible-add,
-  &.mb-visible-add-active {
-    animation-name: scaleIn, fadeIn;
-  }
-  &.mb-visible-remove {
-    animation-name: scaleOut, fadeOut;
-  }
   &.mb-visible-remove,
   &.mb-visible-add {
-    animation-duration: 300ms;
-    animation-timing-function: ease-in-out;
+    transition: .25s all ease-in-out;
+
     display: flex;
+
+    .popup {
+      transition: .25s all ease-in-out;
+    }
   }
 }

@@ -1,4 +1,4 @@
-function BackdropFactory ($animate, MbComponent) {
+function BackdropFactory ($animate, MbSimpleComponent) {
 	var bodyEl = angular.element(document.body);
 
 	var el = angular.element('<div>');
@@ -7,7 +7,7 @@ function BackdropFactory ($animate, MbComponent) {
 	// Insert the backdrop in the body element
 	$animate.enter(el, bodyEl);
 
-	var $mbBackdrop = new MbComponent(el, 'default-backdrop');
+	var $mbBackdrop = new MbSimpleComponent(el, 'default-backdrop');
 
 	return $mbBackdrop;
 }

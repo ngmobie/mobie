@@ -38,7 +38,10 @@
   			$scope.showMessage = function (msg, title) {
 					return $mbPopup.show({
 						title: title ? title : 'Hey',
-						text: msg
+						text: msg,
+						buttons: [{
+							text: 'OK'
+						}]
 					});
   			};
 
@@ -51,9 +54,8 @@
   			$scope.dropUser = function (user) {
 					var index = $scope.users.indexOf(user);
 					$scope.users.splice(index, 1);
-					$timeout(function () {
-						$scope.showMessage(user.name + ', deleted!');
-					}, 2000);
+
+					return $scope.showMessage(user.name + ', deleted!');
   			};
 
 				$scope.showOptions = function (user) {
@@ -71,8 +73,9 @@
 								text: 'Delete',
 								classes: ['button-danger'],
 								onTap: function (scope) {
-									$scope.dropUser(user);
-									scope.close();
+									scope.close().then(function () {
+										return $scope.dropUser(user);
+									});
 								}
 							}
 						]
@@ -94,199 +97,22 @@ function $MbActionSheetProvider () {
 
 	this.$get = $MbActionSheetFactory;
 
-	function $MbActionSheetFactory ($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout, $document) {
-		var $mbActionSheet = {};
-		var options = {
-			scope: $rootScope.$new()
-		};
+	function $MbActionSheetFactory (MbActionSheet) {
+		function _MbActionSheet () {
+			MbActionSheet.call(this);
 
-		options = angular.extend({}, defaults, options);
-
-		var mbComponent = $mbActionSheet.component = $mbComponent(options),
-				component = mbComponent.component,
-				el = component.getElement(),
-				backdropEl = $mbBackdrop.getElement(),
-				scope = options.scope;
-
-		function onKeyUpFn (event) {
-			if (event.which == 27) {
-        scope.close();
-      }
+			var scope = this.scope;
+			scope.cancelTextButton = defaults.cancelTextButton;
+			scope.$$close = scope.close = function () {
+				return this.hide();
+			}.bind(this);
 		}
 
-		function onTabBackdropFn() {
-			return asyncDigest().then(function () {
-				return $mbActionSheet.hide();
-			});
-		}
+		inherits(_MbActionSheet, MbActionSheet, {
+			defaults: defaults
+		});
 
-		function defaultOnTapFn () {
-			return asyncDigest().then(function () {
-				return $mbActionSheet.hide();
-			});
-		}
-
-		function apply(fn) {
-			digest(scope, fn);
-		}
-
-		function asyncDigest () {
-			return $q(function (resolve) {
-				apply(function (scope) {
-					resolve(scope);
-				});
-			});
-		}
-
-		function unbindEvents () {
-			return asyncDigest().then(function () {
-				backdropEl.off('click', onTabBackdropFn);
-				$document.off('keyup', onKeyUpFn);
-			});
-		}
-
-		function bindEvents () {
-			return asyncDigest().then(function () {
-				backdropEl.on('click', onTabBackdropFn);
-				$document.on('keyup', onKeyUpFn);
-			});
-		}
-
-		function setActiveBodyClass (isActive) {
-			return asyncDigest().then(function () {
-				return $animate[isActive ? 'addClass' : 'removeClass'](bodyEl, options.activeBodyClass);
-			});
-		}
-
-		function setBackdrop (isActive) {
-			return asyncDigest().then(function () {
-				return $timeout(function () {
-					return $mbBackdrop[isActive ? 'show' : 'hide']();
-				}, (60 * 2) * 2);
-			});
-		}
-
-		function getVisibleState () {
-			return component.getVisibleState();
-		}
-
-		function setComponent (isActive) {
-			return asyncDigest().then(function (){
-				return component[isActive ? 'show' : 'hide']();
-			});
-		}
-
-		/**
-		 * @ngdoc method
-		 * @name $mbActionSheet#hide
-		 *
-		 * @description
-		 * Hide the actual action sheet
-		 *
-		 * @returns {Promise} Returns a promise which will be resolved
-		 *   when the element shows
-		 */
-		function hide (notTouchBackdrop) {
-			return $q.all([
-				setComponent(false),
-				setBackdrop(notTouchBackdrop),
-				setActiveBodyClass(false)
-			]).then(function () {
-				unbindEvents();
-				return scheduleVisibleStateListener('visible');
-			});
-		}
-
-		function scopeReset () {
-			scopeExtend({
-				text: '',
-				title: '',
-				template: '',
-				buttons: []
-			});
-		}
-
-		function scopeExtend(options) {
-			apply(function (scope) {
-				angular.extend(scope, options);
-			});
-		}
-
-		function scheduleVisibleStateListener(type) {
-			type = angular.isString(type) ? type : 'notVisible';
-
-			return $q(function (resolve) {
-				component.once(type, function () {
-					resolve();
-				});
-			});
-		}
-
-		/**
-		 * @ngdoc method
-		 * @name $mbActionSheet#show
-		 *
-		 * @description
-		 * Create a new Action Sheet template
-		 *
-		 * @param {object} options Options of the action sheet
-		 *
-		 * @returns {Promise} Returns a promise which will be resolved
-		 *   when the element hides
-		 */
-		function show (options) {
-			// If the action sheet is visible
-			// just hide with the `notTouchBackdrop`
-			// option, and then, show it again, with
-			// the new options
-			if(getVisibleState()) {
-				return hide(true).then(function () {
-					return show(options);
-				});
-			}
-
-			// Reset the actual scope, for we don't
-			// want to get a undesired `title` option,
-			// right?
-			scopeReset();
-			scopeExtend(options);
-			angular.forEach(scope.buttons, function (btn, i) {
-				if(!angular.isFunction(btn.onTap)) {
-					btn.onTap = defaultOnTapFn;
-				}
-				if(angular.isArray(btn.classes)) {
-					var classes = btn.classes;
-					
-					btn.classes = {};
-
-					angular.forEach(classes, function (value) {
-						btn.classes[value] = true;
-					});
-				}
-			});
-
-			return $q.all([
-				setComponent(true),
-				setBackdrop(true),
-				setActiveBodyClass(true)
-			]).then(function () {
-				bindEvents();
-
-				return scheduleVisibleStateListener('notVisible');
-			});
-		}
-
-		$mbActionSheet.show = show;
-		$mbActionSheet.hide = hide;
-
-		scope.$$close = scope.close = function () {
-			return $mbActionSheet.hide();
-		};
-
-		scope.cancelTextButton = defaults.cancelTextButton;
-		scope.scope = scope;
-
-		return $mbActionSheet;
+		return new _MbActionSheet();
 	}
 }
 
@@ -295,4 +121,103 @@ angular.module('mobie.components.action-sheet', [
 	'mobie.core.component',
 	'mobie.core.helpers'
 ])
+.factory('MbActionSheet', function ($mbBackdrop, MbPopup) {
+	/**
+	 * @ngdoc method
+	 * @name $mbActionSheet#show
+	 *
+	 * @description
+	 * Create a new Action Sheet template
+	 *
+	 * @param {object} options Options of the action sheet
+	 *
+	 * @returns {Promise} Returns a promise which will be resolved
+	 *   when the element hides
+	 */
+
+	/**
+	 * @ngdoc method
+	 * @name $mbActionSheet#hide
+	 *
+	 * @description
+	 * Hide the actual action sheet
+	 *
+	 * @returns {Promise} Returns a promise which will be resolved
+	 *   when the element shows
+	 */
+	function MbActionSheet() {
+		MbPopup.call(this);
+
+		var node = $mbBackdrop.element[0];
+
+		var ON_CLICK = function (e) {
+			if(e.target == node) {
+				this._close();
+			}
+		}.bind(this);
+
+		var ON_KEYDOWN = function(e) {
+			if(e.keyCode === 27) {
+				this._close();
+			}
+		}.bind(this);
+
+		this
+	  .on('notVisibleChangeStart', function () {
+			$mbBackdrop.hide();
+		})
+		.on('visibleChangeStart', function () {
+			$mbBackdrop.show();
+		})
+		.on('bindEvents', function () {
+			if(this.scope.backdropEvents) {
+				node.addEventListener('click', ON_CLICK);
+			}
+			if(this.scope.escapeKey) {
+				node.addEventListener('keydown', ON_KEYDOWN);
+			}
+		})
+		.on('unbindEvents', function () {
+			node.removeEventListener('click', ON_CLICK);
+		});
+
+		this.defaultScopeAttrs.groups = [];
+		this.defaultScopeAttrs.noCancelButton = false;
+	}
+
+	inherits(MbActionSheet, MbPopup, {
+		_close: function() {
+			this.digest(function() {
+				this.hide();
+			});
+		},
+
+		configureScope: function (scope) {
+			var groups = scope.groups;
+			var buttons = scope.buttons;
+
+			if(groups.length < 1 && buttons) {
+				this.noGroupApproach(scope, buttons);
+			}
+
+			angular.forEach(groups, function(group){
+				this.configureButtons(group.buttons);
+			}.bind(this));
+	  },
+
+	  noGroupApproach: function (scope, buttons) {
+	  	var title = scope.title;
+	  	var groups = scope.groups;
+
+	  	var group = {
+	  		title: title,
+	  		buttons: buttons
+	  	};
+
+	  	groups.push(group);
+	  }
+	});
+
+	return MbActionSheet;
+})
 .provider('$mbActionSheet', $MbActionSheetProvider);

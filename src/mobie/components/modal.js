@@ -4,32 +4,98 @@ function $MbModalProvider () {
 		activeBodyClass: 'mb-modal-visible'
 	};
 
-	function $MbModalFactory ($mbComponent, $animate, $mbBackdrop, $timeout) {
-		var bodyEl = angular.element(document.body);
+	/**
+	 * @ngdoc service
+	 * @name $mbModal
+	 *
+	 * @description
+	 *
+	 * @example
+	  <example module="modalExampleApp">
+	  	<file name="index.html">
+	  		<div class="bar bar-header bar-primary">
+					<h3 class="title">Modal Example</h3>
+	  		</div>
+	  		<div class="padding" ng-controller="ModalController as modalCtrl">
+	  			<p>
+	  				<div class="button button-block" ng-click="modalCtrl.show()">Show modal</div>
+	  			</p>
+	  		</div>
+	  	</file>
+	  	<file name="app.js">
+	  		angular.module('modalExampleApp', ['ngAnimate', 'mobie'])
+	  		.controller('ModalController', ['$scope', '$mbModal', function ($scope, $mbModal) {
+	  			var template = '<div class="modal" mb-animation="slide-in-up slide-out-down">' +
+	  				'<div class="bar bar-header">' +
+	  					'<h3 class="title">Modal Example</h3>' +
+	  					'<button class="button button-clear button-primary" ng-click="modalCtrl.hide()">Fechar</button>' +
+	  				'</div>' +
+	  			'</div>';
 
-		return function (options) {
-			options = angular.extend({}, defaults, options);
-			var $mbModal = $mbComponent(options);
-			var scope = options.scope;
-			var component = $mbModal.component;
+	  			var modal = $mbModal({
+	  				template: template,
+	  				scope: $scope
+	  			});
 
-			component.on('visibleChangeStart', function () {
+					this.show = function () {
+						return modal.show();
+					};
+
+					this.hide = function () {
+						return modal.hide();
+					};
+	  		}]);
+	  	</file>
+	  	<file name="app.css">
+	  		@import "../../lib/mobie.css";
+	  	</file>
+	  </example>
+	 */
+	function $MbModalFactory (MbComponent, $animate, $mbBackdrop, $timeout) {
+		var bodyElement = angular.element(document.body);
+
+		function MbModal(options) {
+			if(angular.isUndefined(options)) {
+				options = {};
+			}
+
+			var options = angular.defaults(options, defaults);
+
+			MbComponent.call(this, options);
+
+			var _this = this;
+
+			var scope = this.scope;
+
+			this.scope.$hide = function () {
+				_this.scope.$$postDigest(function () {
+					return _this.hide();
+				});
+			};
+
+			this.on('visibleChangeStart', function () {
 				$mbBackdrop.show();
-				$animate.addClass(bodyEl, options.activeBodyClass);
+				$animate.addClass(bodyElement, options.activeBodyClass);
 			});
 
-			component.on('notVisible', function () {
+			this.on('notVisible', function () {
 				digest(scope, function () {
 					$timeout(function () {
 						$mbBackdrop.hide();
-					}, 250);
+					});
 					
-					$animate.removeClass(bodyEl, options.activeBodyClass);
+					$animate.removeClass(bodyElement, options.activeBodyClass);
 				});
 			});
+		}
 
-			return $mbModal;
-		};
+		inherits(MbModal, MbComponent);
+
+		return angular.extend(function (options) {
+			return new MbModal(options);
+		}, {
+			MbModal: MbModal
+		});
 	}
 
 	this.$get = $MbModalFactory;

@@ -56,155 +56,34 @@ function $MbPopupProvider () {
 	  	</file>
 	  </example>
 	 */
-	function $MbPopupFactory ($mbComponent, $rootScope, $mbBackdrop, $animate, $q, $timeout) {
-		var $mbPopup = {};
-		var options = {
-			scope: $rootScope.$new()
-		};
+	function $MbPopupFactory (MbPopup, $mbBackdrop) {
+		function _MbPopup () {
+			MbPopup.call(this);
 
-		options = angular.extend({}, defaults, options);
+			var element = this.component.getElement();
+			var node = element[0];
 
-		var mbComponent = $mbPopup.component = $mbComponent(options),
-				component = mbComponent.component,
-				el = component.getElement(),
-				scope = options.scope;
-
-		function onTapContainerFn(event) {
-			return asyncDigest().then(function () {
-				if(event.target === el[0]) {
-					return $mbPopup.hide();
-				}
-			});
-		}
-
-		function defaultOnTapFn () {
-			return asyncDigest().then(function () {
-				return $mbPopup.hide();
-			});
-		}
-
-		function apply(fn) {
-			digest(scope, fn);
-		}
-
-		function asyncDigest () {
-			return $q(function (resolve) {
-				apply(function (scope) {
-					resolve(scope);
-				});
-			});
-		}
-
-		function unbindEvents () {
-			return asyncDigest().then(function () {
-				el.off('click', onTapContainerFn);
-			});
-		}
-
-		function bindEvents () {
-			return asyncDigest().then(function () {
-				el.on('click', onTapContainerFn);
-			});
-		}
-
-		function setActiveBodyClass (isActive) {
-			return asyncDigest().then(function () {
-				return $animate[isActive ? 'addClass' : 'removeClass'](bodyEl, options.activeBodyClass);
-			});
-		}
-
-		function setBackdrop (isActive) {
-			return asyncDigest().then(function () {
-				return $mbBackdrop[isActive ? 'show' : 'hide']();
-			});
-		}
-
-		function getVisibleState () {
-			return component.getVisibleState();
-		}
-
-		// Set the component to some
-		// visibleState (hidden or visible)
-		function setComponent (isActive) {
-			return asyncDigest().then(function (){
-				return component[isActive ? 'show' : 'hide']();
-			});
-		}
-
-		// Hide the popup
-		function hide (notTouchBackdrop) {
-			return $q.all([
-				setComponent(false),
-				setBackdrop(notTouchBackdrop),
-				setActiveBodyClass(false)
-			]).then(function () {
-				return unbindEvents();
-			});
-		}
-
-		// Reset the popup scope
-		// with the default options
-		function scopeReset () {
-			scopeExtend({
-				text: '',
-				title: '',
-				template: '',
-				buttons: []
-			});
-		}
-
-		// Extend the popup scope
-		function scopeExtend(options) {
-			apply(function (scope) {
-				angular.extend(scope, options);
-			});
-		}
-
-		// Show the popup
-		function show (options) {
-			// If the popup is visible
-			// just hide with the `notTouchBackdrop`
-			// option, and then, show it again, with
-			// the new options
-			if(getVisibleState()) {
-				return hide(true).then(function () {
-					return show(options);
-				});
-			}
-
-			// Reset the actual scope, for we don't
-			// want to get a undesired `title` option,
-			// right?
-			scopeReset();
-			scopeExtend(options);
-			angular.forEach(scope.buttons, function (btn, i) {
-				if(!angular.isFunction(btn.onTap)) {
-					btn.onTap = defaultOnTapFn;
-				}
-				if(angular.isArray(btn.classes)) {
-					var classes = btn.classes;
-					
-					btn.classes = {};
-
-					angular.forEach(classes, function (value) {
-						btn.classes[value] = true;
+			var ON_CLICK = function (e) {
+				if(e.target == node) {
+					this.digest(function (){
+						this.hide();
 					});
 				}
-			});
+			}.bind(this);
 
-			return $q.all([
-				setComponent(true),
-				setBackdrop(true),
-				setActiveBodyClass(true)
-			]).then(function () {
-				return bindEvents();
+			this.on('bindEvents', function () {
+				node.addEventListener('click', ON_CLICK);
+			})
+			.on('unbindEvents', function () {
+				node.removeEventListener('click', ON_CLICK);
 			});
 		}
 
-		$mbPopup.show = show;
-		$mbPopup.hide = hide;
+		inherits(_MbPopup, MbPopup, {
+			defaults: defaults
+		});
 
-		return $mbPopup;
+		return new _MbPopup();
 	}
 }
 
@@ -213,4 +92,270 @@ angular.module('mobie.components.popup', [
 	'mobie.core.component',
 	'mobie.components.backdrop'
 ])
+.factory('MbPopup', function ($rootScope, MbComponent, $q, $animate) {
+	function MbPopup(options) {
+	  EventEmitter.call(this);
+
+	  this.on('scope', function (scope) {
+	    scope.close = function () {
+	    	this.scope.$$postDigest(function () {
+	    		this.hide();
+	    	}.bind(this));
+	    }.bind(this);
+	  });
+
+	  this.options = {};
+
+	  if(angular.isObject(options)) {
+	    angular.extend(this.options, options);
+	  }
+
+	  var scope = this.options.scope = this.scope = $rootScope.$new();
+
+	  this.applyDefaults();
+
+	  this.history 			= {};
+	  this.component    = new MbComponent(this.options);
+	  this.el           = this.component.getElement();
+	  this.node         = this.el[0];
+	  this.bodyElement  = angular.element(document.body);
+
+	  Object.defineProperty(this, 'lastId', {
+	  	get: function () {
+	  		var keys = Object.keys(this.history);
+	  		
+	  		if(keys.length < 1) {
+	  			return 0;
+	  		}
+
+	  		return parseInt(keys[keys.length - 1]);
+	  	}
+	  });
+
+	  this.emit('scope', scope);
+
+	  angular.forEach(this.replicateEvents, function (e) {
+	  	this.component.on(e, function () {
+	  		this.emit(e);
+	  	}.bind(this));
+	  }.bind(this));
+
+	  this.on('hide', function (options, id) {
+	  	this.history[id] = options;
+	  });
+	}
+
+	inherits(MbPopup, EventEmitter, {
+		replicateEvents: [
+	  	'visible',
+	  	'notVisible',
+	  	'visibleChangeStart',
+			'notVisibleChangeStart'
+	  ],
+
+	  getOptions: function () {
+	    return this.options;
+	  },
+
+	  createScope: function () {
+	    this.options.scope = this.scope = $rootScope.$new();
+
+	    return this.scope;
+	  },
+
+	  applyDefaults: function () {
+	    angular.defaults(this.options, this.defaults);
+
+	    return this;
+	  },
+
+	  digest: function (fn) {
+	    return digest(this.scope, fn, this);
+	  },
+
+	  asyncDigest: function () {
+	    return $q(function (resolve) {
+	      this.digest(function (scope) {
+	        resolve(scope);
+	      });
+	    }.bind(this));
+	  },
+
+	  unbindEvents: function () {
+	    return this.asyncDigest().then(function () {
+	      this.emit('unbindEvents');
+	    }.bind(this));
+	  },
+
+	  bindEvents: function () {
+	    return this.asyncDigest().then(function () {
+	      this.emit('bindEvents');
+	    }.bind(this));
+	  },
+
+	  setActiveBodyClass: function (isActive) {
+	    return this.asyncDigest().then(function () {
+	      return $animate[isActive ? 'addClass' : 'removeClass'](this.bodyElement, this.options.activeBodyClass);
+	    }.bind(this));
+	  },
+
+	  setBackdrop: function (isActive) {
+	    return this.asyncDigest().then(function () {
+	      return $mbBackdrop[isActive ? 'show' : 'hide']();
+	    });
+	  },
+
+	  getVisibleState: function () {
+	    return this.component.getVisibleState();
+	  },
+
+	  // Set the component to some
+	  // visibleState (hidden or visible)
+	  setComponent: function (isActive) {
+	    return this.asyncDigest().then(function (){
+	      return this.component[isActive ? 'show' : 'hide']();
+	    }.bind(this));
+	  },
+
+	  // Hide the popup
+	  hide: function () {
+	    return this.setComponent(false).then(function () {
+	      return this.unbindEvents();
+	    }.bind(this)).then(function () {
+	      this.emit('hide', this.options, this.id);
+	    }.bind(this));
+	  },
+
+	  defaultScopeAttrs: {
+      text: '',
+      title: '',
+      template: '',
+      buttons: [{
+        text: 'OK',
+        classes: ['button-stable']
+      }],
+      backdropEvents: true
+    },
+
+	  // Reset the popup scope
+	  // with the default options
+	  scopeReset: function () {
+	    this.scopeExtend(this.defaultScopeAttrs);
+
+	    this.emit('reset');
+	  },
+
+	  // Extend the popup scope
+	  scopeExtend: function(options) {
+	    this.digest(function (scope) {
+	      angular.extend(scope, options);
+
+	      this.emit('updated');
+	    }.bind(this));
+
+	    return this;
+	  },
+
+	  showById: function (id) {
+	  	var item = this.history[id];
+
+	  	if(angular.isUndefined(item)) {
+	  		return $q.reject(new Error('popup id does not exists'));
+	  	}
+
+	  	return this.show(item, id);
+	  },
+
+	  // Show the popup
+	  show: function (options, id) {
+	  	if(angular.isNumber(options)) {
+	  		return this.showById(options);
+	  	}
+
+	  	if(!options) {
+	  		return this.show(this.lastId);
+	  	}
+
+	    this.id = (id || nextId());
+	    this.options = options;
+	    this.emit('show', options, this.id);
+
+	    /*
+	     * If the popup is visible
+	     * just hide with the `notTouchBackdrop`
+	     * option, and then, show it again, with
+	     * the new options
+	     */
+	    if(this.getVisibleState()) {
+	      return this.hide(true).then(function () {
+	        return this.show(options);
+	      }.bind(this));
+	    }
+
+	    /*
+	     * Reset the actual scope, for we don't
+	     * want to get a undesired `title` option,
+	     * right?
+	     */
+	    this.scopeReset();
+	    this.scopeExtend(options);
+
+	    this.digest(function() {
+	    	this.configureScope(this.scope);
+	    });
+
+	    return this.setComponent(true).then(function () {
+	      return this.bindEvents();
+	    }.bind(this));
+	  },
+
+	  configureOnTapEvent: function(onTap) {
+			var fn = function (event) {
+				this.emit('onTap', this.id, this.scope, event);
+
+				return onTap.call(this, this.scope, event);
+			};
+
+			return fn.bind(this);
+	  },
+
+	  configureButtonClasses: function (btn) {
+	  	var classes = btn.classes;
+
+      btn.classes = {};
+
+      angular.forEach(classes, function (value) {
+        btn.classes[value] = true;
+      });
+	  },
+
+	  configureButtons: function(buttons) {
+	  	angular.forEach(buttons, function (btn, i) {
+	      if(!angular.isFunction(btn.onTap)) {
+	        btn.onTap = this.defaultOnTapFn;
+	      }
+
+	      if(angular.isArray(btn.classes)) {
+	        this.configureButtonClasses(btn);
+	      }
+
+	      var onTapFn = btn.onTap;
+
+	      btn.onTap = this.configureOnTapEvent(btn.onTap);
+	    }.bind(this));
+	  },
+
+	  configureScope: function (scope) {
+	  	this.configureButtons(scope.buttons);
+	  },
+
+	  defaultOnTapFn: function () {
+	    return this.asyncDigest().then(function () {
+	      return this.hide();
+	    }.bind(this));
+	  }
+	});
+
+	return MbPopup;
+})
 .provider('$mbPopup', $MbPopupProvider);

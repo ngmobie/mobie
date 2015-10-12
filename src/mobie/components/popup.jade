@@ -5,4 +5,4 @@
 		.popup-body(ng-bind="text", ng-if="text")
 		.popup-body(ng-bind-html="template", ng-if="template")
 		.popup-buttons
-			button(ng-repeat="button in buttons", ng-click="button.onTap(scope, $event)", class="button", ng-bind="button.text", ng-class="button.classes")
+			button(ng-repeat="button in buttons", ng-click="button.onTap($event)", class="button", ng-bind="button.text", ng-class="button.classes")

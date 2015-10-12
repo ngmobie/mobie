@@ -1,7 +1,7 @@
 .action-sheet-wrapper(mb-animation="slide-in-up slide-out-down")
 	.action-sheet
-		.action-sheet-group.action-sheet-options
-			.action-sheet-title(ng-if="title", ng-bind="title")
-			button.button.action-sheet-option(ng-repeat="button in buttons", ng-bind="button.text", ng-click="button.onTap(scope, $event)")
+		.action-sheet-group.action-sheet-options(ng-repeat="group in groups track by $index")
+			.action-sheet-title(ng-show="group.title", ng-bind="group.title")
+			button.button.action-sheet-option(ng-repeat="button in group.buttons", ng-bind="button.text", ng-click="button.onTap($event)")
 		.action-sheet-group.action-sheet-cancel
-			button.button(ng-bind="cancelTextButton", ng-click="$$close()")
+			button.button(ng-hide="noCancelButton", ng-bind="cancelTextButton", ng-click="$$close()")

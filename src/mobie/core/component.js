@@ -1,14 +1,14 @@
 /**
  * @ngdoc object
- * @name MbComponent
+ * @name MbSimpleComponent
  * @description
- * Create a new instance of MbComponent
+ * Create a new instance of MbSimpleComponent
  * @param {DOMElement} componentEl the component element, which will be showed and hidded
  * @param {string} id the component id
  * @param {object} options the component options
  */
-function MbComponentFactory ($animate, EventEmitter) {
-	function MbComponent (componentEl, id, options) {
+function MbSimpleComponentFactory ($animate, EventEmitter) {
+	function MbSimpleComponent (componentEl, id, options) {
 		EventEmitter.call(this);
 
 		// defaults
@@ -45,12 +45,10 @@ function MbComponentFactory ($animate, EventEmitter) {
 		});
 	}
 
-	inherits(MbComponent, EventEmitter);
-
-	angular.extend(MbComponent.prototype, {
+	inherits(MbSimpleComponent, EventEmitter, {
 		/**
 		 * @ngdoc method
-		 * @name MbComponent#show
+		 * @name MbSimpleComponent#show
 		 * @kind function
 		 *
 		 * @description Show the component
@@ -63,7 +61,7 @@ function MbComponentFactory ($animate, EventEmitter) {
 
 		/**
 		 * @ngdoc method
-		 * @name MbComponent#hide
+		 * @name MbSimpleComponent#hide
 		 * @kind function
 		 *
 		 * @description Hide the component
@@ -76,7 +74,7 @@ function MbComponentFactory ($animate, EventEmitter) {
 
 		/**
 		 * @ngdoc method
-		 * @name MbComponent#toggle
+		 * @name MbSimpleComponent#toggle
 		 * @kind function
 		 *
 		 * @description Toggle the component visible state
@@ -101,7 +99,7 @@ function MbComponentFactory ($animate, EventEmitter) {
 
 		/**
 		 * @ngdoc method
-		 * @name MbComponent#setVisibleState
+		 * @name MbSimpleComponent#setVisibleState
 		 * @kind function
 		 *
 		 * @description Emit `visibleStateChangeStart` event before do anything,
@@ -154,8 +152,12 @@ function MbComponentFactory ($animate, EventEmitter) {
 			return this.id;
 		},
 
-		setElement: function (componentEl) {
-			var el = this.componentEl = componentEl,
+		setElement: function (element) {
+			if(!element) {
+				throw new Error('invalid element');
+			}
+
+			var el = this.element = angular.element(element),
 					isVisible = this.getVisibleState(),
 					hiddenClass = this.getHiddenClass();
 
@@ -167,52 +169,11 @@ function MbComponentFactory ($animate, EventEmitter) {
 		},
 
 		getElement: function () {
-			return this.componentEl;
-		},
-
-		enterElement: function (parent, after) {
-			var self = this;
-
-			if(angular.isUndefined(parent)) {
-				parent = angular.element(document.body);
-			}
-
-			this.emit('enterElementStart');
-
-			return $animate.enter(this.getElement(), parent, after).then(function () {
-				self.emit('enterElementSuccess');
-			});
-		},
-
-		removeElement: function () {
-			this.getElement().remove();
-			this.componentEl = undefined;
-			return this;
-		},
-
-		leaveElement: function () {
-			var self = this;
-
-			this.emit('leaveElementStart');
-
-			return $animate.leave(this.getElement()).then(function () {
-				self.emit('leaveElementSuccess');
-			});
-		},
-
-		/**
-		 * @ngdoc method
-		 * @name MbComponent#destroy
-		 *
-		 * @description
-		 * Destroys the element permanently
-		 */
-		destroy: function () {
-			this.removeElement();
+			return this.element;
 		}
 	});
 
-	return MbComponent;
+	return MbSimpleComponent;
 }
 
 /*
@@ -329,118 +290,190 @@ function MbComponentFactory ($animate, EventEmitter) {
 function $MbComponentProvider () {
 	var defaults = this.defaults = {};
 
-	function $MbComponentFactory (MbComponent, $compile, $templateCache, $animate, $rootScope) {
-		var bodyEl = angular.element(document.body);
+	function $MbComponentFactory (MbSimpleComponent, $controller, $compile, $templateCache, $animate, $rootScope) {
+		var bodyElement = angular.element(document.body);
 
-		return function (options) {
-			var $mbComponent = {},
-					el,
-					template;
+		function MbComponent(componentEl, id, options) {
+			var template, _this = this;
 
-			if(angular.isString(options)) {
-				template = options;
+			MbSimpleComponent.call(this);
+
+			if(angular.isObject(componentEl)) {
+				options = componentEl;
+				componentEl = null;
+			}
+
+			if(angular.isUndefined(options)) {
 				options = {};
-				options.template = template;
 			}
 
-			$mbComponent.options = options = angular.extend({}, defaults, options);
-
-			if(angular.isUndefined(options.scope)) {
-				options.scope = $rootScope;
+			if(angular.isString(componentEl)) {
+				options.template = componentEl;
+				componentEl = undefined;
 			}
 
-			var scope = options.scope = $mbComponent.scope = options.scope.$new();
-			var component = options.component = $mbComponent.component = new MbComponent();
-			var apply = function (fn) {
-				digest(scope, fn);
-			};
+      this.options = options = angular.defaults(options, defaults);
 
-			scope.$on('$destroy', function () {
-				component.destroy();
-				el = undefined;
-			});
+      if(id) {
+      	this.setId(id);
+      }
 
-			/*
-			 * @ngdoc method
-			 * @name $mbComponent.Component#show
-			 * @kind function
-			 *
-			 * @description
-			 * Show the component
-			 */
+      this.on('scope', function (scope) {
+        var options = this.options;
 
-			/*
-			 * @ngdoc method
-			 * @name $mbComponent.Component#toggle
-			 * @kind function
-			 *
-			 * @description
-			 * Toggle the component visible state
-			 */
+        if(options.controller) {
+          this.appendController(options.controller, options.controllerAs);
+        }
+      });
 
-			/*
-			 * @ngdoc method
-			 * @name $mbComponent.Component#hide
-			 * @kind function
-			 *
-			 * @description
-			 * Hide the component
-			 */
+      if(angular.isUndefined(options.scope)) {
+        options.scope = $rootScope.$new();
+      }
 
-			/*
-			 * @ngdoc method
-			 * @name $mbComponent.Component#locals
-			 * @kind function
-			 *
-			 * @description
-			 * Update the component scope
-			 */
-			$mbComponent.locals = function (object) {
-				apply(function () {
-					angular.extend(scope, object);
+      var scope = options.scope = this.scope = options.scope.$new();
+
+      this.emit('scope', this.scope);
+
+      scope.$on('$destroy', function () {
+        _this.destroy();
+        el = undefined;
+      });
+
+      this.on('visibleStateChangeSuccess', function () {
+        this.digest();
+      });
+
+      this.prepareComponent();
+		}
+
+		inherits(MbComponent, MbSimpleComponent, {
+			prepareComponent: function () {
+				var scope = this.scope;
+				var options = this.options;
+
+				// Create the element
+				// using provided
+				// template/templateUrl
+				if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
+				  this.options.template = $templateCache.get(options.templateUrl);
+				}
+
+				var el = options.el = angular.element(options.template);
+
+				var componentLink = this.componentLink = $compile(el);
+
+				// Compile the component for the first time
+				// before it gets showed up
+				this.once('visibleChangeStart', function () {
+				  componentLink(scope);
 				});
 
-				return $mbComponent;
-			};
+				this.setElement(el);
 
-			angular.forEach(['show', 'hide', 'toggle'], function (key) {
-				$mbComponent[key] = function () {
-					return component[key]();
-				};
-			});
+				this.enterElement();
+			},
+
+			locals: function (locals) {
+				this.digest(function(scope) {
+          angular.extend(scope, locals);
+        });
+			},
+
+			appendController: function (controller, controllerAs) {
+        var scope = this.scope;
+        var options = this.options;
+
+        this.controller = $controller(options.controller, {
+          $scope: scope,
+          $component: this
+        });
+
+        if(angular.isString(controllerAs)) {
+          $scope[controllerAs] = this.controller;
+        }
+
+        return this;
+      },
+
+			digest: function (fn) {
+        var scope = this.scope;
+
+        if(!fn) {
+        	fn = angular.noop;
+        }
+
+        if(!scope || !scope.$root) {
+        	fn(scope);
+
+        	return this;
+        }
+
+        if(!(scope.$$phase || scope.$root.$$phase)) {
+          scope.$apply(fn);
+        } else if (fn) {
+          scope.$applyAsync(fn);
+        }
+
+        return this;
+      },
+
+			enterElement: function () {
+				var self = this;
+
+				if(angular.isUndefined(this.parentElement)) {
+					this.parentElement = bodyElement;
+				}
+
+				this.emit('enterElementStart');
+
+				return $animate.enter(this.getElement(), this.parentElement).then(function () {
+					self.emit('enter');
+				});
+			},
+
+			removeElement: function () {
+				this.getElement().remove();
+				this.element = undefined;
+				return this;
+			},
+
+			leaveElement: function () {
+				var _this = this;
+
+				this.emit('leaveElementStart');
+
+				return $animate.leave(this.getElement()).then(function () {
+					_this.emit('leave');
+
+					return _this;
+				});
+			},
 
 			/**
-			 * Create the element using provided
-			 * template/templateUrl
+			 * @ngdoc method
+			 * @name MbComponent#destroy
+			 *
+			 * @description
+			 * Destroys the element permanently
 			 */
-			if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
-				template = options.template = $templateCache.get(options.templateUrl);
+			destroy: function () {
+				var _this = this;
+
+				return this
+				.hide()
+				.then(function () {
+					return _this.leaveElement();
+				})				
+				.then(function () {
+					return _this.removeAllListeners();
+				})
+				.then(function () {
+					return _this.removeElement();
+				});
 			}
+		});
 
-			if(angular.isUndefined(options.template)) {
-				throw new Error('template must have something');
-			}
-
-			el = options.el = $mbComponent.element = angular.element(options.template);
-
-			var componentLink = $mbComponent.componentLink = $compile(el);
-
-			/**
-			 * Compile the component for the first time
-			 * before it gets showed up
-			 */
-			component.once('visibleChangeStart', function () {
-				componentLink(scope);
-			});
-
-			$animate.enter(el, bodyEl).then(function () {
-				component.emit('enter');
-			});
-
-			component.setElement(el);
-
-			return $mbComponent;
-		};
+		return MbComponent;
 	}
 
 	this.$get = $MbComponentFactory;
@@ -450,5 +483,5 @@ angular.module('mobie.core.component', [
 	'mobie.core.helpers',
 	'mobie.components.animation'
 ])
-.factory('MbComponent', MbComponentFactory)
-.provider('$mbComponent', $MbComponentProvider);
+.factory('MbSimpleComponent', MbSimpleComponentFactory)
+.provider('MbComponent', $MbComponentProvider);

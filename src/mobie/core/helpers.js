@@ -1,4 +1,14 @@
-function inherits (ctor, superCtor) {
+angular.defaults = function (target, defaults) {
+  var _defaults = angular.copy(defaults);
+
+  if(angular.isObject(target) && angular.isObject(_defaults)) {
+    return angular.extend(target, _defaults);
+  }
+
+  return target;
+};
+
+function inherits (ctor, superCtor, attrs) {
   ctor.super_ = superCtor;
   ctor.prototype = Object.create(superCtor.prototype, {
     constructor: {
@@ -8,6 +18,10 @@ function inherits (ctor, superCtor) {
       configurable: true
     }
   });
+
+  if(attrs) {
+    angular.extend(ctor.prototype, attrs);
+  }
 }
 
 var id = 0;
@@ -16,7 +30,7 @@ function nextId () {
   return id;
 }
 
-function digest (scope, fn) {
+function digest (scope, fn, context) {
   if(!scope) {
     return;
   }
@@ -26,9 +40,9 @@ function digest (scope, fn) {
   }
 
   if(scope.$$phase || (scope.$root && scope.$root.$$phase)) {
-    fn(scope);
+    scope.$applyAsync(fn.bind(context));
   } else {
-    scope.$apply(fn);
+    scope.$apply(fn.bind(context));
   }
 }
 
