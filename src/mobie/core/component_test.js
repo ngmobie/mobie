@@ -11,6 +11,25 @@ describe('mobie.core.component', function () {
 	}))
 
 	describe('MbComponent', function () {
+		it('should support options in the first parameter', inject(function($templateCache) {
+			var template = '<div id="component-1"></div>';
+
+			$templateCache.put('a/b/c.html', template);
+
+			var component = new MbComponent({
+				templateUrl: 'a/b/c.html'
+			});
+
+			assert.equal(template, component.options.template);
+
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			var el = angular.element(document.querySelector('#component-1'));
+
+			assert.ok(el.hasClass('mb-hidden'));
+		}));
+
 		it('should update component scope', function () {
 			var template = '<div>oh my {{value}}</div>';
 
@@ -127,7 +146,7 @@ describe('mobie.core.component', function () {
 			assert.equal(compiledTpl.replace('1000', '1001'), mbComponentEl.text())
 		});
 		
-		it('should only compile the element before show', function () {
+		it('should only compile the element on the first time before show', function () {
 			var scope = $rootScope.$new();
 			var template = '<mb-component2>{{mycomponentvalue}}</mb-component2>';
 
@@ -141,12 +160,12 @@ describe('mobie.core.component', function () {
 			$rootScope.$digest();
 
 			var mbComponent2 = angular.element(document.querySelector('mb-component2'));
-			assert.equal('{{mycomponentvalue}}', mbComponent2.text())
+			assert.equal('{{mycomponentvalue}}', mbComponent2.text());
 
 			modal.show();
 			$rootScope.$digest();
 
-			assert.equal('1000', mbComponent2.text())
+			assert.equal('1000', mbComponent2.text());
 		});
 
 		it('should remove hidden class, add visible class and then animate', function () {
@@ -173,7 +192,8 @@ describe('mobie.core.component', function () {
 			$rootScope.$digest()
 
 			assert.ok(mbComponent2.hasClass('mb-visible'), 'mb-visible class not added');
-		})
+		});
+
 		it('should remove component when scope is destroyed', function () {
 			var scope = $rootScope.$new();
 			scope.obj = {
@@ -213,7 +233,7 @@ describe('mobie.core.component', function () {
 			$animate.triggerCallbacks();
 
 			assert.equal(undefined, modal.getElement());
-		})
+		});
 
 		it('should support mb-animation directive', function () {
 			var scope = $rootScope.$new();
@@ -319,7 +339,7 @@ describe('mobie.core.component', function () {
 			myel = angular.element(document.querySelector('.my-el'));
 
 			assert.ok(myel.length)
-		})
+		});
 
 		it('should emit enter element events', function () {
 			var myel = angular.element('<div class="my-el2"></div>')
@@ -349,7 +369,7 @@ describe('mobie.core.component', function () {
 
 			assert.ok(myel.length)
 			assert.ok(enterElEvt)
-		})
+		});
 
 		it('should leave the element', function () {
 			var myel = angular.element('<div class="my-el3"></div>')
@@ -377,7 +397,7 @@ describe('mobie.core.component', function () {
 			myel = angular.element(document.querySelector('.my-el3'));
 
 			assert.equal(null, myel[0]);
-		})
+		});
 
 		it('should emit leave element events', inject(function ($animate) {
 			var myel = angular.element('<div class="my-el3"></div>')
@@ -417,7 +437,7 @@ describe('mobie.core.component', function () {
 
 			assert.ok(leaveStartEvtCalled)
 			assert.ok(leaveSuccessEvtCalled, '\'leave\' event not called')
-		}))
+		}));
 	});
 
 	describe('MbSimpleComponent', function () {
@@ -429,30 +449,29 @@ describe('mobie.core.component', function () {
 			component = new MbSimpleComponent(el);
 		}));
 
-		it('should prevent already showed/hidden components', function () {
-			var called = false;
+		it('should have a class receiver element', function() {
+			var myComponent = new MbSimpleComponent();
 
-			var el = angular.element('<div>')
-			var component = new MbSimpleComponent(el, '100');
-			
-			component.on('visibleChangeStart', function () {
-				called = !called;
-			});
+			var el = angular.element('<div></div>');
+			var classReceiver = angular.element('<div id="class-receiver"></div>');
+			el.append(classReceiver);
 
-			component.show();
+			myComponent.setClassReceiverElement(classReceiver);
+			myComponent.setElement(el);
+
+			assert.ok(classReceiver.hasClass('mb-hidden'));
+			assert.equal(false, myComponent.element.hasClass('mb-hidden'));
+			assert.equal(false, myComponent.element.hasClass('mb-visible'));
+
+			myComponent.show();
 
 			$animate.triggerCallbacks();
 			$rootScope.$digest();
 
-			assert.ok(component.getElement().hasClass('mb-visible'));
-			assert.ok(called);
-
-			component.show();
-
-			// $animate.triggerCallbacks()
-			// $rootScope.$digest()
-
-			// assert.ok(called)
+			assert.ok(classReceiver.hasClass('mb-visible'));
+			assert.equal(false, classReceiver.hasClass('mb-hidden'));
+			assert.equal(false, myComponent.element.hasClass('mb-hidden'));
+			assert.equal(false, myComponent.element.hasClass('mb-visible'));
 		});
 
 		it('should instantiate a new component', function () {

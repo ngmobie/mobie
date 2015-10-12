@@ -164,7 +164,7 @@ angular.module('mobie.components.popup', [
 	  },
 
 	  applyDefaults: function () {
-	    angular.defaults(this.options, this.defaults);
+	    mobie.defaults(this.options, this.defaults);
 
 	    return this;
 	  },
@@ -268,6 +268,18 @@ angular.module('mobie.components.popup', [
 
 	  // Show the popup
 	  show: function (options, id) {
+			/*
+			 * If the popup is visible
+			 * just hide with the `notTouchBackdrop`
+			 * option, and then, show it again, with
+			 * the new options
+			 */
+			if(this.getVisibleState()) {
+			  return this.hide().then(function () {
+			    return this.show(options, id);
+			  }.bind(this));
+			}
+
 	  	if(angular.isNumber(options)) {
 	  		return this.showById(options);
 	  	}
@@ -279,18 +291,6 @@ angular.module('mobie.components.popup', [
 	    this.id = (id || nextId());
 	    this.options = options;
 	    this.emit('show', options, this.id);
-
-	    /*
-	     * If the popup is visible
-	     * just hide with the `notTouchBackdrop`
-	     * option, and then, show it again, with
-	     * the new options
-	     */
-	    if(this.getVisibleState()) {
-	      return this.hide(true).then(function () {
-	        return this.show(options);
-	      }.bind(this));
-	    }
 
 	    /*
 	     * Reset the actual scope, for we don't

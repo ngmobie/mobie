@@ -1,4 +1,10 @@
-angular.defaults = function (target, defaults) {
+var mobie = {};
+
+mobie.isScope = function (scope) {
+  return scope && scope.$apply && scope.$applyAsync;
+};
+
+mobie.defaults = function (target, defaults) {
   var _defaults = angular.copy(defaults);
 
   if(angular.isObject(target) && angular.isObject(_defaults)) {

@@ -153,7 +153,7 @@ function $MbModalProvider() {
     function $MbModalFactory(MbComponent, $animate, $mbBackdrop, $timeout) {
         function MbModal(options) {
             angular.isUndefined(options) && (options = {});
-            var options = angular.defaults(options, defaults);
+            var options = mobie.defaults(options, defaults);
             MbComponent.call(this, options);
             var _this = this, scope = this.scope;
             this.scope.$hide = function() {
@@ -249,7 +249,7 @@ angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.com
             return this.options.scope = this.scope = $rootScope.$new(), this.scope;
         },
         applyDefaults: function() {
-            return angular.defaults(this.options, this.defaults), this;
+            return mobie.defaults(this.options, this.defaults), this;
         },
         digest: function(fn) {
             return digest(this.scope, fn, this);
@@ -832,11 +832,11 @@ function $MbComponentProvider() {
             var _this = this;
             MbSimpleComponent.call(this), angular.isObject(componentEl) && (options = componentEl, 
             componentEl = null), angular.isUndefined(options) && (options = {}), angular.isString(componentEl) && (options.template = componentEl, 
-            componentEl = void 0), this.options = options = angular.defaults(options, defaults), 
+            componentEl = void 0), this.options = options = mobie.defaults(options, defaults), 
             id && this.setId(id), this.on("scope", function(scope) {
                 var options = this.options;
                 options.controller && this.appendController(options.controller, options.controllerAs);
-            }), angular.isUndefined(options.scope) && (options.scope = $rootScope.$new());
+            }), mobie.isScope(options.scope) || (options.scope = $rootScope.$new());
             var scope = options.scope = this.scope = options.scope.$new();
             this.emit("scope", this.scope), scope.$on("$destroy", function() {
                 _this.destroy(), el = void 0;
@@ -1058,7 +1058,11 @@ function digest(scope, fn, context) {
     scope && (angular.isUndefined(fn) && (fn = function() {}), scope.$$phase || scope.$root && scope.$root.$$phase ? scope.$applyAsync(fn.bind(context)) : scope.$apply(fn.bind(context)));
 }
 
-angular.defaults = function(target, defaults) {
+var mobie = {};
+
+mobie.isScope = function(scope) {
+    return scope && scope.$apply && scope.$applyAsync;
+}, mobie.defaults = function(target, defaults) {
     var _defaults = angular.copy(defaults);
     return angular.isObject(target) && angular.isObject(_defaults) ? angular.extend(target, _defaults) : target;
 };

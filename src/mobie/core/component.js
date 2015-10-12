@@ -97,6 +97,24 @@ function MbSimpleComponentFactory ($animate, EventEmitter) {
 			return !!this.isVisible;
 		},
 
+		getClassReceiverElement: function () {
+      if(this.classReceiverElement) {
+        return this.classReceiverElement;
+      }
+      return this.getElement();
+    },
+
+    setClassReceiverElement: function (classReceiverElement) {
+      this.classReceiverElement = classReceiverElement;
+      return this;
+    },
+
+    removeElement: function () {
+      this.getElement().remove();
+
+      return this;
+    },
+
 		/**
 		 * @ngdoc method
 		 * @name MbSimpleComponent#setVisibleState
@@ -113,21 +131,21 @@ function MbSimpleComponentFactory ($animate, EventEmitter) {
 		 * @return {Promise} the animation callback promise
 		 */
 		setVisibleState: function (visibleState) {
-			var self = this,
-					el = this.getElement(),
-					promises = [],
-					addClass, // Class to add before animate
-					removeClass, // Class to remove before animate
-					hiddenClass = this.getHiddenClass(),
-					visibleClass = this.getVisibleClass(),
-					hiddenClassMethod = visibleState ? 'removeClass' : 'addClass';
+			var self = this;
+			var classReceiverElement = this.getClassReceiverElement();
+			var promises = [];
+			var addClass; // Class to add before animat;
+			var removeClass; // Class to remove before animat;
+			var hiddenClass = this.getHiddenClass();
+			var visibleClass = this.getVisibleClass();
+			var hiddenClassMethod = visibleState ? 'removeClass' : 'addClass';
 
 			this.emit('visibleStateChangeStart', visibleState);
 
 			addClass = visibleState ? visibleClass : hiddenClass;
 			removeClass = visibleState ? hiddenClass : visibleClass;
 
-			return $animate.setClass(el, addClass, removeClass).then(function () {
+			return $animate.setClass(classReceiverElement, addClass, removeClass).then(function () {
 				self.isVisible = visibleState;
 				self.emit('visibleStateChangeSuccess');
 			}, function (err) {
@@ -157,9 +175,11 @@ function MbSimpleComponentFactory ($animate, EventEmitter) {
 				throw new Error('invalid element');
 			}
 
-			var el = this.element = angular.element(element),
-					isVisible = this.getVisibleState(),
-					hiddenClass = this.getHiddenClass();
+			this.element 							= angular.element(element);
+
+			var isVisible 						= this.getVisibleState();
+			var hiddenClass 					= this.getHiddenClass();
+			var el 										= this.getClassReceiverElement();
 
 			if(!el.hasClass(hiddenClass) && !isVisible) {
 				el.addClass(hiddenClass);
@@ -312,7 +332,7 @@ function $MbComponentProvider () {
 				componentEl = undefined;
 			}
 
-      this.options = options = angular.defaults(options, defaults);
+      this.options = options = mobie.defaults(options, defaults);
 
       if(id) {
       	this.setId(id);
@@ -326,7 +346,7 @@ function $MbComponentProvider () {
         }
       });
 
-      if(angular.isUndefined(options.scope)) {
+      if(!mobie.isScope(options.scope)) {
         options.scope = $rootScope.$new();
       }
 

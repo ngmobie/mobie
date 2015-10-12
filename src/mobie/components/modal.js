@@ -59,7 +59,7 @@ function $MbModalProvider () {
 				options = {};
 			}
 
-			var options = angular.defaults(options, defaults);
+			var options = mobie.defaults(options, defaults);
 
 			MbComponent.call(this, options);
 
