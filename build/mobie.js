@@ -850,7 +850,7 @@ function $MbComponentProvider() {
             }), mobie.isScope(options.scope) || (options.scope = $rootScope.$new());
             var scope = options.scope = this.scope = options.scope.$new();
             this.emit("scope", this.scope), scope.$on("$destroy", function() {
-                _this.destroy(), el = void 0;
+                _this.destroy();
             }), this.on("visibleStateChangeSuccess", function() {
                 this.digest();
             }), this.prepareComponent();

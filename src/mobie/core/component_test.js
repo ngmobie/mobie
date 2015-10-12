@@ -225,6 +225,8 @@ describe('mobie.core.component', function () {
 
 			assert.ok(modal.getElement());
 
+			assert.ok(document.querySelector('mb-my-component1'));
+
 			scope.$destroy();
 
 			$rootScope.$digest();
@@ -232,7 +234,9 @@ describe('mobie.core.component', function () {
 			$rootScope.$digest();
 			$animate.triggerCallbacks();
 
+			assert.equal(undefined, document.querySelector('mb-my-component1'));
 			assert.equal(undefined, modal.getElement());
+			assert.deepStrictEqual({}, modal._events);
 		});
 
 		it('should support mb-animation directive', function () {

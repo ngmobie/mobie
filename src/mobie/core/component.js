@@ -356,7 +356,6 @@ function $MbComponentProvider () {
 
       scope.$on('$destroy', function () {
         _this.destroy();
-        el = undefined;
       });
 
       this.on('visibleStateChangeSuccess', function () {
