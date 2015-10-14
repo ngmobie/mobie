@@ -28,8 +28,8 @@ function isCallable(value) {
 	return strClass === fnClass || strClass === genClass;
 }
 
-angular.extend(Function.prototype, {
-	bind: function bind(that) { // .length is 1
+if(!Function.prototype.hasOwnProperty('bind')) {
+	Function.prototype.bind = function bind(that) { // .length is 1
 		// 1. Let Target be the this value.
 		var target = this;
 		// 2. If IsCallable(Target) is false, throw a TypeError exception.
@@ -156,5 +156,5 @@ angular.extend(Function.prototype, {
 
 		// 22. Return F.
 		return bound;
-	}
-});
+	};
+}

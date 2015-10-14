@@ -116,8 +116,12 @@ angular.module('mobie.components.popup', [
 
 	  this.history 			= {};
 	  this.component    = new MbComponent(this.options);
-	  this.el           = this.component.getElement();
-	  this.node         = this.el[0];
+
+	  this.component.on('element', function(element) {
+	  	this.el           = element;
+	  	this.node         = this.el[0];
+	  }.bind(this));
+
 	  this.bodyElement  = angular.element(document.body);
 
 	  Object.defineProperty(this, 'lastId', {

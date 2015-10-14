@@ -1,16 +1,48 @@
 describe('mobie.core.component', function () {
-	var $rootScope, MbComponent, $animate;
+	var $rootScope, MbComponent, $animate, $httpBackend;
 
 	beforeEach(module('ngAnimateMock'));
 	beforeEach(module('mobie.core.component'))
 
-	beforeEach(inject(function (_$rootScope_, _MbComponent_, _$animate_) {
-		$rootScope = _$rootScope_
-		MbComponent = _MbComponent_
-		$animate = _$animate_
+	beforeEach(inject(function (_$rootScope_, _MbComponent_, _$animate_, _$httpBackend_) {
+		$rootScope = _$rootScope_;
+		MbComponent = _MbComponent_;
+		$animate = _$animate_;
+		$httpBackend = _$httpBackend_;
 	}))
 
 	describe('MbComponent', function () {
+		afterEach(function() {
+			$httpBackend.verifyNoOutstandingExpectation();
+			$httpBackend.verifyNoOutstandingRequest();
+		});
+
+		it('should support async templates', function() {
+			var template = '<div>{{ value }}</div>';
+
+			$httpBackend.expectGET('partials/component-template.html').respond(200, template);
+
+			var component = new MbComponent({
+				templateUrl: 'partials/component-template.html'
+			})
+			.locals({
+				value: 'Testing the $compile'
+			});
+
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			$httpBackend.flush();
+
+			assert.equal('{{ value }}', component.getElement().text());
+
+			component.show();
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			assert.equal('Testing the $compile', component.getElement().text());
+		});
+
 		it('should emit an event when it gets destroyed', function(){
 			var component = new MbComponent();
 
@@ -34,7 +66,10 @@ describe('mobie.core.component', function () {
 				templateUrl: 'a/b/c.html'
 			});
 
-			assert.equal(template, component.options.template);
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			assert.equal(template, component.getTemplateSync());
 
 			$animate.triggerCallbacks();
 			$rootScope.$digest();
@@ -44,10 +79,20 @@ describe('mobie.core.component', function () {
 			assert.ok(el.hasClass('mb-hidden'));
 		}));
 
-		it('should update component scope', function () {
-			var template = '<div>oh my {{value}}</div>';
+		it('should initialize a component with template parameter on options', function() {
+			var component = new MbComponent({
+				template: '<div>{{ value }}</div>'
+			});
 
-			var comp2 = new MbComponent(template);
+			assert.equal('<div>{{ value }}</div>', component.options.template);
+			assert.ok(component.getElement());
+		});
+
+		it('should update component scope', inject(function ($templateCache) {
+			var template = '<div>oh my {{value}}</div>';
+			$templateCache.put('my-template-3.html', template);
+
+			var comp2 = new MbComponent('my-template-3.html');
 
 			comp2.scope.value = 'god';
 
@@ -66,7 +111,7 @@ describe('mobie.core.component', function () {
 			});
 
 			assert.equal('oh my awesome feature', el.text());
-		});
+		}));
 
 		it('should automatically use $rootScope if you don\'t provide one', function () {
 			var template = '<mb-my-component>' +
@@ -98,10 +143,11 @@ describe('mobie.core.component', function () {
 			assert.equal(undefined, $rootScope.myvalue)
 		});
 
-		it('should accept template as the first argument', function () {
+		it('should accept template url as the first argument', inject(function ($templateCache) {
 			var template = '<div>oh my {{value}}</div>';
+			$templateCache.put('my-template.html', template);
 
-			var comp2 = new MbComponent(template);
+			var comp2 = new MbComponent('my-template.html');
 
 			comp2.scope.value = 'god';
 
@@ -114,7 +160,7 @@ describe('mobie.core.component', function () {
 			$rootScope.$digest();
 
 			assert.equal('oh my god', el.text());
-		});
+		}));
 
 		it('should compile the component before show', function () {
 			var scope = $rootScope.$new();
@@ -346,11 +392,6 @@ describe('mobie.core.component', function () {
 			component.setElement(myel);
 
 			var _myel_ = angular.element(document.querySelector('.my-el'));
-			assert.throws(function () {
-				assert.ok(_myel_.length)
-			})
-
-			component.enterElement();
 
 			$rootScope.$digest()
 
@@ -360,15 +401,12 @@ describe('mobie.core.component', function () {
 		});
 
 		it('should emit enter element events', function () {
-			var myel = angular.element('<div class="my-el2"></div>')
-			var component = new MbComponent()
+			var myel = angular.element('<div class="my-el2"></div>');
+			var component = new MbComponent();
 
 			component.setElement(myel);
 
 			var _myel_ = angular.element(document.querySelector('.my-el2'));
-			assert.throws(function () {
-				assert.ok(_myel_.length)
-			})
 
 			var enterElEvt = false,
 					hasEntered = false;
@@ -395,22 +433,15 @@ describe('mobie.core.component', function () {
 
 			component.setElement(myel);
 
-			var _myel_ = angular.element(document.querySelector('.my-el3'));
-			assert.throws(function () {
-				assert.ok(_myel_.length)
-			})
-
-			component.enterElement();
-
-			$rootScope.$digest()
+			$rootScope.$digest();
 
 			myel = angular.element(document.querySelector('.my-el3'));
 
-			assert.ok(myel.length)
+			assert.ok(myel.length);
 
-			component.leaveElement()
+			component.leaveElement();
 
-			$rootScope.$digest()
+			$rootScope.$digest();
 
 			myel = angular.element(document.querySelector('.my-el3'));
 
@@ -424,11 +455,6 @@ describe('mobie.core.component', function () {
 			component.setElement(myel);
 
 			var _myel_ = angular.element(document.querySelector('.my-el3'));
-			assert.throws(function () {
-				assert.ok(_myel_.length)
-			})
-
-			component.enterElement();
 
 			$rootScope.$digest()
 

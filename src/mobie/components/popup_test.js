@@ -12,21 +12,54 @@ angular.module('mbpopup-module', [])
 })
 
 describe('mobie.components.popup', function () {
-	var $animate, $rootScope, $compile, backdropEl, popupEl;
+	var $animate, $rootScope, $compile, $httpBackend, backdropEl, popupEl;
 
 	beforeEach(module('ngAnimateMock'));
 	beforeEach(module('mobie.components.popup'));
 	beforeEach(module('mbpopup-module'));
 
-	beforeEach(inject(function (_$rootScope_, _$animate_, _$compile_, _$mbPopup_) {
+	beforeEach(inject(function (_$rootScope_, _$animate_, _$compile_, _$mbPopup_, _$httpBackend_) {
 		$rootScope = _$rootScope_;
 		$animate = _$animate_;
 		$mbPopup = _$mbPopup_;
 		$compile = _$compile_;
+		$httpBackend = _$httpBackend_;
 		backdropEl = angular.element(document.querySelector('.backdrop'));
 		
 		popupEl = angular.element(document.querySelector('.popup-container'));
 	}));
+
+	describe('MbPopup', function() {
+		afterEach(function() {
+			$httpBackend.verifyNoOutstandingExpectation();
+			$httpBackend.verifyNoOutstandingRequest();
+		});
+
+		it('should support async requests', inject(function(MbPopup) {
+			$httpBackend.expectGET('my-popup-template.html').respond(200, '<div>My {{ component }} template</div>');
+
+			function MyMbPopup() {
+				MbPopup.call(this);
+			}
+
+			inherits(MyMbPopup, MbPopup, {
+				defaults: {
+					templateUrl: 'my-popup-template.html'
+				}
+			});
+
+			var popup = new MyMbPopup();
+
+			$httpBackend.flush();
+
+			popup.show({ component: 'popup' });
+
+			$animate.triggerCallbacks();
+			$rootScope.$digest();
+
+			assert.equal('My popup template', popup.el.text());
+		}));
+	});
 
 	describe('$mbPopup', function () {
 		it('should auto enter the popup element', function () {

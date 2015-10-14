@@ -310,7 +310,7 @@ function MbSimpleComponentFactory ($animate, EventEmitter) {
 function $MbComponentProvider () {
 	var defaults = this.defaults = {};
 
-	function $MbComponentFactory (MbSimpleComponent, $controller, $compile, $templateCache, $animate, $rootScope) {
+	function $MbComponentFactory (MbSimpleComponent, $http, $q, $controller, $compile, $templateCache, $animate, $rootScope) {
 		var bodyElement = angular.element(document.body);
 
 		function MbComponent(componentEl, id, options) {
@@ -328,7 +328,7 @@ function $MbComponentProvider () {
 			}
 
 			if(angular.isString(componentEl)) {
-				options.template = componentEl;
+				options.templateUrl = componentEl;
 				componentEl = undefined;
 			}
 
@@ -358,44 +358,69 @@ function $MbComponentProvider () {
         _this.destroy();
       });
 
-      this.on('visibleStateChangeSuccess', function () {
-        this.digest();
+      this.on('componentLink', function(componentLink) {
+
+      	this.once('visibleChangeStart', function () {
+				  componentLink(this.scope);
+				});
+
       });
 
-      this.prepareComponent();
+      this.on('element', function(element) {
+				var componentLink = this.componentLink = $compile(this.getElement());
+				this.emit('componentLink', this.componentLink);
+      });
+
+      if(this.options.templateUrl || this.options.template) {
+	      this.digest(function() {
+	      	this.prepareComponent();
+	      }.bind(this));
+	    }
 		}
 
 		inherits(MbComponent, MbSimpleComponent, {
-			prepareComponent: function () {
-				var scope = this.scope;
-				var options = this.options;
+			storeTemplateAfterRequest: function(response) {
+				var templateUrl = this.options.templateUrl;
+				var template = response.data;
 
-				// Create the element
-				// using provided
-				// template/templateUrl
-				if(angular.isUndefined(options.template) && angular.isDefined(options.templateUrl)) {
-				  this.options.template = $templateCache.get(options.templateUrl);
+				$templateCache.put(templateUrl, template);
+
+				return this.getTemplateSync();
+			},
+
+			getTemplateSync: function() {
+				return this.options.template ||
+							$templateCache.get(this.options.templateUrl);
+			},
+
+			getElementAsync: function(){
+				if(this.getElement()) {
+					return $q.when(this.getElement());
 				}
 
-				var el = options.el = angular.element(options.template);
+				var template = this.getTemplateSync() ||
+											$http.get(this.options.templateUrl)
+											.then(this.storeTemplateAfterRequest.bind(this));
 
-				var componentLink = this.componentLink = $compile(el);
+				return $q.when(template).then(function(template) {
+					var element = angular.element(template);
 
-				// Compile the component for the first time
-				// before it gets showed up
-				this.once('visibleChangeStart', function () {
-				  componentLink(scope);
-				});
+					this.setElement(element);
 
-				this.setElement(el);
+					return element;
+				}.bind(this));
+			},
 
-				this.enterElement();
+			prepareComponent: function () {
+				return this.getElementAsync();
 			},
 
 			locals: function (locals) {
 				this.digest(function(scope) {
           angular.extend(scope, locals);
         });
+
+        return this;
 			},
 
 			appendController: function (controller, controllerAs) {
@@ -434,6 +459,19 @@ function $MbComponentProvider () {
         }
 
         return this;
+      },
+
+      setElement: function() {
+      	if(this.getElement()) {
+      		throw new Error('Element already exists');
+      	}
+
+      	var setElement = MbSimpleComponent.prototype.setElement;
+
+      	setElement.apply(this, arguments);
+      	this.emit('element', this.getElement());
+
+				return this.enterElement();
       },
 
 			enterElement: function () {

@@ -70,11 +70,11 @@ function MbSimpleComponentFactory($animate, EventEmitter) {
 }
 
 function $MbComponentProvider() {
-    function $MbComponentFactory(MbSimpleComponent, $controller, $compile, $templateCache, $animate, $rootScope) {
+    function $MbComponentFactory(MbSimpleComponent, $http, $q, $controller, $compile, $templateCache, $animate, $rootScope) {
         function MbComponent(componentEl, id, options) {
             var _this = this;
             MbSimpleComponent.call(this), angular.isObject(componentEl) && (options = componentEl, 
-            componentEl = null), angular.isUndefined(options) && (options = {}), angular.isString(componentEl) && (options.template = componentEl, 
+            componentEl = null), angular.isUndefined(options) && (options = {}), angular.isString(componentEl) && (options.templateUrl = componentEl, 
             componentEl = void 0), this.options = options = mobie.defaults(options, defaults), 
             id && this.setId(id), this.on("scope", function(scope) {
                 var options = this.options;
@@ -83,24 +83,41 @@ function $MbComponentProvider() {
             var scope = options.scope = this.scope = options.scope.$new();
             this.emit("scope", this.scope), scope.$on("$destroy", function() {
                 _this.destroy();
-            }), this.on("visibleStateChangeSuccess", function() {
-                this.digest();
-            }), this.prepareComponent();
+            }), this.on("componentLink", function(componentLink) {
+                this.once("visibleChangeStart", function() {
+                    componentLink(this.scope);
+                });
+            }), this.on("element", function(element) {
+                this.componentLink = $compile(this.getElement());
+                this.emit("componentLink", this.componentLink);
+            }), (this.options.templateUrl || this.options.template) && this.digest(function() {
+                this.prepareComponent();
+            }.bind(this));
         }
         var bodyElement = angular.element(document.body);
         return inherits(MbComponent, MbSimpleComponent, {
+            storeTemplateAfterRequest: function(response) {
+                var templateUrl = this.options.templateUrl, template = response.data;
+                return $templateCache.put(templateUrl, template), this.getTemplateSync();
+            },
+            getTemplateSync: function() {
+                return this.options.template || $templateCache.get(this.options.templateUrl);
+            },
+            getElementAsync: function() {
+                if (this.getElement()) return $q.when(this.getElement());
+                var template = this.getTemplateSync() || $http.get(this.options.templateUrl).then(this.storeTemplateAfterRequest.bind(this));
+                return $q.when(template).then(function(template) {
+                    var element = angular.element(template);
+                    return this.setElement(element), element;
+                }.bind(this));
+            },
             prepareComponent: function() {
-                var scope = this.scope, options = this.options;
-                angular.isUndefined(options.template) && angular.isDefined(options.templateUrl) && (this.options.template = $templateCache.get(options.templateUrl));
-                var el = options.el = angular.element(options.template), componentLink = this.componentLink = $compile(el);
-                this.once("visibleChangeStart", function() {
-                    componentLink(scope);
-                }), this.setElement(el), this.enterElement();
+                return this.getElementAsync();
             },
             locals: function(locals) {
-                this.digest(function(scope) {
+                return this.digest(function(scope) {
                     angular.extend(scope, locals);
-                });
+                }), this;
             },
             appendController: function(controller, controllerAs) {
                 var scope = this.scope, options = this.options;
@@ -114,6 +131,12 @@ function $MbComponentProvider() {
                 var scope = this.scope;
                 return fn || (fn = angular.noop), scope && scope.$root ? (scope.$$phase || scope.$root.$$phase ? fn && scope.$applyAsync(fn) : scope.$apply(fn), 
                 this) : (fn(scope), this);
+            },
+            setElement: function() {
+                if (this.getElement()) throw new Error("Element already exists");
+                var setElement = MbSimpleComponent.prototype.setElement;
+                return setElement.apply(this, arguments), this.emit("element", this.getElement()), 
+                this.enterElement();
             },
             enterElement: function() {
                 var self = this;
@@ -146,7 +169,7 @@ function $MbComponentProvider() {
         }), MbComponent;
     }
     var defaults = this.defaults = {};
-    $MbComponentFactory.$inject = [ "MbSimpleComponent", "$controller", "$compile", "$templateCache", "$animate", "$rootScope" ], 
+    $MbComponentFactory.$inject = [ "MbSimpleComponent", "$http", "$q", "$controller", "$compile", "$templateCache", "$animate", "$rootScope" ], 
     this.$get = $MbComponentFactory;
 }
 
@@ -168,21 +191,19 @@ function isCallable(value) {
 
 var Empty = function() {}, array_push = Array.prototype.push, max = Math.max, array_slice = Array.prototype.slice, fnClass = "[object Function]", to_string = Object.prototype.toString, array_concat = Array.prototype.concat, hasToStringTag = "function" == typeof Symbol && "symbol" == typeof Symbol.toStringTag;
 
-angular.extend(Function.prototype, {
-    bind: function(that) {
-        var target = this;
-        if (!isCallable(target)) throw new TypeError("Function.prototype.bind called on incompatible " + target);
-        for (var bound, args = array_slice.call(arguments, 1), binder = function() {
-            if (this instanceof bound) {
-                var result = target.apply(this, array_concat.call(args, array_slice.call(arguments)));
-                return $Object(result) === result ? result : this;
-            }
-            return target.apply(that, array_concat.call(args, array_slice.call(arguments)));
-        }, boundLength = max(0, target.length - args.length), boundArgs = [], i = 0; boundLength > i; i++) array_push.call(boundArgs, "$" + i);
-        return bound = Function("binder", "return function (" + boundArgs.join(",") + "){ return binder.apply(this, arguments); }")(binder), 
-        target.prototype && (Empty.prototype = target.prototype, bound.prototype = new Empty(), 
-        Empty.prototype = null), bound;
-    }
+Function.prototype.hasOwnProperty("bind") || (Function.prototype.bind = function(that) {
+    var target = this;
+    if (!isCallable(target)) throw new TypeError("Function.prototype.bind called on incompatible " + target);
+    for (var bound, args = array_slice.call(arguments, 1), binder = function() {
+        if (this instanceof bound) {
+            var result = target.apply(this, array_concat.call(args, array_slice.call(arguments)));
+            return $Object(result) === result ? result : this;
+        }
+        return target.apply(that, array_concat.call(args, array_slice.call(arguments)));
+    }, boundLength = max(0, target.length - args.length), boundArgs = [], i = 0; boundLength > i; i++) array_push.call(boundArgs, "$" + i);
+    return bound = Function("binder", "return function (" + boundArgs.join(",") + "){ return binder.apply(this, arguments); }")(binder), 
+    target.prototype && (Empty.prototype = target.prototype, bound.prototype = new Empty(), 
+    Empty.prototype = null), bound;
 });
 function EventEmitter() {
     EventEmitter.init.call(this);
@@ -622,8 +643,9 @@ angular.module("mobie.components.popup", [ "mobie.core.helpers", "mobie.core.com
         }), this.options = {}, angular.isObject(options) && angular.extend(this.options, options);
         var scope = this.options.scope = this.scope = $rootScope.$new();
         this.applyDefaults(), this.history = {}, this.component = new MbComponent(this.options), 
-        this.el = this.component.getElement(), this.node = this.el[0], this.bodyElement = angular.element(document.body), 
-        Object.defineProperty(this, "lastId", {
+        this.component.on("element", function(element) {
+            this.el = element, this.node = this.el[0];
+        }.bind(this)), this.bodyElement = angular.element(document.body), Object.defineProperty(this, "lastId", {
             get: function() {
                 var keys = Object.keys(this.history);
                 return keys.length < 1 ? 0 : parseInt(keys[keys.length - 1]);
