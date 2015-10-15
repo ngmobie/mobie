@@ -336,6 +336,7 @@ function $MbComponentProvider () {
 				componentEl = undefined;
 			}
 
+	    this.allowDigests = false;
       this.options = options = mobie.defaults(options, defaults);
 
       if(!id && options.id) {
@@ -381,10 +382,16 @@ function $MbComponentProvider () {
 				this.enterElement();
       });
 
-      if(this.options.templateUrl || this.options.template) {
+	    this.once('ready', function() {
+	    	angular.forEach(this._digests, function(args) {
+	    		this.digest.apply(this, args);
+	    	}.bind(this));
+	    });
+
+	    if(this.options.templateUrl || this.options.template) {
 	      this.digest(function() {
 	      	this.prepareComponent();
-	      }.bind(this));
+	      });
 	    }
 		}
 
@@ -416,6 +423,7 @@ function $MbComponentProvider () {
 					var element = angular.element(template);
 
 					this.setElement(element);
+					this.emit('ready');
 
 					return element;
 				}.bind(this));
@@ -449,8 +457,15 @@ function $MbComponentProvider () {
         return this;
       },
 
-			digest: function (fn) {
+      _digests: [],
+
+			digest: function (callback, context) {
         var scope = this.scope;
+        var fn = callback.bind(context || this);
+
+        if(!this.allowDigests) {
+        	return this._digests.push(arguments);
+        }
 
         if(!fn) {
         	fn = angular.noop;
@@ -558,6 +573,15 @@ function $MbComponentProvider () {
 				.then(function () {
 					return _this.postDigest(_this.removeAllListeners);
 				});
+			},
+
+			setVisibleState: function () {
+				var args = arguments;
+				var setVisibleState = MbSimpleComponent.prototype.setVisibleState;
+
+				return this.getElementAsync().then(function() {
+					return setVisibleState.apply(this, args);
+				}.bind(this));
 			}
 		});
 

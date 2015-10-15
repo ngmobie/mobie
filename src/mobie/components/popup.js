@@ -175,7 +175,9 @@ angular.module('mobie.components.popup', [
 	  },
 
 	  digest: function (fn) {
-	    return digest(this.scope, fn, this);
+	    this.component.digest(fn, this);
+
+	    return this;
 	  },
 
 	  asyncDigest: function () {
@@ -256,7 +258,7 @@ angular.module('mobie.components.popup', [
 	      angular.extend(scope, options);
 
 	      this.emit('updated');
-	    }.bind(this));
+	    });
 
 	    return this;
 	  },

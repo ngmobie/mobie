@@ -180,7 +180,6 @@ angular.module('mobie.components.action-sheet', [
 		.on('unbindEvents', function () {
 			node.removeEventListener('click', ON_CLICK);
 		});
-
 		this.defaultScopeAttrs.groups = [];
 		this.defaultScopeAttrs.noCancelButton = false;
 	}
@@ -196,7 +195,7 @@ angular.module('mobie.components.action-sheet', [
 			var groups = scope.groups;
 			var buttons = scope.buttons;
 
-			if(groups.length < 1 && buttons) {
+			if(groups && groups.length < 1 && buttons) {
 				this.noGroupApproach(scope, buttons);
 			}
 
