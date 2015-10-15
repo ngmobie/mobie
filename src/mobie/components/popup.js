@@ -118,6 +118,8 @@ angular.module('mobie.components.popup', [
 	  this.component    = new MbComponent(this.options);
 
 	  var scope = this.options.scope = this.scope = this.component.scope;
+	  this.emit('scope', scope);
+
 	  this.component.on('element', function(element) {
 	  	this.el           = element;
 	  	this.node         = this.el[0];
@@ -137,7 +139,6 @@ angular.module('mobie.components.popup', [
 	  	}
 	  });
 
-	  this.emit('scope', scope);
 
 	  angular.forEach(this.replicateEvents, function (e) {
 	  	this.component.on(e, function () {
