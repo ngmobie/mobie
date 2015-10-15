@@ -63,6 +63,14 @@ function $MbPopupProvider () {
 			this.component.on('element', function(element) {
 				var node = element[0];
 
+				var ON_CLICK = function (e) {
+					if(e.target == node) {
+						this.digest(function (){
+							this.hide();
+						});
+					}
+				}.bind(this);
+
 				this.on('bindEvents', function () {
 					node.addEventListener('click', ON_CLICK);
 				})
@@ -70,14 +78,6 @@ function $MbPopupProvider () {
 					node.removeEventListener('click', ON_CLICK);
 				});
 			}.bind(this));
-
-			var ON_CLICK = function (e) {
-				if(e.target == node) {
-					this.digest(function (){
-						this.hide();
-					});
-				}
-			}.bind(this);
 		}
 
 		inherits(_MbPopup, MbPopup, {
