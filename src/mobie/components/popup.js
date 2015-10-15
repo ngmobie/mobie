@@ -245,19 +245,16 @@ angular.module('mobie.components.popup', [
 
 	  // Reset the popup scope
 	  // with the default options
-	  scopeReset: function () {
-	    this.scopeExtend(this.defaultScopeAttrs);
+	  reset: function () {
+	    this.locals(this.defaultScopeAttrs);
 
 	    this.emit('reset');
 	  },
 
 	  // Extend the popup scope
-	  scopeExtend: function(options) {
-	    this.digest(function (scope) {
-	      angular.extend(scope, options);
-
-	      this.emit('updated');
-	    }.bind(this));
+	  locals: function(locals) {
+      this.component.locals(locals);
+      this.emit('updated');
 
 	    return this;
 	  },
@@ -303,8 +300,8 @@ angular.module('mobie.components.popup', [
 	     * want to get a undesired `title` option,
 	     * right?
 	     */
-	    this.scopeReset();
-	    this.scopeExtend(options);
+	    this.reset();
+	    this.locals(options);
 
 	    this.digest(function() {
 	    	this.configureScope(this.scope);
