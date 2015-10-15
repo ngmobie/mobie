@@ -14,6 +14,10 @@ mobie.defaults = function (target, defaults) {
   return target;
 };
 
+mobie.toArray = function(value) {
+  return Array.prototype.slice.call(value);
+};
+
 function inherits (ctor, superCtor, attrs) {
   ctor.super_ = superCtor;
   ctor.prototype = Object.create(superCtor.prototype, {
