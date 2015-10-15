@@ -52,4 +52,6 @@ function digest (scope, fn, context) {
   }
 }
 
+mobie.digest = digest;
+
 angular.module('mobie.core.helpers', ['mobie.core.eventemitter']);

@@ -176,7 +176,7 @@ angular.module('mobie.components.popup', [
 	  },
 
 	  digest: function (fn) {
-	    return digest(this.scope, fn, this);
+	    return mobie.digest(this.scope, fn, this);
 	  },
 
 	  asyncDigest: function () {
