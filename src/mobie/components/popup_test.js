@@ -54,7 +54,7 @@ describe('mobie.components.popup', function () {
 
 			popup.show({ component: 'popup' });
 
-			$animate.triggerCallbacks();
+			$animate.flush();
 			$rootScope.$digest();
 
 			assert.equal('My popup template', popup.el.text());
@@ -66,6 +66,19 @@ describe('mobie.components.popup', function () {
 			assert.ok(angular.element(document.querySelector('.popup-container')).length)
 		});
 
+		it('should show a popup without defining any buttons', function () {
+			$mbPopup.show({
+				text: 'some text',
+				buttons: [
+					{text: 'test'}
+				]
+			});
+
+			$animate.flush();
+
+			assert.equal('some text', document.querySelector('.popup-container').textContent);
+		});
+
 		it('should show a popup', function () {
 			$mbPopup.show({
 				text: 'my popup text',
@@ -74,7 +87,7 @@ describe('mobie.components.popup', function () {
 				}]
 			});
 
-			$animate.triggerCallbacks();
+			$animate.flush();
 			$rootScope.$digest();
 
 			assert.ok(popupEl.hasClass('mb-visible'));
@@ -122,14 +135,14 @@ describe('mobie.components.popup', function () {
 		assert.ok(popupEl.hasClass('mb-hidden'));
 
 		$mbPopup.hide();
-		$animate.triggerCallbacks();
+		$animate.flush();
 		$rootScope.$digest();
 
 		assert.equal(actualPopupId, $mbPopup.lastId);
 
 		$mbPopup.show();
 
-		$animate.triggerCallbacks();
+		$animate.flush();
 		$rootScope.$digest();
 
 		assert.equal('This is a test', popupEl.text());

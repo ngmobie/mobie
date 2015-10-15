@@ -25,7 +25,7 @@ describe('mobie.components.action-sheet', function () {
 				}]
 			});
 			
-			$animate.triggerCallbacks();
+			$animate.flush();
 			$rootScope.$digest();
 
 			assert.ok(angular.element(document.querySelector('.action-sheet-wrapper')).hasClass('mb-visible'));

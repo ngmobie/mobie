@@ -37,7 +37,7 @@ describe('mobie.components.modal', function () {
 			modal.show();
 
 			$rootScope.$digest();
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			var mbModalEl = angular.element(document.querySelector('mb-my-component'));
 
@@ -76,14 +76,13 @@ describe('mobie.components.modal', function () {
 				scope: scope
 			});
 
-			$rootScope.$digest()
+			$animate.flush();
 
 			assert.equal(template, modal.options.template);
 
 			modal.show();
 
-			$rootScope.$digest();
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			var mbModalEl = angular.element(document.querySelector('mb-my-component'));
 
@@ -102,10 +101,10 @@ describe('mobie.components.modal', function () {
 
 			modal.hide();
 
-			$rootScope.$digest()
-			$animate.triggerCallbacks()
+			$animate.flush();
+			scope.$apply();
 
-			assert.equal(false, angular.element(document.body).hasClass('mb-modal-visible'))
+			assert.equal(false, angular.element(document.body).hasClass('mb-modal-visible'));
 		})
 	})
 })

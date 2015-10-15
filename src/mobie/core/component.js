@@ -140,6 +140,10 @@ function MbSimpleComponentFactory ($animate, EventEmitter) {
 			var visibleClass = this.getVisibleClass();
 			var hiddenClassMethod = visibleState ? 'removeClass' : 'addClass';
 
+			if(!classReceiverElement) {
+				throw new Error('element does not exists');
+			}
+
 			this.emit('visibleStateChangeStart', visibleState);
 
 			addClass = visibleState ? visibleClass : hiddenClass;
@@ -334,6 +338,10 @@ function $MbComponentProvider () {
 
       this.options = options = mobie.defaults(options, defaults);
 
+      if(!id && options.id) {
+      	id = options.id;
+      }
+
       if(id) {
       	this.setId(id);
       }
@@ -369,6 +377,8 @@ function $MbComponentProvider () {
       this.on('element', function(element) {
 				var componentLink = this.componentLink = $compile(this.getElement());
 				this.emit('componentLink', this.componentLink);
+
+				this.enterElement();
       });
 
       if(this.options.templateUrl || this.options.template) {
@@ -471,11 +481,16 @@ function $MbComponentProvider () {
       	setElement.apply(this, arguments);
       	this.emit('element', this.getElement());
 
-				return this.enterElement();
+				return this;
       },
 
 			enterElement: function () {
-				var self = this;
+				var _this = this;
+				var element = this.getElement();
+
+				if(!element) {
+					return $q.reject(new Error('element does not exists'));
+				}
 
 				if(angular.isUndefined(this.parentElement)) {
 					this.parentElement = bodyElement;
@@ -483,8 +498,8 @@ function $MbComponentProvider () {
 
 				this.emit('enterElementStart');
 
-				return $animate.enter(this.getElement(), this.parentElement).then(function () {
-					self.emit('enter');
+				return $animate.enter(element, this.parentElement).then(function () {
+					_this.emit('enter');
 				});
 			},
 
@@ -496,14 +511,25 @@ function $MbComponentProvider () {
 
 			leaveElement: function () {
 				var _this = this;
+				var element = this.getElement();
+
+				if(!element) {
+					return $q.reject(new Error('element does not exists'));
+				}
 
 				this.emit('leaveElementStart');
 
-				return $animate.leave(this.getElement()).then(function () {
+				return $animate.leave(element).then(function () {
 					_this.emit('leave');
 
 					return _this;
 				});
+			},
+
+			postDigest: function(callback) {
+				this.scope.$$postDigest(callback.bind(this));
+
+				return this;
 			},
 
 			/**
@@ -519,18 +545,18 @@ function $MbComponentProvider () {
 				this.emit('destroy');
 
 				return this
-				.hide()
+				.setVisibleState(false)
 				.then(function () {
-					return _this.leaveElement();
-				})				
-				.then(function () {
-					return _this.removeAllListeners();
+					return _this.postDigest(_this.leaveElement);
 				})
 				.then(function () {
-					return _this.removeElement();
+					return _this.postDigest(_this.removeElement);
 				})
 				.then(function() {
 					_this.emit('destroyed');
+				})
+				.then(function () {
+					return _this.postDigest(_this.removeAllListeners);
 				});
 			}
 		});

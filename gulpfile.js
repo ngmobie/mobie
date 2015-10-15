@@ -43,8 +43,8 @@ gulp.task('docs-assets', function () {
 gulp.task('docs-scripts', function () {
 	gulp.src(paths.docs.scripts)
 	.pipe(ngAnnotate())
-	.pipe(uglify())
 	.pipe(concat('app.js'))
+	.pipe(uglify())
 	.pipe(wrapper({
 		header: `(function (window, angular, undefined) {`,
 		footer: `}(window, angular, undefined));`

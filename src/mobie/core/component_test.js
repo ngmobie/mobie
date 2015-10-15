@@ -1,20 +1,177 @@
 describe('mobie.core.component', function () {
-	var $rootScope, MbComponent, $animate, $httpBackend;
+	var $rootScope, MbComponent, $animate, $httpBackend, $timeout;
 
 	beforeEach(module('ngAnimateMock'));
 	beforeEach(module('mobie.core.component'))
 
-	beforeEach(inject(function (_$rootScope_, _MbComponent_, _$animate_, _$httpBackend_) {
+	beforeEach(inject(function (_$rootScope_, _MbComponent_, _$animate_, _$httpBackend_, _$timeout_) {
 		$rootScope = _$rootScope_;
 		MbComponent = _MbComponent_;
 		$animate = _$animate_;
 		$httpBackend = _$httpBackend_;
-	}))
+		$timeout = _$timeout_;
+	}));
+
+	afterEach(function() {
+		$httpBackend.verifyNoOutstandingExpectation();
+		$httpBackend.verifyNoOutstandingRequest();
+	});
 
 	describe('MbComponent', function () {
-		afterEach(function() {
-			$httpBackend.verifyNoOutstandingExpectation();
-			$httpBackend.verifyNoOutstandingRequest();
+		describe('destroy()', function() {
+			it('should hide the component before destroy', function() {
+				var component = new MbComponent();
+
+				component
+				.setElement(angular.element('<div id="destroyable-component"></div>'));
+
+				var node = document.querySelector('#destroyable-component');
+				var element = component.getElement();
+
+				assert.ok(node);
+
+				component.show();
+
+				$animate.flush();
+
+				assert.ok(element.hasClass('mb-visible'));
+
+				component.destroy();
+
+				$rootScope.$digest();
+
+				assert.ok(element.hasClass('mb-hidden'));
+
+				$animate.flush();
+			});
+
+			it('should emit an event when it gets destroyed', function(){
+				var component = new MbComponent();
+
+				var called = false;
+
+				component
+				.setElement(angular.element('<div></div>'))
+				.on('destroy', function() {
+					called = true;
+				});
+
+				component.destroy();
+
+				$animate.flush();
+
+				assert.ok(called);
+			});
+
+			it('should emit an event when it gets completely destroyed', function(){
+				var component = new MbComponent();
+
+				var called = false,
+						destroyed = false;
+
+				component
+				.setElement(angular.element('<div></div>'))
+				.on('destroy', function() {
+					called = true;
+				})
+				.on('destroyed', function() {
+					destroyed = true;
+				});
+
+				component.destroy();
+
+				$animate.flush();
+
+				assert.ok(called);
+				assert.ok(destroyed);
+			});
+
+			it('should remove component when scope is destroyed', function () {
+				var scope = $rootScope.$new();
+
+				scope.obj = {
+					value: 1000
+				};
+
+				scope.$apply();
+
+				var template = '<mb-my-component1>' +
+					'<div>' +
+						'that it, this is my modal template. ' +
+						'and that is my value ' +
+						'{{ obj.value }}' +
+					'<div>'+
+				'</mb-my-component1>';
+
+				var modal = new MbComponent({
+					template: template,
+					scope: scope
+				});
+
+				assert.equal(template, modal.options.template);
+
+				modal.show();
+
+				$animate.flush();
+
+				assert.ok(modal.getElement());
+
+				assert.ok(document.querySelector('mb-my-component1'));
+
+				scope.$destroy();
+
+				$animate.flush();
+
+				assert.equal(undefined, document.querySelector('mb-my-component1'));
+				assert.equal(undefined, modal.getElement());
+				assert.deepStrictEqual({}, modal._events);
+			});
+		});
+
+		describe('setElement()', function() {
+			it('should enter the element on the dom when it receives an element', function() {
+				var component = new MbComponent({
+					id: 'test-1'
+				})
+				.on('element', function(element) {
+					element.attr('id', 'test-1');
+				});
+
+				var el = angular.element('<div></div>');
+				component.setElement(el);
+
+				assert.equal('test-1', el.attr('id'));
+
+				$animate.flush();
+
+				var node = document.querySelector('#test-1');
+
+				assert.equal(node, el[0]);
+			});
+
+			it('should not allow re-set of the component element', function() {
+				var component = new MbComponent();
+
+				component.setElement(angular.element('<div></div>'));
+
+				assert.throws(function() {
+					component.setElement(angular.element('<div></div>'));
+				});
+			});
+		});
+
+		it('should set the component id by options', function() {
+			var component = new MbComponent({
+				id: 'test-2'
+			});
+
+			assert.equal('test-2', component.id);
+
+			component
+			.setElement(angular.element('<div></div>'))
+			.destroy();
+
+			$animate.flush();
 		});
 
 		it('should support async templates', function() {
@@ -29,32 +186,15 @@ describe('mobie.core.component', function () {
 				value: 'Testing the $compile'
 			});
 
-			$animate.triggerCallbacks();
-			$rootScope.$digest();
-
 			$httpBackend.flush();
+			$animate.flush();
 
 			assert.equal('{{ value }}', component.getElement().text());
 
 			component.show();
-			$animate.triggerCallbacks();
-			$rootScope.$digest();
+			$animate.flush();
 
 			assert.equal('Testing the $compile', component.getElement().text());
-		});
-
-		it('should emit an event when it gets destroyed', function(){
-			var component = new MbComponent();
-
-			var called = false;
-
-			component.on('destroy', function() {
-				called = true;
-			});
-
-			component.destroy();
-
-			assert.ok(called);
 		});
 
 		it('should support options in the first parameter', inject(function($templateCache) {
@@ -66,12 +206,9 @@ describe('mobie.core.component', function () {
 				templateUrl: 'a/b/c.html'
 			});
 
-			$animate.triggerCallbacks();
-			$rootScope.$digest();
-
 			assert.equal(template, component.getTemplateSync());
 
-			$animate.triggerCallbacks();
+			$animate.flush();
 			$rootScope.$digest();
 
 			var el = angular.element(document.querySelector('#component-1'));
@@ -135,7 +272,7 @@ describe('mobie.core.component', function () {
 
 			scope.myvalue = 'we are just happy';
 
-			$rootScope.$digest();
+			$animate.flush();
 
 			assert.equal('that it, this is my modal template. and that is my value: we are just happy', el.text());
 
@@ -157,7 +294,7 @@ describe('mobie.core.component', function () {
 
 			comp2.show();
 
-			$rootScope.$digest();
+			$animate.flush();
 
 			assert.equal('oh my god', el.text());
 		}));
@@ -183,14 +320,11 @@ describe('mobie.core.component', function () {
 				scope: scope
 			});
 
-			$rootScope.$digest()
-
 			assert.equal(template, modal.options.template);
 
 			modal.show();
 
-			$rootScope.$digest();
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			var mbComponentEl = angular.element(document.querySelector('mb-my-component'));
 
@@ -217,13 +351,13 @@ describe('mobie.core.component', function () {
 
 			scope.mycomponentvalue = 1000;
 
-			$rootScope.$digest();
+			$animate.flush();
 
 			var mbComponent2 = angular.element(document.querySelector('mb-component2'));
 			assert.equal('{{mycomponentvalue}}', mbComponent2.text());
 
 			modal.show();
-			$rootScope.$digest();
+			$animate.flush();
 
 			assert.equal('1000', mbComponent2.text());
 		});
@@ -245,58 +379,9 @@ describe('mobie.core.component', function () {
 
 			modal.show();
 
-			$animate.triggerCallbacks()
-
-			assert.ok(mbComponent2.hasClass('mb-hidden'))
-
-			$rootScope.$digest()
+			$animate.flush();
 
 			assert.ok(mbComponent2.hasClass('mb-visible'), 'mb-visible class not added');
-		});
-
-		it('should remove component when scope is destroyed', function () {
-			var scope = $rootScope.$new();
-			scope.obj = {
-				value: 1000
-			};
-			scope.$apply()
-
-			var template = '<mb-my-component1>' +
-				'<div>' +
-					'that it, this is my modal template. ' +
-					'and that is my value ' +
-					'{{ obj.value }}' +
-				'<div>'+
-			'</mb-my-component1>';
-
-			var modal = new MbComponent({
-				template: template,
-				scope: scope
-			});
-
-			$rootScope.$digest()
-
-			assert.equal(template, modal.options.template);
-
-			modal.show();
-
-			$rootScope.$digest();
-			$animate.triggerCallbacks();
-
-			assert.ok(modal.getElement());
-
-			assert.ok(document.querySelector('mb-my-component1'));
-
-			scope.$destroy();
-
-			$rootScope.$digest();
-			$animate.triggerCallbacks();
-			$rootScope.$digest();
-			$animate.triggerCallbacks();
-
-			assert.equal(undefined, document.querySelector('mb-my-component1'));
-			assert.equal(undefined, modal.getElement());
-			assert.deepStrictEqual({}, modal._events);
 		});
 
 		it('should support mb-animation directive', function () {
@@ -327,7 +412,7 @@ describe('mobie.core.component', function () {
 			modal.show();
 
 			$rootScope.$digest();
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			var mbComponentEl = angular.element(document.querySelector('mb-my-component'));
 			
@@ -380,7 +465,7 @@ describe('mobie.core.component', function () {
 			assert.equal(false, called);
 
 			$rootScope.$digest();
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			assert.ok(called);
 		});
@@ -419,7 +504,7 @@ describe('mobie.core.component', function () {
 
 			component.enterElement();
 
-			$animate.triggerCallbacks()
+			$animate.flush()
 
 			myel = angular.element(document.querySelector('.my-el2'));
 
@@ -473,7 +558,7 @@ describe('mobie.core.component', function () {
 
 			component.leaveElement();
 			
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			myel = angular.element(document.querySelector('.my-el3'));
 
@@ -509,7 +594,7 @@ describe('mobie.core.component', function () {
 
 			myComponent.show();
 
-			$animate.triggerCallbacks();
+			$animate.flush();
 			$rootScope.$digest();
 
 			assert.ok(classReceiver.hasClass('mb-visible'));
@@ -536,7 +621,7 @@ describe('mobie.core.component', function () {
 			component.show()
 
 			$rootScope.$digest()
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			assert.ok(component.fnCalled)
 		})
@@ -549,7 +634,7 @@ describe('mobie.core.component', function () {
 			component.hide()
 
 			$rootScope.$digest()
-			$animate.triggerCallbacks();
+			$animate.flush();
 
 			assert.ok(component.fnCalled)
 		})
@@ -573,7 +658,7 @@ describe('mobie.core.component', function () {
 			});
 
 			$rootScope.$digest()
-			$animate.triggerCallbacks()
+			$animate.flush()
 		});
 
 		it('should not have an id key by default', function () {

@@ -60,8 +60,16 @@ function $MbPopupProvider () {
 		function _MbPopup () {
 			MbPopup.call(this);
 
-			var element = this.component.getElement();
-			var node = element[0];
+			this.component.on('element', function(element) {
+				var node = element[0];
+
+				this.on('bindEvents', function () {
+					node.addEventListener('click', ON_CLICK);
+				})
+				.on('unbindEvents', function () {
+					node.removeEventListener('click', ON_CLICK);
+				});
+			}.bind(this));
 
 			var ON_CLICK = function (e) {
 				if(e.target == node) {
@@ -70,13 +78,6 @@ function $MbPopupProvider () {
 					});
 				}
 			}.bind(this);
-
-			this.on('bindEvents', function () {
-				node.addEventListener('click', ON_CLICK);
-			})
-			.on('unbindEvents', function () {
-				node.removeEventListener('click', ON_CLICK);
-			});
 		}
 
 		inherits(_MbPopup, MbPopup, {

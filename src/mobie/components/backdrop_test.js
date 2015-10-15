@@ -1,13 +1,14 @@
 describe('mobie.components.backdrop', function () {
-	describe('$mbBackdrop factory', function () {
-		var $mbBackdrop, $rootScope, backdropEl;
+	describe('$mbBackdrop', function () {
+		var $mbBackdrop, $animate, $rootScope, backdropEl;
 
+		beforeEach(module('ngAnimateMock'));
 		beforeEach(module('mobie.components.backdrop'))
 
-		beforeEach(inject(function (_$mbBackdrop_, _$rootScope_, _$timeout_) {
+		beforeEach(inject(function (_$mbBackdrop_, _$rootScope_, _$animate_) {
 			$mbBackdrop = _$mbBackdrop_
 			$rootScope = _$rootScope_
-			$timeout = _$timeout_
+			$animate = _$animate_
 			backdropEl = document.body.querySelector('.backdrop');
 		}))
 
@@ -15,8 +16,7 @@ describe('mobie.components.backdrop', function () {
 			assert.equal(false, $mbBackdrop.getVisibleState());
 			
 			$mbBackdrop.show();
-			$rootScope.$digest();
-			$timeout.flush();
+			$animate.flush();
 			
 			assert.equal($mbBackdrop.getElement()[0], backdropEl)
 			assert.ok($mbBackdrop.getVisibleState());
