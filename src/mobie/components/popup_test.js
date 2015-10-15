@@ -27,6 +27,9 @@ describe('mobie.components.popup', function () {
 		backdropEl = angular.element(document.querySelector('.backdrop'));
 		
 		popupEl = angular.element(document.querySelector('.popup-container'));
+
+		$rootScope.$digest();
+		$animate.flush();
 	}));
 
 	describe('MbPopup', function() {
@@ -51,11 +54,11 @@ describe('mobie.components.popup', function () {
 			var popup = new MyMbPopup();
 
 			$httpBackend.flush();
+			$animate.flush();
 
 			popup.show({ component: 'popup' });
 
 			$animate.flush();
-			$rootScope.$digest();
 
 			assert.equal('My popup template', popup.el.text());
 		}));
@@ -73,7 +76,6 @@ describe('mobie.components.popup', function () {
 					{text: 'test'}
 				]
 			});
-
 			$animate.flush();
 
 			assert.equal('some text', document.querySelector('.popup-container').textContent);
@@ -86,66 +88,89 @@ describe('mobie.components.popup', function () {
 					text: 'OK'
 				}]
 			});
-
 			$animate.flush();
-			$rootScope.$digest();
 
 			assert.ok(popupEl.hasClass('mb-visible'));
+			assert.equal('my popup text', document.querySelector('.popup').textContent);
+		});
+
+		it('should update the scope content according to the options', function() {
+			$mbPopup.show({
+				text: 'this is a text, and I am testing'
+			});
+			$animate.flush();
+
+			assert.equal('this is a text, and I am testing', $mbPopup.scope.text);
+		});
+
+		it('should reset the scope', function() {
+			var text = 'Testing, some popup content here!';
+			$mbPopup.show({
+				text: text
+			});
+			$animate.flush();
+
+			assert.equal(text, $mbPopup.scope.text);
+
+			$mbPopup.reset();
+
+			assert.equal('', $mbPopup.scope.text);
 		});
 
 		it('should support multiple popups', inject(function ($timeout, $browser) {
 			$mbPopup.show({
 				text: 'hey, that is my text here'
 			});
+			$animate.flush();
 
-			var popupElText = angular.element(popupEl[0].querySelector('[ng-bind="text"]'));
-
-			$rootScope.$digest();
-
-			assert.equal('hey, that is my text here', popupElText.text());
+			assert.equal('hey, that is my text here', document.querySelector('.popup').textContent);
 
 			$mbPopup.show({
 				text: 'another text'
 			});
+			$animate.flush();
 
-			assert.equal('another text', angular.element(popupEl[0].querySelector('[ng-bind="text"]')).text());
+			$rootScope.$digest();
+			$animate.flush();
+
+			assert.equal('another text', $mbPopup.scope.text);
+			assert.equal('another text', document.querySelector('.popup').textContent);
 
 			$mbPopup.hide();
-			$rootScope.$digest();
+			$animate.flush();
 
 			assert.ok(backdropEl.hasClass('mb-hidden'));
 		}));
 	});
 
 	it('should just show the last popup if no option is defined or if the option parameter is a number type variable', function () {
+		var node = document.querySelector('.popup-container');
+		var el = angular.element(node);
+
 		$mbPopup.show({
 			text: 'This is a test'
 		});
+		$animate.flush();
 
-		$rootScope.$digest();
-
-		assert.equal('This is a test', popupEl.text());
+		assert.equal('This is a test', node.textContent);
 
 		var actualPopupId = $mbPopup.id;
 
 		$mbPopup.hide();
-		$rootScope.$digest();
+		$animate.flush();
 
 		assert.equal(actualPopupId, $mbPopup.id);
-		assert.ok(popupEl.hasClass('mb-hidden'));
+		assert.ok(el.hasClass('mb-hidden'));
 
 		$mbPopup.hide();
 		$animate.flush();
-		$rootScope.$digest();
 
 		assert.equal(actualPopupId, $mbPopup.lastId);
 
 		$mbPopup.show();
-
 		$animate.flush();
-		$rootScope.$digest();
 
-		assert.equal('This is a test', popupEl.text());
-		assert.ok(popupEl.hasClass('mb-visible'));
+		assert.equal('This is a test', el.text());
+		assert.ok(el.hasClass('mb-visible'));
 	});
 });

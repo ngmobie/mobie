@@ -220,6 +220,7 @@ describe('mobie.core.component', function () {
 			var component = new MbComponent({
 				template: '<div>{{ value }}</div>'
 			});
+			$animate.flush();
 
 			assert.equal('<div>{{ value }}</div>', component.options.template);
 			assert.ok(component.getElement());
@@ -230,6 +231,7 @@ describe('mobie.core.component', function () {
 			$templateCache.put('my-template-3.html', template);
 
 			var comp2 = new MbComponent('my-template-3.html');
+			$animate.flush();
 
 			comp2.scope.value = 'god';
 
@@ -238,8 +240,7 @@ describe('mobie.core.component', function () {
 			assert.equal('oh my {{value}}', el.text());
 
 			comp2.show();
-
-			$rootScope.$digest();
+			$animate.flush();
 
 			assert.equal('oh my god', el.text());
 
@@ -262,6 +263,7 @@ describe('mobie.core.component', function () {
 			var myComp = new MbComponent({
 				template: template
 			});
+			$animate.flush();
 
 			var scope = myComp.options.scope;
 			assert.ok(scope.$new);
@@ -285,6 +287,8 @@ describe('mobie.core.component', function () {
 			$templateCache.put('my-template.html', template);
 
 			var comp2 = new MbComponent('my-template.html');
+
+			$rootScope.$digest();
 
 			comp2.scope.value = 'god';
 
@@ -319,6 +323,7 @@ describe('mobie.core.component', function () {
 				template: template,
 				scope: scope
 			});
+			$animate.flush();
 
 			assert.equal(template, modal.options.template);
 
