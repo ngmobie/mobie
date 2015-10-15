@@ -161,6 +161,10 @@ gulp.task('templates', function () {
 		.pipe(gulp.dest('build'));
 });
 
+gulp.task('watch', function() {
+	gulp.watch('src/**/*.js', ['scripts']);
+});
+
 gulp.task('stylesheets', function () {
 	sass('stylesheets/mobie.scss')
 		.pipe(pleeease())
