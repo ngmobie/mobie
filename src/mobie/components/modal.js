@@ -68,28 +68,29 @@ function $MbModalProvider () {
 			var scope = this.scope;
 
 			this.scope.$hide = function () {
-				_this.scope.$$postDigest(function () {
+				_this.postDigest(function () {
 					return _this.hide();
 				});
 			};
 
-			this.on('visibleChangeStart', function () {
-				$mbBackdrop.show();
-				$animate.addClass(bodyElement, options.activeBodyClass);
-			});
+			this.on('visibleChangeStart', this.appendBodyClass);
 
-			this.on('notVisible', function () {
-				digest(scope, function () {
-					$timeout(function () {
-						$mbBackdrop.hide();
-					});
-					
-					$animate.removeClass(bodyElement, options.activeBodyClass);
-				});
-			});
+			this.on('notVisible', this.removeBodyClass);
 		}
 
-		inherits(MbModal, MbComponent);
+		inherits(MbModal, MbComponent, {
+			appendBodyClass: function (remove) {
+				this.digest(function() {
+					$animate[remove ? 'removeClass' : 'addClass'](bodyElement, this.options.activeBodyClass);
+				});
+
+				return this;
+			},
+
+			removeBodyClass: function() {
+				return this.appendBodyClass(true);
+			}
+		});
 
 		return angular.extend(function (options) {
 			return new MbModal(options);
