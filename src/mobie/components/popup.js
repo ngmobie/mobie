@@ -139,7 +139,6 @@ angular.module('mobie.components.popup', [
 	  	}
 	  });
 
-
 	  angular.forEach(this.replicateEvents, function (e) {
 	  	this.component.on(e, function () {
 	  		this.emit(e);

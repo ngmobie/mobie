@@ -7,7 +7,7 @@
  * @param {string} id the component id
  * @param {object} options the component options
  */
-function MbSimpleComponentFactory ($animate, EventEmitter) {
+function MbSimpleComponentFactory ($q, $animate, EventEmitter) {
 	function MbSimpleComponent (componentEl, id, options) {
 		EventEmitter.call(this);
 
@@ -141,7 +141,7 @@ function MbSimpleComponentFactory ($animate, EventEmitter) {
 			var hiddenClassMethod = visibleState ? 'removeClass' : 'addClass';
 
 			if(!classReceiverElement) {
-				throw new Error('element does not exists');
+				return $q.reject(new Error('element does not exists'));
 			}
 
 			this.emit('visibleStateChangeStart', visibleState);
@@ -382,9 +382,7 @@ function $MbComponentProvider () {
       });
 
       if(this.options.templateUrl || this.options.template) {
-	      this.digest(function() {
-	      	this.prepareComponent();
-	      }.bind(this));
+				this.prepareComponent();
 	    }
 		}
 
@@ -426,7 +424,9 @@ function $MbComponentProvider () {
 			},
 
 			locals: function (locals) {
-				this.digest(function(scope) {
+				var scope = this.scope;
+				
+				this.digest(function() {
           angular.extend(scope, locals);
         });
 
@@ -449,12 +449,14 @@ function $MbComponentProvider () {
         return this;
       },
 
-			digest: function (fn) {
+			digest: function (callback, context) {
         var scope = this.scope;
 
-        if(!fn) {
-        	fn = angular.noop;
+        if(!callback) {
+        	callback = angular.noop;
         }
+
+        var fn = callback.bind(context || this);
 
         if(!scope || !scope.$root) {
         	fn(scope);
