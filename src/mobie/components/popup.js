@@ -111,13 +111,13 @@ angular.module('mobie.components.popup', [
 	    angular.extend(this.options, options);
 	  }
 
-	  var scope = this.options.scope = this.scope = $rootScope.$new();
 
 	  this.applyDefaults();
 
 	  this.history 			= {};
 	  this.component    = new MbComponent(this.options);
 
+	  var scope = this.options.scope = this.scope = this.component.scope;
 	  this.component.on('element', function(element) {
 	  	this.el           = element;
 	  	this.node         = this.el[0];
